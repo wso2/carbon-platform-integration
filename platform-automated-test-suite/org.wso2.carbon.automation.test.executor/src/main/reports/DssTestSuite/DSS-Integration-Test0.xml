@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite hostname="krishantha" name="org.wso2.carbon.dss.syntax.test.ServerStartupTestCase" tests="1" failures="0" timestamp="3 Oct 2012 12:21:17 GMT" time="0.063" errors="0">
+  <testcase name="testVerifyLogs" time="0.059" classname="org.wso2.carbon.dss.syntax.test.ServerStartupTestCase"/>
+</testsuite>

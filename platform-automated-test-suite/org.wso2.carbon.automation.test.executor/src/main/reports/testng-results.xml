@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="2" passed="2">
+  <reporter-output>
+  </reporter-output>
+  <suite name="DssTestSuite" duration-ms="63" started-at="2012-10-03T17:51:17Z" finished-at="2012-10-03T17:51:17Z">
+    <groups>
+      <group name="wso2.dss">
+        <method signature="org.wso2.carbon.dss.syntax.test.ServerStartupTestCase.testVerifyLogs()" name="testVerifyLogs" class="org.wso2.carbon.dss.syntax.test.ServerStartupTestCase"/>
+      </group>
+    </groups>
+    <test name="DSS-Integration-Test" duration-ms="63" started-at="2012-10-03T17:51:17Z" finished-at="2012-10-03T17:51:17Z">
+      <class name="org.wso2.carbon.dss.syntax.test.ServerStartupTestCase">
+        <test-method status="PASS" signature="initialize()" name="initialize" is-config="true" duration-ms="547" started-at="2012-10-03T17:51:13Z" finished-at="2012-10-03T17:51:14Z">
+        </test-method>
+        <test-method status="PASS" signature="testVerifyLogs()" name="testVerifyLogs" duration-ms="64" started-at="2012-10-03T17:51:14Z" description="verify server startup errors" finished-at="2012-10-03T17:51:14Z">
+        </test-method>
+        <test-method status="PASS" signature="initialize()" name="initialize" is-config="true" duration-ms="427" started-at="2012-10-03T17:51:17Z" finished-at="2012-10-03T17:51:17Z">
+        </test-method>
+        <test-method status="PASS" signature="testVerifyLogs()" name="testVerifyLogs" duration-ms="59" started-at="2012-10-03T17:51:17Z" description="verify server startup errors" finished-at="2012-10-03T17:51:17Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

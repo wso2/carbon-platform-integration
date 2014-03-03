@@ -1,0 +1,34 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="DssTestSuite" parallel="false">
+    <parameter name="useDefaultListeners" value="false"/>
+    <test name="DSS-Integration-Test" parallel="false" verbose="2">
+        <packages>
+            <!--<package name="org.wso2.carbon.dss.fileservice.test"/>-->
+            <package name="org.wso2.carbon.dss.services.test"/>
+            <!--<package name="org.wso2.carbon.dss.scheduletask.test"/>-->
+            <package name="org.wso2.carbon.dss.syntax.test"/>
+            <package name="org.wso2.carbon.dss.faulty.service.test"/>
+            <package name="org.wso2.carbon.dss.datasource.test"/>
+            <package name="org.wso2.carbon.dss.samples.test"/>
+            <package name="org.wso2.carbon.dss.jmx.statistics.test"/>
+        </packages>
+
+        <classes>
+
+            <!--<class name="org.wso2.carbon.dss.server.mgt.test.ServerStartupTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.jmx.statistics.test.JMXStatisticsTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.services.test.SQLDriverGspreadSheetTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.samples.test.GSpreadSQLDriverSampleTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.samples.test.ExcelSampleTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.fileservice.test.ExcelDataServiceTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.fileservice.test.ExcelDataServiceTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.scheduletask.test.ReScheduleTaskTest"/>-->
+            <!--<class name="org.wso2.carbon.dss.scheduletask.test.AddScheduleTaskTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.samples.test.SecureDataServiceSampleTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.samples.test.EventingSampleTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.samples.test.RDBMSSampleTestCase"/>-->
+            <!--<class name="org.wso2.carbon.dss.fileservice.test.GSpreadDataServiceTestCase"/>-->
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.wso2.carbon.automation</groupId>
+        <artifactId>wso2-platform-automated-test-suite</artifactId>
+        <version>1.7.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>org.wso2.carbon.automation.test.executor</artifactId>
+    <name>WSO2 Platform Automated Suite - Executor</name>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <!--<argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Xmx1024m -XX:PermSize=256m-->
+                    <!---XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE-->
+                    <!---Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006-->
+                    <!--</argLine>-->
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <disableXmlReport>false</disableXmlReport>
+                    <includes>
+                        <include>**/**TestExecutor*.java</include>
+                    </includes>
+                    <systemProperties>
+                        <property>
+                            <name>system.test.resource.location</name>
+                            <value>
+                                ${basedir}/../org.wso2.carbon.automation.test.repo/src/main/resources/
+                            </value>
+                        </property>
+                        <property>
+                            <name>automation.settings.location</name>
+                            <value>
+                                ${basedir}/src/main/resources/
+                            </value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5</version>
+
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeArtifactIds>
+                                org.wso2.carbon.dss.test
+                            </includeArtifactIds>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-dependencies1</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../distribution/lib/</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon.automation</groupId>
+            <artifactId>org.wso2.carbon.automation.api</artifactId>
+            <version>${wso2taf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.automation</groupId>
+            <artifactId>org.wso2.carbon.automation.core</artifactId>
+            <version>${wso2taf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.automation</groupId>
+            <artifactId>org.wso2.carbon.automation.utils</artifactId>
+            <version>${wso2taf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+    </dependencies>
+    <properties>
+        <resource.path>src/main/resources</resource.path>
+    </properties>
+</project>

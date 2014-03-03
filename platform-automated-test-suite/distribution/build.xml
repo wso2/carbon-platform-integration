@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="run-suite" name="testNG jar executor">
+
+    <taskdef name="testng" classname="org.testng.TestNGAntTask">
+        <classpath>
+            <pathelement location="lib/testng-6.8.jar"/>
+        </classpath>
+    </taskdef>
+
+    <!-- build properties. -->
+    <property name="base.dir" location="."/>
+    <property name="bin.dir" value="${base.dir}/bin"/>
+    <property name="lib.dir" value="${base.dir}/lib"/>
+    <property name="base.dir" location="."/>
+    <property name="config.dir" location="${base.dir}/config"/>
+    <property name="build.dir" location="${base.dir}/build"/>
+    <property name="testng.output.dir" location="${base.dir}/testng_output"/>
+    <property name="testng.template.dir" location="${base.dir}/testng.templates"/>
+    <property name="testng.suite.dir" location="${build.dir}/testng-suites"/>
+
+    <!-- Directory path of compiled classes(i.e *.class) -->
+    <path id="compile.cp">
+        <pathelement location="lib/testng-6.8beta.jar"/>
+        <fileset dir="${bin.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <pathelement location="${bin.dir}"/>
+        <pathelement location="${lib.dir}"/>
+    </path>
+
+
+    <target name="run-suite"
+            description="run examples using testng task with just -testjar and no xml"
+            depends="extract-testng-xml, validate-test-jar">
+        <mkdir dir="${testng.output.dir}"/>
+	<tstamp>
+    		<format property="report.name" pattern="'surefire-reports-'yyyyMMdd-HHmmss" />
+  	</tstamp>
+        <testng
+                classpathref="compile.cp"
+                outputdir="${testng.output.dir}/${report.name}"
+                testnames="{class.name}"
+                testjar="bin/${jar.name}">
+
+
+            <xmlfileset
+                    dir="${testng.suite.dir}"
+                    includes="testng**.xml"/>
+
+            <sysproperty key="automation.settings.location" value="${base.dir}/config/"/>
+            <sysproperty key="framework.resource.location" value="${base.dir}/artifact-repo/"/>
+            <sysproperty key="server.list" value="${server.list}"/>
+            <!--  <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,timeout=50000,address=5006"/>-->
+            <jvmarg line="-Xms512m -Xmx1024m -XX:MaxPermSize=512m"/>
+        </testng>
+
+    </target>
+
+    <target name="run-class"
+            description="run all methods in a specific test class. Requires class.name property to
+            be set to fully qualified name of class"
+            depends="extract-testng-xml,validate-test-jar">
+        <condition property="classNameSpecified">
+            <isset property="class.name"/>
+        </condition>
+        <fail unless="classNameSpecified"
+              message="class.name property not specified. Don't know which test class to run."/>
+        <copy todir="${testng.suite.dir}" file="${testng.template.dir}/testng-single-test.xml"
+              overwrite="true">
+            <filterset>
+                <filter token="CLASS" value="${class.name}"/>
+            </filterset>
+        </copy>
+	<tstamp>
+    		<format property="report.name" pattern="'surefire-reports-'yyyyMMdd-HHmmss" />
+  	</tstamp>
+        <testng
+                classpathref="compile.cp"
+                outputdir="${testng.output.dir}/${report.name}"
+                testjar="bin/${jar.name}">
+
+            <sysproperty key="server.list" value="DSS"/>
+            <!--  <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,timeout=50000,address=5006"/>-->
+            <jvmarg line="-Xms512m -Xmx1024m -XX:MaxPermSize=512m"/>
+            <xmlfileset
+                    dir="${testng.suite.dir}"
+                    includes="testng-single-test.xml"/>
+
+            <sysproperty key="automation.settings.location" value="${base.dir}/config/"/>
+            <sysproperty key="framework.resource.location" value="${base.dir}/artifact-repo/"/>
+            <sysproperty key="server.list" value="${server.list}"/>
+        </testng>
+
+    </target>
+
+    <target name="run-package"
+            description="run all methods in a specific test package. Requires package.name property to be set to fully qualified name of the package"
+            depends="extract-testng-xml, validate-test-jar">
+        <condition property="PackageNameSpecified">
+            <isset property="package.name"/>
+        </condition>
+        <fail unless="PackageNameSpecified"
+              message="package.name property not specified. Don't know which test package to run."/>
+        <copy todir="${testng.suite.dir}" file="${testng.template.dir}/testng-package-test.xml"
+              overwrite="true">
+            <filterset>
+                <filter token="PACKAGE" value="${package.name}"/>
+            </filterset>
+        </copy>
+	<tstamp>
+    		<format property="report.name" pattern="'surefire-reports-'yyyyMMdd-HHmmss" />
+  	</tstamp>
+        <testng
+                classpathref="compile.cp"
+                outputdir="${testng.output.dir}/${report.name}"
+                testjar="bin/${jar.name}">
+
+            <xmlfileset
+                    dir="${testng.suite.dir}"
+                    includes="testng-package-test.xml"/>
+
+            <sysproperty key="automation.settings.location" value="${base.dir}/config/"/>
+            <sysproperty key="framework.resource.location" value="${base.dir}/artifact-repo/"/>
+            <sysproperty key="server.list" value="${server.list}"/>
+            <!--  <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,timeout=50000,address=5006"/>-->
+            <jvmarg line="-Xms512m -Xmx1024m -XX:MaxPermSize=512m"/>
+        </testng>
+    </target>
+
+    <target name="extract-testng-xml" depends="validate-test-jar">
+        <delete dir="${testng.suite.dir}"/>
+        <mkdir dir="${testng.suite.dir}"/>
+        <unzip src="${bin.dir}/${jar.name}" dest="${testng.suite.dir}" overwrite="true">
+            <patternset>
+                <include name="testng**.xml"/>
+            </patternset>
+        </unzip>
+    </target>
+
+    <target name="sendmail">
+        <mail tolist="krishantha99@gmail.com"
+              from="test.automation.dummy@gmail.com"
+              subject="Test automation result"
+              mailhost="smtp.gmail.com"
+              mailport="465"
+              ssl="true"
+              user="test.automation.dummy@gmail.com"
+              password="test.automation">
+            <attachments>
+                <fileset dir="${testng.output.dir}">
+                    <include name="emailable-report.html"/>
+                </fileset>
+            </attachments>
+            <message>Find attached test result document.</message>
+        </mail>
+    </target>
+
+    <target name="install-jars" description="Install ANT optional jars">
+        <mkdir dir="${user.home}/.ant/lib"/>
+        <get dest="${user.home}/.ant/lib/mail.jar"
+             src="http://search.maven.org/remotecontent?filepath=javax/mail/mail/1.4.4/mail-1.4.4.jar"/>
+        <get dest="${user.home}/.ant/lib/activation.jar"
+             src="http://search.maven.org/remotecontent?filepath=javax/activation/activation/1.1/activation-1.1.jar"/>
+    </target>
+
+    <target name="validate-test-jar">
+        <condition property="jarNameSpecified">
+            <isset property="jar.name"/>
+        </condition>
+        <fail unless="jarNameSpecified"
+              message="jar.name property not specified. Don't know which test jar to run."/>
+    </target>
+</project>

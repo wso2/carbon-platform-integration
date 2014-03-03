@@ -1,0 +1,88 @@
+/*
+*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*WSO2 Inc. licenses this file to you under the Apache License,
+*Version 2.0 (the "License"); you may not use this file except
+*in compliance with the License.
+*You may obtain a copy of the License at
+*
+*http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing,
+*software distributed under the License is distributed on an
+*"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+*KIND, either express or implied.  See the License for the
+*specific language governing permissions and limitations
+*under the License.
+*/
+package org.wso2.carbon.automation.engine.testlisteners;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.testng.IExecutionListener;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
+import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
+import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+
+import javax.xml.xpath.XPathExpressionException;
+
+public class TestExecutionListener implements IExecutionListener {
+    private static final Log log = LogFactory.getLog(TestExecutionListener.class);
+
+
+    /**
+     * class before all test suits execution
+     */
+    public void onExecutionStart() {
+        //read and build the automation context
+        try {
+            AutomationContext context = new AutomationContext();
+            System.setProperty(FrameworkConstants.EXECUTION_MODE,
+                    context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT));
+            setKeyStoreProperties(context);
+            TestNGExtensionExecutor testNGExtensionExecutor = new TestNGExtensionExecutor();
+            testNGExtensionExecutor.initiate();
+            TestNGExtensionExecutor.executeExtensible(ExtensionConstants.EXECUTION_LISTENER,
+                    ExtensionConstants.EXECUTION_LISTENER_ON_START, false);
+            //start the server
+            log.info("Inside Test Execution Listener - On Execution");
+        } catch (Exception e) {
+            handleException("Error on initializing test environment ", e);
+        }
+    }
+
+    /**
+     * calls after all test suite execution
+     */
+    public void onExecutionFinish() {
+        try {
+            log.info("Inside Test Execution Listener - On Finish" );
+            TestNGExtensionExecutor.executeExtensible(ExtensionConstants.EXECUTION_LISTENER,
+                    ExtensionConstants.EXECUTION_LISTENER_ON_FINISH, true);
+        } catch (Exception e) {
+            handleException("Error while tear down the execution environment ", e);
+        }
+    }
+
+    private void handleException(String msg, Exception e) {
+        throw new RuntimeException(msg, e);
+    }
+
+    public static void setKeyStoreProperties(AutomationContext context) throws XPathExpressionException {
+
+        System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
+                + context.getConfigurationValue("//keystore/fileName/text()"));
+        System.setProperty("javax.net.ssl.trustStorePassword",
+                context.getConfigurationValue("//keystore/keyPassword/text()"));
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+
+        if (log.isDebugEnabled()) {
+            log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
+            log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));
+            log.debug("javax.net.ssl.trustStoreType :" + System.getProperty("javax.net.ssl.trustStoreType"));
+        }
+    }
+}

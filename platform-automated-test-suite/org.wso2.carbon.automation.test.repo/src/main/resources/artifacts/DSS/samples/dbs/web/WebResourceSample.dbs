@@ -1,0 +1,15 @@
+<data name="WebResourceSample">
+   <config id="WebHarvestDataSource">
+      <property name="web_harvest_config">./samples/resources/web_resource_config.xml</property>
+   </config>
+   <query id="webQuery" useConfig="WebHarvestDataSource">
+      <scraperVariable>BooksInfo</scraperVariable>
+      <result element="BooksInfo" rowName="Book">
+         <element column="Title" name="Title" xsdType="string"/>
+         <element column="Author" name="Author" xsdType="string"/>
+      </result>
+   </query>
+   <operation name="getBooksInfo">
+      <call-query href="webQuery"/>
+   </operation>
+</data>

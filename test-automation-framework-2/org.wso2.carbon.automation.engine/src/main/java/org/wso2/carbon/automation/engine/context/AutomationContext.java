@@ -1,0 +1,556 @@
+/*
+*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*WSO2 Inc. licenses this file to you under the Apache License,
+*Version 2.0 (the "License"); you may not use this file except
+*in compliance with the License.
+*You may obtain a copy of the License at
+*
+*http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing,
+*software distributed under the License is distributed on an
+*"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+*KIND, either express or implied.  See the License for the
+*specific language governing permissions and limitations
+*under the License.
+*/
+package org.wso2.carbon.automation.engine.context;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.adminclients.AuthenticationAdminClient;
+import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
+import org.wso2.carbon.automation.engine.configurations.UrlGenerationUtil;
+import org.wso2.carbon.automation.engine.context.beans.*;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This Class provides context providing interface for the test
+ */
+public class AutomationContext {
+    private String productGroupName;
+    private String workerInstanceName;
+    private String managerInstanceName;
+    private boolean isClustered;
+    private boolean isSuperTenant;
+    private boolean isAdminUser;
+    private String tenantDomain;
+    private String userKey;
+
+    /**
+     * The context constructor for where to use with exact instance
+     *
+     * @param productGroupName - ProductGroup name specified in test framework configuration
+     * @param instanceName     - Instance name specified in test framework configuration
+     * @param tenantDomainKey  - ProductGroup name specified in test framework configuration
+     * @param userKey          - user key of the tenant
+     */
+    public AutomationContext(String productGroupName, String instanceName, String tenantDomainKey, String userKey)
+            throws XPathExpressionException {
+        String superTenantReplacement = ContextXpathConstants.TENANTS;
+        this.isSuperTenant = false;
+        this.isAdminUser = false;
+        if (tenantDomainKey.equals(this.getConfigurationValue
+                (ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_KEY))) {
+            this.isSuperTenant = true;
+            superTenantReplacement = this.getConfigurationValue
+                    (ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_KEY);
+        }
+        if (userKey.equals(ContextXpathConstants.SUPER_ADMIN) || userKey.equals(ContextXpathConstants.ADMIN)) {
+            this.isAdminUser = true;
+        }
+        this.productGroupName = productGroupName;
+        this.workerInstanceName = instanceName;
+        this.managerInstanceName = instanceName;
+        this.isClustered = Boolean.parseBoolean(getConfigurationValue(
+                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
+        this.tenantDomain = getConfigurationValue(String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_DOMAIN,
+                superTenantReplacement, tenantDomainKey));
+        this.userKey = userKey;
+    }
+
+    /**
+     * This constructor is used to create automation context for the combination of given product group, given instance
+     * and user
+     *
+     * @param productGroupName product group
+     * @param instanceName     name of the instance
+     * @param userMode         can give the combination of the tenant and the user of that tenant
+     * @throws XPathExpressionException
+     */
+    public AutomationContext(String productGroupName, String instanceName, TestUserMode userMode)
+            throws XPathExpressionException {
+        //admin user of the super tenant
+        if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_ADMIN)) {
+            assignParameters(productGroupName, instanceName, true, true);
+        } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER)) {
+            //user of the super tenant
+            assignParameters(productGroupName, instanceName, true, false);
+        }
+        //admin user of tenant other than super tenant
+        else if (userMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
+            assignParameters(productGroupName, instanceName, false, true);
+        }
+        //user of a tenant other than super tenant
+        else if (userMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+            assignParameters(productGroupName, instanceName, false, false);
+        }
+    }
+
+    /**
+     * This constructor is used to create automation context for the combination of given product group and user
+     *
+     * @param productGroupName product group
+     * @param testUserMode     can give the combination of the tenant and the user of that tenant
+     * @throws XPathExpressionException
+     */
+    public AutomationContext(String productGroupName, TestUserMode testUserMode) throws XPathExpressionException {
+
+        //admin user of the super tenant
+        if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_ADMIN)) {
+            assignParameters(productGroupName, null, true, true);
+            //user of the super tenant
+        } else if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER)) {
+            assignParameters(productGroupName, null, true, false);
+            //admin user of tenant other than super tenant
+        } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
+            assignParameters(productGroupName, null, false, true);
+        }
+        //user of a tenant other than super tenant
+        else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+            assignParameters(productGroupName, null, false, false);
+        }
+    }
+
+    public AutomationContext() throws XPathExpressionException {
+        DefaultInstance defaultInstance = new DefaultInstance();
+        this.isSuperTenant = true;
+        this.isAdminUser = true;
+        this.productGroupName = this.getConfigurationValue(ContextXpathConstants.PRODUCT_GROUP_DEFAULT_NAME);
+        this.isClustered = Boolean.parseBoolean(getConfigurationValue(
+                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
+        this.tenantDomain = defaultInstance.getTenantDomain(true, isClustered);
+        this.userKey = defaultInstance.getUserKey(tenantDomain, true);
+        this.managerInstanceName = defaultInstance.getDefaultManager(productGroupName);
+        this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);
+        System.setProperty(FrameworkConstants.DEFAULT_PRODUCT_GROUP, productGroupName);
+    }
+
+    /**
+     * This method redirect the call to the constructor
+     *
+     * @param productGroupName Product Group name
+     * @param instanceName     Instance name
+     * @param isSuperTenant    Whether the provided tenant is super tenant or not
+     * @param isAdminUser      whether the provided user is admin user is not
+     */
+    private void assignParameters(String productGroupName, String instanceName, boolean isSuperTenant,
+                                  boolean isAdminUser)
+            throws XPathExpressionException {
+        DefaultInstance defaultInstance = new DefaultInstance();
+        this.isSuperTenant = isSuperTenant;
+        this.isAdminUser = isAdminUser;
+        this.productGroupName = productGroupName;
+        this.isClustered = Boolean.parseBoolean(getConfigurationValue(
+                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
+        this.tenantDomain = defaultInstance.getTenantDomain(isSuperTenant, isClustered);
+        this.userKey = defaultInstance.getUserKey(tenantDomain, isAdminUser);
+        if (instanceName == null) {
+            this.managerInstanceName = defaultInstance.getDefaultManager(productGroupName);
+            this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);
+        } else {
+            this.workerInstanceName = instanceName;
+            this.managerInstanceName = instanceName;
+        }
+    }
+
+    private boolean getIsClustered() throws XPathExpressionException {
+        return Boolean.parseBoolean(getConfigurationValue(
+                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
+    }
+
+    /**
+     * Provides a Instance applicable for the selected product group instance and tenant
+     *
+     * @return Instance
+     * @throws XPathExpressionException
+     */
+    public Instance getInstance() throws XPathExpressionException {
+        Instance instance = new Instance();
+        HashMap<String, String> portMap = new HashMap<String, String>();
+        HashMap<String, String> hostMap = new HashMap<String, String>();
+        HashMap<String, String> propertyMap = new HashMap<String, String>();
+        Node instanceNode = this.getConfigurationNode(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_NAME,
+                productGroupName, managerInstanceName));
+        NodeList ports = this.getConfigurationNodeList(String.
+                format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_PORT, productGroupName, managerInstanceName));
+        NodeList hosts = this.getConfigurationNodeList(String.format
+                (ContextXpathConstants.PRODUCT_GROUP_INSTANCE_HOST, productGroupName, managerInstanceName));
+        NodeList properties = this.getConfigurationNodeList(String.format
+                (ContextXpathConstants.PRODUCT_GROUP_INSTANCE_PROPERTY, productGroupName, managerInstanceName));
+        for (int portNo = 0; portNo <= ports.getLength() - 1; portNo++) {
+            Node portNode = ports.item(portNo);
+            String portType = portNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            portMap.put(portType, portNode.getFirstChild().getNodeValue());
+        }
+        for (int hostNo = 0; hostNo <= hosts.getLength() - 1; hostNo++) {
+            Node hostsNode = hosts.item(hostNo);
+            String hostType = hostsNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            hostMap.put(hostType, hostsNode.getFirstChild().getNodeValue());
+        }
+
+        for (int propertyNo = 0; propertyNo <= properties.getLength() - 1; propertyNo++) {
+            Node propertyNode = properties.item(propertyNo);
+            String propertyType = propertyNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue();
+            propertyMap.put(propertyType, propertyNode.getFirstChild().getNodeValue());
+        }
+        instance.setName(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue());
+        instance.setType(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue());
+        instance.setNonBlockingTransportEnabled(Boolean.parseBoolean(instanceNode.getAttributes().getNamedItem
+                (ContextXpathConstants.NON_BLOCKING_ENABLED).getNodeValue()));
+        instance.setPorts(portMap);
+        instance.setHosts(hostMap);
+        instance.setProperties(propertyMap);
+        return instance;
+    }
+
+    public Instance getDefaultInstance() throws XPathExpressionException {
+        Instance instance = new Instance();
+        HashMap<String, String> portMap = new HashMap<String, String>();
+        HashMap<String, String> hostMap = new HashMap<String, String>();
+        HashMap<String, String> propertyMap = new HashMap<String, String>();
+        Node instanceNode = this.getConfigurationNode(ContextXpathConstants.PRODUCT_GROUP_STANDALONE_INSTANCE);
+        NodeList ports = this.getConfigurationNodeList(String.
+                format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_PORT, productGroupName, managerInstanceName));
+        NodeList hosts = this.getConfigurationNodeList(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_HOST,
+                productGroupName, managerInstanceName));
+        NodeList properties = this.getConfigurationNodeList(String.
+                format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_PROPERTY, productGroupName, managerInstanceName));
+        for (int portNo = 0; portNo <= ports.getLength() - 1; portNo++) {
+            Node portNode = ports.item(portNo);
+            String portType = portNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            portMap.put(portType, portNode.getFirstChild().getNodeValue());
+        }
+        for (int hostNo = 0; hostNo <= hosts.getLength() - 1; hostNo++) {
+            Node hostsNode = hosts.item(hostNo);
+            String hostType = hostsNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            hostMap.put(hostType, hostsNode.getFirstChild().getNodeValue());
+        }
+        for (int propertyNo = 0; propertyNo <= properties.getLength() - 1; propertyNo++) {
+            Node propertyNode = properties.item(propertyNo);
+            String propertyType = propertyNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue();
+            propertyMap.put(propertyType, propertyNode.getFirstChild().getNodeValue());
+        }
+        instance.setName(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue());
+        instance.setType(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue());
+        instance.setPorts(portMap);
+        instance.setHosts(hostMap);
+        instance.setProperties(propertyMap);
+        return instance;
+    }
+
+    /**
+     * Return the super tenant with the tenant domain
+     *
+     * @return Tenant
+     * @throws XPathExpressionException
+     */
+    public Tenant getSuperTenant() throws XPathExpressionException {
+        Tenant tenant = new Tenant();
+        tenant.setDomain(tenantDomain);
+        Node adminUserNode = this.getConfigurationNode(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_ADMIN);
+        NodeList adminUserList = adminUserNode.getChildNodes();
+        for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
+            Node currentNode = adminUserList.item(nodeNo);
+            if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
+                tenant.setTenantAdmin(extractUser(currentNode));
+            }
+        }
+        Node userNode = this.getConfigurationNode(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_USERS);
+        NodeList childUserList = userNode.getChildNodes();
+        for (int nodeNo = 0; nodeNo <= childUserList.getLength() - 1; nodeNo++) {
+            Node currentNode = childUserList.item(nodeNo);
+            if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
+                User tenantUser = extractUser(currentNode);
+                tenant.addTenantUsers(tenantUser);
+            }
+        }
+        return tenant;
+    }
+
+    private User extractUser(Node currentNode) {
+        User tenantUser = new User();
+        NodeList userNodeList = currentNode.getChildNodes();
+        tenantUser.setKey(currentNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
+        for (int userItem = 0; userItem <= userNodeList.getLength() - 1; userItem++) {
+            if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.USERNAME)) {
+                tenantUser.setUserName(userNodeList.item(userItem).getTextContent());
+            } else if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.PASSWORD)) {
+                tenantUser.setPassword(userNodeList.item(userItem).getTextContent());
+            }
+        }
+        return tenantUser;
+    }
+
+    /**
+     * Return the tenant with the tenant domain
+     *
+     * @return Tenant
+     * @throws XPathExpressionException
+     */
+    public Tenant getTenant() throws XPathExpressionException {
+        Tenant tenant;
+        if (isSuperTenant) {
+            tenant = getSuperTenant();
+        } else {
+            tenant = getOtherTenant();
+        }
+        return tenant;
+    }
+
+    private Tenant getOtherTenant() throws XPathExpressionException {
+        Tenant tenant = new Tenant();
+        tenant.setDomain(tenantDomain);
+        Node adminUserNode = this.getConfigurationNode(String.
+                format(ContextXpathConstants.USER_MANAGEMENT_TENANT_ADMIN, tenantDomain));
+        NodeList adminUserList = adminUserNode.getChildNodes();
+        for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
+            Node currentNode = adminUserList.item(nodeNo);
+            if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
+                tenant.setTenantAdmin(extractUser(currentNode));
+            }
+        }
+        Node userNode = this.getConfigurationNode(String.
+                format(ContextXpathConstants.USER_MANAGEMENT_TENANT_USERS, tenantDomain));
+        NodeList childUserList = userNode.getChildNodes();
+        for (int nodeNo = 0; nodeNo <= childUserList.getLength() - 1; nodeNo++) {
+            Node currentNode = childUserList.item(nodeNo);
+            if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
+                User tenantUser = extractUser(currentNode);
+                tenant.addTenantUsers(tenantUser);
+            }
+        }
+        return tenant;
+    }
+
+    /**
+     * Returns applicable Product group
+     *
+     * @return ProductGroup
+     * @throws XPathExpressionException
+     */
+    public ProductGroup getProductGroup() throws XPathExpressionException {
+        ProductGroup productGroup = new ProductGroup();
+        Node productGroupNode = this.getConfigurationNode(String.
+                format(ContextXpathConstants.PRODUCT_GROUP_NAME, productGroupName));
+        productGroup.setGroupName(productGroupNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue());
+        productGroup.setClusterEnabled(Boolean.valueOf(productGroupNode.getAttributes()
+                .getNamedItem(ContextXpathConstants.CLUSTERING_ENABLED).getNodeValue()));
+        NodeList childProductGroupList = productGroupNode.getChildNodes();
+        for (int nodeNo = 0; nodeNo <= childProductGroupList.getLength() - 1; nodeNo++) {
+            if (childProductGroupList.item(nodeNo).getNodeName().equals(ContextXpathConstants.INSTANCE)) {
+                String instanceName = childProductGroupList.item(nodeNo).getAttributes().
+                        getNamedItem(ContextXpathConstants.NAME)
+                        .getNodeValue();
+                productGroup.addInstance(getInstance(productGroupName, instanceName));
+            }
+        }
+        productGroup.setInstanceMapByType(setInstanceMapByType(childProductGroupList));
+        return productGroup;
+    }
+
+    /**
+     * Applicable tenant USer
+     *
+     * @return
+     * @throws XPathExpressionException
+     */
+    public User getUser() throws XPathExpressionException {
+        User tenantUser;
+        if (isAdminUser) {
+            tenantUser = getAdminUser();
+        } else {
+            tenantUser = getOtherUser();
+        }
+        return tenantUser;
+    }
+
+    private User getOtherUser() throws XPathExpressionException {
+        String superUserReplacement = ContextXpathConstants.TENANTS;
+        if (isSuperTenant) {
+            superUserReplacement = ContextXpathConstants.SUPER_TENANT;
+        }
+        User tenantUser = new User();
+        Node tenantUserNode = this.getConfigurationNode(String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_USER,
+                superUserReplacement, tenantDomain, userKey));
+        String userName = this.getConfigurationValue(String.format(ContextXpathConstants.
+                USER_MANAGEMENT_TENANT_USER_NAME, superUserReplacement, tenantDomain, userKey));
+        String password = this.getConfigurationValue(String.format(ContextXpathConstants.
+                USER_MANAGEMENT_TENANT_USER_PASSWORD, superUserReplacement, tenantDomain, userKey));
+        tenantUser.setUserName(userName);
+        tenantUser.setPassword(password);
+        tenantUser.setKey(tenantUserNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
+        return tenantUser;
+    }
+
+    /**
+     * Applicable tenant admin User
+     *
+     * @return
+     * @throws XPathExpressionException
+     */
+    public User getAdminUser() throws XPathExpressionException {
+        String superUserReplacement = ContextXpathConstants.TENANTS;
+        if (isSuperTenant) {
+            superUserReplacement = ContextXpathConstants.SUPER_TENANT;
+        }
+        User tenantUser = new User();
+        String userName = this.getConfigurationValue(String.format(ContextXpathConstants.
+                USER_MANAGEMENT_TENANT_ADMIN_USERNAME, superUserReplacement, tenantDomain, userKey));
+        String password = this.getConfigurationValue(String.format(ContextXpathConstants.
+                USER_MANAGEMENT_TENANT_ADMIN_PASSWORD, superUserReplacement, tenantDomain, userKey));
+        tenantUser.setUserName(userName);
+        tenantUser.setPassword(password);
+        tenantUser.setKey(userKey);
+        return tenantUser;
+    }
+
+    /**
+     * Returns all URLS needed for the test built upon the configuration
+     *
+     * @return
+     * @throws XPathExpressionException
+     */
+    public ContextUrls getContextUrls() throws XPathExpressionException {
+        ContextUrls contextUrls = new ContextUrls();
+        contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
+        contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getTenant(), this.getInstance(), false));
+        contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getTenant(), this.getInstance(), true));
+        contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getTenant(), this.getInstance()));
+        return contextUrls;
+    }
+
+    //login to the carbon server
+    public String login() throws RemoteException,
+            LoginAuthenticationExceptionException, XPathExpressionException {
+        String sessionCookie;
+        AuthenticationAdminClient authenticationAdminClient
+                = new AuthenticationAdminClient(UrlGenerationUtil.getBackendURL(this.getInstance()));
+        sessionCookie = authenticationAdminClient.
+                login(tenantDomain, this.getUser().getUserName(), this.getUser().getPassword()
+                        , UrlGenerationUtil.getManagerHost(this.getInstance()));
+        return sessionCookie;
+    }
+
+    private Map<String, ArrayList<Instance>> setInstanceMapByType(NodeList childProductGroupList)
+            throws XPathExpressionException {
+        Map<String, ArrayList<Instance>> instanceMapByType = new HashMap<String, ArrayList<Instance>>();
+        for (InstanceType dir : InstanceType.values()) {
+            ArrayList<Instance> instanceList = new ArrayList<Instance>();
+            for (int nodeNo = 0; nodeNo <= childProductGroupList.getLength() - 1; nodeNo++) {
+                if (childProductGroupList.item(nodeNo).getNodeName().equals(ContextXpathConstants.INSTANCE)) {
+                    String instanceName = childProductGroupList.item(nodeNo).getAttributes().
+                            getNamedItem(ContextXpathConstants.NAME)
+                            .getNodeValue();
+                    String type = childProductGroupList.item(nodeNo).getAttributes().
+                            getNamedItem(ContextXpathConstants.TYPE)
+                            .getNodeValue();
+                    if (type.equals(dir.name())) {
+                        instanceList.add(getInstance(productGroupName, instanceName));
+                    }
+                }
+            }
+            if (!instanceList.isEmpty()) {
+                instanceMapByType.put(dir.name(), instanceList);
+            }
+        }
+        return instanceMapByType;
+    }
+
+    private Instance getInstance(String groupName, String instName) throws XPathExpressionException {
+        Instance instance = new Instance();
+        HashMap<String, String> portMap = new HashMap<String, String>();
+        HashMap<String, String> hostMap = new HashMap<String, String>();
+        HashMap<String, String> propertyMap = new HashMap<String, String>();
+        Node instanceNode = this.getConfigurationNode(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE,
+                groupName, instName));
+        NodeList ports = this.getConfigurationNodeList(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_PORTS,
+                groupName, instName));
+        NodeList hosts = this.getConfigurationNodeList(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_HOSTS,
+                groupName, instName));
+        NodeList properties = this.getConfigurationNodeList(String.format(ContextXpathConstants.
+                PRODUCT_GROUP_INSTANCE_PROPERTIES, groupName, instName));
+        for (int portNo = 0; portNo <= ports.getLength() - 1; portNo++) {
+            Node portNode = ports.item(portNo);
+            String portType = portNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            portMap.put(portType, portNode.getFirstChild().getNodeValue());
+        }
+        for (int hostNo = 0; hostNo <= hosts.getLength() - 1; hostNo++) {
+            Node hostsNode = hosts.item(hostNo);
+            String hostType = hostsNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue();
+            hostMap.put(hostType, hostsNode.getFirstChild().getNodeValue());
+        }
+        for (int propertyNo = 0; propertyNo <= properties.getLength() - 1; propertyNo++) {
+            Node propertyNode = properties.item(propertyNo);
+            String propertyType = propertyNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue();
+            propertyMap.put(propertyType, propertyNode.getFirstChild().getNodeValue());
+        }
+        instance.setName(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue());
+        instance.setType(instanceNode.getAttributes().getNamedItem(ContextXpathConstants.TYPE).getNodeValue());
+        instance.setPorts(portMap);
+        instance.setHosts(hostMap);
+        instance.setProperties(propertyMap);
+        return instance;
+    }
+
+    /**
+     * Provides configuration value
+     *
+     * @param expression xpath for expected element
+     * @return
+     * @throws XPathExpressionException
+     */
+    public String getConfigurationValue(String expression) throws XPathExpressionException {
+        Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        return xPath.compile(expression).evaluate(xmlDocument);
+    }
+
+    /**
+     * Provides DOM Node
+     *
+     * @param expression xpath for expected element
+     * @return
+     * @throws XPathExpressionException
+     */
+    public Node getConfigurationNode(String expression) throws XPathExpressionException {
+        Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+    }
+
+    /**
+     * Provides DOM NodeList
+     *
+     * @param expression xpath for expected element
+     * @return
+     * @throws XPathExpressionException
+     */
+    public NodeList getConfigurationNodeList(String expression) throws XPathExpressionException {
+        Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+    }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data name="GSpreadDataService" serviceGroup="GSpread" baseURI="http://ws.wso2.org/dataservice/samples/gspread_sample_service">
+    <config id="GSpreadDataSource">
+        <property name="gspread_datasource">https://spreadsheets.google.com/ccc?key=0Av5bU8aVtFjPdElrUVN3VmZlRkoyM1ZzVlE1MzdtbXc&amp;hl=en</property>
+        <property name="gspread_visibility">private</property>
+        <property name="gspread_username">zaqxsw987593</property>
+        <property name="gspread_password">oijoacxe42</property>
+    </config>
+    <query id="aa" useConfig="GSpreadDataSource">
+        <gspread>
+            <worksheetnumber>1</worksheetnumber>
+            <startingrow>2</startingrow>
+            <maxrowcount>5</maxrowcount>
+            <hasheader>true</hasheader>
+        </gspread>
+        <result element="Customers" rowName="Customer">
+            <element name="customerNumber" column="customerNumber"/>
+            <attribute name="customerName" column="customerName"/>
+            <attribute name="city" column="city"/>
+        </result>
+    </query>
+    <operation name="getCustomers">
+        <call-query href="aa"/>
+    </operation>
+    <resource path="customers" method="GET">
+        <call-query href="aa"/>
+    </resource>
+</data>

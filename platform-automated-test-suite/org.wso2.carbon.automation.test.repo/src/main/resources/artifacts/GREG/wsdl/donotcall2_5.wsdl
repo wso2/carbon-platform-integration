@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.strikeiron.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.strikeiron.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Do Not Call List Service</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.strikeiron.com">
+      <s:element name="CheckNumberBatch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="phoneNumbers" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="phoneNumber" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CheckNumberBatchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CheckNumberBatchResult" type="tns:ArrayOfNumberData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfNumberData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="NumberData" nillable="true" type="tns:NumberData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="NumberData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumberCanBeCalled" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ResultCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Result" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Reason" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ResponseInfo" type="tns:ResponseInfo" />
+      <s:complexType name="ResponseInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ResponseCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Response" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="CheckNumber">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="phoneNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CheckNumberResult" type="tns:NumberData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddDNCNumber">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="phoneNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddDNCNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddDNCNumberResult" type="tns:DNCResultData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DNCResultData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ResultCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Result" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Reason" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AddEBRNumber">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="phoneNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="dateOfLastContact" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="type" type="tns:EBRType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="EBRType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Sale" />
+          <s:enumeration value="Inquiry" />
+          <s:enumeration value="Permission" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="AddEBRNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddEBRNumberResult" type="tns:DNCResultData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateOrgIdOrSAN">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OrgIdOrSAN" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateOrgIdOrSANResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateOrgIdOrSANResult" type="tns:UpdateProjectStatus" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UpdateProjectStatus">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CallStatus" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectOrgIdOrSAN" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <xs:schema xmlns:tns1="http://ws.strikeiron.com" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://ws.strikeiron.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="LicenseInfo" type="tns1:LicenseInfo" />
+      <xs:complexType name="LicenseInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RegisteredUser" type="tns1:RegisteredUser" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegisteredUser">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="UserID" type="xs:string" />
+          <xs:element minOccurs="0" name="Password" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SubscriptionInfo" type="tns1:SubscriptionInfo" />
+      <xs:complexType name="SubscriptionInfo">
+        <xs:sequence>
+          <xs:element name="LicenseStatusCode" type="xs:int" />
+          <xs:element minOccurs="0" name="LicenseStatus" type="xs:string" />
+          <xs:element name="LicenseActionCode" type="xs:int" />
+          <xs:element minOccurs="0" name="LicenseAction" type="xs:string" />
+          <xs:element name="RemainingHits" type="xs:int" />
+          <xs:element name="Amount" type="xs:decimal" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="GetRemainingHits">
+        <xs:complexType />
+      </xs:element>
+      <xs:element name="GetRemainingHitsResponse">
+        <xs:complexType />
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="CheckNumberBatchSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckNumberBatch" />
+  </wsdl:message>
+  <wsdl:message name="CheckNumberBatchSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckNumberBatchResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckNumberBatchResponseInfo">
+    <wsdl:part name="ResponseInfo" element="tns:ResponseInfo" />
+  </wsdl:message>
+  <wsdl:message name="CheckNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckNumber" />
+  </wsdl:message>
+  <wsdl:message name="CheckNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckNumberResponseInfo">
+    <wsdl:part name="ResponseInfo" element="tns:ResponseInfo" />
+  </wsdl:message>
+  <wsdl:message name="AddDNCNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:AddDNCNumber" />
+  </wsdl:message>
+  <wsdl:message name="AddDNCNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:AddDNCNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddDNCNumberResponseInfo">
+    <wsdl:part name="ResponseInfo" element="tns:ResponseInfo" />
+  </wsdl:message>
+  <wsdl:message name="AddEBRNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:AddEBRNumber" />
+  </wsdl:message>
+  <wsdl:message name="AddEBRNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:AddEBRNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddEBRNumberResponseInfo">
+    <wsdl:part name="ResponseInfo" element="tns:ResponseInfo" />
+  </wsdl:message>
+  <wsdl:message name="UpdateOrgIdOrSANSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateOrgIdOrSAN" />
+  </wsdl:message>
+  <wsdl:message name="UpdateOrgIdOrSANSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateOrgIdOrSANResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateOrgIdOrSANResponseInfo">
+    <wsdl:part name="ResponseInfo" element="tns:ResponseInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetRemainingHitsSoapIn">
+    <wsdl:part name="parameters" xmlns:q1="http://ws.strikeiron.com" element="q1:GetRemainingHits" />
+  </wsdl:message>
+  <wsdl:message name="GetRemainingHitsSoapOut">
+    <wsdl:part name="parameters" xmlns:q2="http://ws.strikeiron.com" element="q2:GetRemainingHitsResponse" />
+  </wsdl:message>
+  <wsdl:message name="LicenseInfoMessage">
+    <wsdl:part name="LicenseInfo" xmlns:q3="http://ws.strikeiron.com" element="q3:LicenseInfo" />
+  </wsdl:message>
+  <wsdl:message name="SubscriptionInfoMessage">
+    <wsdl:part name="SubscriptionInfo" xmlns:q4="http://ws.strikeiron.com" element="q4:SubscriptionInfo" />
+  </wsdl:message>
+  <wsdl:portType name="DoNotCallRegistrySoap">
+    <wsdl:operation name="CheckNumberBatch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Look up a registered phone number in a do not call list</wsdl:documentation>
+      <wsdl:input message="tns:CheckNumberBatchSoapIn" />
+      <wsdl:output message="tns:CheckNumberBatchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckNumber">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Look up a registered phone number in a do not call list</wsdl:documentation>
+      <wsdl:input message="tns:CheckNumberSoapIn" />
+      <wsdl:output message="tns:CheckNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDNCNumber">
+      <wsdl:input message="tns:AddDNCNumberSoapIn" />
+      <wsdl:output message="tns:AddDNCNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddEBRNumber">
+      <wsdl:input message="tns:AddEBRNumberSoapIn" />
+      <wsdl:output message="tns:AddEBRNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOrgIdOrSAN">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Update your Orginazation Id or SAN</wsdl:documentation>
+      <wsdl:input message="tns:UpdateOrgIdOrSANSoapIn" />
+      <wsdl:output message="tns:UpdateOrgIdOrSANSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRemainingHits">
+      <wsdl:input message="tns:GetRemainingHitsSoapIn" />
+      <wsdl:output message="tns:GetRemainingHitsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DoNotCallRegistrySoap" type="tns:DoNotCallRegistrySoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CheckNumberBatch">
+      <soap:operation soapAction="http://www.strikeiron.com/CheckNumberBatch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <tns:validation>
+          <tns:assertions />
+        </tns:validation>
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:CheckNumberBatchResponseInfo" part="ResponseInfo" use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckNumber">
+      <soap:operation soapAction="http://www.strikeiron.com/CheckNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <tns:validation>
+          <tns:assertions>
+            <tns:assertion>
+              <tns:expression>string-length(//tns:phoneNumber) &gt; 0</tns:expression>
+              <tns:description>Phone number is required</tns:description>
+            </tns:assertion>
+          </tns:assertions>
+        </tns:validation>
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:CheckNumberResponseInfo" part="ResponseInfo" use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddDNCNumber">
+      <soap:operation soapAction="http://www.strikeiron.com/AddDNCNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <tns:validation>
+          <tns:assertions>
+            <tns:assertion>
+              <tns:expression>string-length(//tns:phoneNumber) &gt; 0</tns:expression>
+              <tns:description>Phone number is required</tns:description>
+            </tns:assertion>
+          </tns:assertions>
+        </tns:validation>
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:AddDNCNumberResponseInfo" part="ResponseInfo" use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddEBRNumber">
+      <soap:operation soapAction="http://www.strikeiron.com/AddEBRNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <tns:validation>
+          <tns:assertions>
+            <tns:assertion>
+              <tns:expression>string-length(//tns:phoneNumber) &gt; 0</tns:expression>
+              <tns:description>Phone number is required</tns:description>
+            </tns:assertion>
+          </tns:assertions>
+        </tns:validation>
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:AddEBRNumberResponseInfo" part="ResponseInfo" use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOrgIdOrSAN">
+      <soap:operation soapAction="http://www.strikeiron.com/UpdateOrgIdOrSAN" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <tns:validation>
+          <tns:assertions>
+            <tns:assertion>
+              <tns:expression>string-length(//tns:OrgIdOrSAN) &gt; 0</tns:expression>
+              <tns:description>Organization Id or SAN is required</tns:description>
+            </tns:assertion>
+          </tns:assertions>
+        </tns:validation>
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:UpdateOrgIdOrSANResponseInfo" part="ResponseInfo" use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRemainingHits">
+      <soap:operation soapAction="http://ws.strikeiron.com/StrikeIron/donotcall2_5/DoNotCallRegistry/GetRemainingHits" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:LicenseInfoMessage" part="LicenseInfo" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:SubscriptionInfoMessage" part="SubscriptionInfo" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DoNotCallRegistry">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Do Not Call List Service</wsdl:documentation>
+    <wsdl:port name="DoNotCallRegistrySoap" binding="tns:DoNotCallRegistrySoap">
+      <soap:address location="http://ws.strikeiron.com/StrikeIron/donotcall2_5/DoNotCallRegistry" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

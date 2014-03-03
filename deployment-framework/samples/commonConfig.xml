@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Commen>
+	<ProductList>AS,IS,GREG,ESB,MB</ProductList>
+	<MountDatabase>
+		<dbConfig name="oracle-db-mount"></dbConfig>
+		<url>jdbc:oracle:thin:dharshana/dharshana2@10.100.3.104:1521:orcl</url>
+		<userName>dharshana</userName>
+		<password>dharshana</password>
+		<driverName>oracle.jdbc.driver.OracleDriver</driverName>
+		<maxActive>5</maxActive>
+		<maxWait>60000</maxWait>
+		<minIdle>50</minIdle>
+		<validationQuery>SELECT 1 FROM DUAL</validationQuery>
+	</MountDatabase>
+	<MountInstance>
+		<remoteInstance url="https://localhost:9443/registry"></remoteInstance>
+		<id>conf</id>
+		<dbConfig>oracle-db-mount</dbConfig>
+		<readOnly>false</readOnly>
+		<enableCache>true</enableCache>
+		<registryRoot>/</registryRoot>
+	</MountInstance>
+	<GovernenceMount>
+		<mount path="/_system/governance" overwrite="true"></mount>
+		<instanceId>conf</instanceId>
+		<targetPath>/_system/governance</targetPath>
+	</GovernenceMount>
+	<ConfigMount>
+		<mount path="/_system/config" overwrite="true"></mount>
+		<instanceId>conf</instanceId>
+		<targetPath>/_system/nodes</targetPath>
+	</ConfigMount>
+	<Clusters>
+		<Enablecluster>true</Enablecluster>
+	</Clusters>	
+	<LDAP>
+		<UserName>admin</UserName>
+		<Password>admin</Password>
+		<DomainName>ldap://localhost</DomainName>
+		<AdminPassword>admin</AdminPassword>
+		<port>10394</port>
+	</LDAP>
+</Commen>
+
+
