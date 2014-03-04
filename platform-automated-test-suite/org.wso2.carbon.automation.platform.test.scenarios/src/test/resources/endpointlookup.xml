@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<lookup>
-    <dss>
-        <url type="address" user="2">"http://localhost:9765/services/StudentService/"</url>
-    </dss>
-</lookup>
