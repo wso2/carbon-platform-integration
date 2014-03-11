@@ -10,7 +10,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.carbon.automation</groupId>
     <artifactId>org.wso2.carbon.automation.test.utils</artifactId>
     <packaging>jar</packaging>
 

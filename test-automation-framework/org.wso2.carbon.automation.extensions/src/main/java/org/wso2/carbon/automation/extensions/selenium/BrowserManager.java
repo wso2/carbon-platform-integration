@@ -68,7 +68,6 @@ public class BrowserManager {
                     automationContext.getConfigurationValue
                             (String.format(XPathConstants.CHROME_WEB_DRIVER_URL)));
             driver = new ChromeDriver();
-
         } else if (driverSelection.equalsIgnoreCase(ExtensionConstants.IE_BROWSER)) {
             driver = new InternetExplorerDriver();
         } else if (driverSelection.equalsIgnoreCase(ExtensionConstants.HTML_UNIT_DRIVER)) {
