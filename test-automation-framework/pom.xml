@@ -23,7 +23,6 @@
                 <version>2.1</version>
             </extension>
         </extensions>
-
         <plugins>
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
@@ -64,7 +63,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
             </plugins>
         </pluginManagement>
     </build>
@@ -118,12 +116,10 @@
 
 
     <repositories>
-
         <repository>
             <id>maven2-repository.dev.java.net</id>
             <url>http://download.java.net/maven/2/</url>
         </repository>
-
         <repository>
             <id>wso2-nexus</id>
             <name>WSO2 internal Repository</name>
@@ -134,7 +130,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
             <id>wso2.releases</id>
             <name>WSO2 internal Repository</name>
@@ -145,7 +140,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
             <id>wso2.snapshots</id>
             <name>WSO2 Snapshot Repository</name>
@@ -158,7 +152,6 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-
         <repository>
             <id>wso2-maven2-repository</id>
             <name>WSO2 Maven2 Repository</name>
@@ -172,7 +165,6 @@
                 <checksumPolicy>fail</checksumPolicy>
             </releases>
         </repository>
-
     </repositories>
 
 
@@ -215,6 +207,11 @@
             <dependency>
                 <groupId>org.wso2.carbon.automation</groupId>
                 <artifactId>org.wso2.carbon.automation.engine</artifactId>
+                <version>${test.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.automation</groupId>
+                <artifactId>org.wso2.carbon.automation.extensions</artifactId>
                 <version>${test.framework.version}</version>
             </dependency>
             <dependency>
@@ -279,6 +276,16 @@
                 <artifactId>ApacheJMeter_core</artifactId>
                 <version>${jmeter.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbynet</artifactId>
+                <version>${derby.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rampart</groupId>
+                <artifactId>rampart-core</artifactId>
+                <version>${rampart.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -286,7 +293,6 @@
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
         <test.framework.version>4.3.1-SNAPSHOT</test.framework.version>
-        <maven.test.skip>true</maven.test.skip>
         <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
         <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
 
@@ -299,7 +305,8 @@
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <spring.framework.version>3.1.0.wso2v1</spring.framework.version>
 
+        <derby.version>10.8.2.2</derby.version>
+        <rampart.version>1.6.1-wso2v12-SNAPSHOT</rampart.version>
     </properties>
-
 
 </project>
