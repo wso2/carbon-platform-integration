@@ -94,9 +94,16 @@ public class MySqlDatabaseManager implements DatabaseManager {
      */
     public ResultSet executeQuery(String sql) throws SQLException {
         ResultSet rs;
-        Statement st = connection.createStatement();
-        log.debug(sql);
-        rs = st.executeQuery(sql);
+        Statement st = null;
+        try {
+            st = connection.createStatement();
+            log.debug(sql);
+            rs = st.executeQuery(sql);
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+        }
         return rs;
     }
 

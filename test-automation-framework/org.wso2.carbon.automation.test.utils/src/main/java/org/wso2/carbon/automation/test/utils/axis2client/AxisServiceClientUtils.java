@@ -70,7 +70,7 @@ public class AxisServiceClientUtils {
         sender.fireAndForget(payload);
     }
 
-    public static boolean isServiceAvailable(String serviceUrl) {
+    public static boolean isServiceAvailable(String serviceUrl) throws IOException {
         URL wsdlURL;
         InputStream wsdlIS;
         try {
@@ -83,8 +83,8 @@ public class AxisServiceClientUtils {
         } catch (IOException e) {
             return false;// do nothing, wait for the service
         }
+        BufferedReader in = null;
         if (wsdlIS != null) {
-            BufferedReader in;
             try {
                 in = new BufferedReader(new InputStreamReader(wsdlIS));
                 String inputLine;
@@ -93,15 +93,18 @@ public class AxisServiceClientUtils {
                         return true;
                     }
                 }
-                in.close();
             } catch (IOException e) {
                 return false;
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
             }
         }
         return false;
     }
 
-    public static void waitForServiceDeployment(String serviceUrl) {
+    public static void waitForServiceDeployment(String serviceUrl) throws IOException {
         int serviceTimeOut = 0;
         while (!isServiceAvailable(serviceUrl)) {
             if (serviceTimeOut == 0) {
@@ -149,7 +152,7 @@ public class AxisServiceClientUtils {
 
     public static void sendRequest(String eprUrl, String operation, String payload,
                                    int numberOfInstances, String expectedException, boolean twoWay)
-            throws XMLStreamException, AxisFault {
+            throws XMLStreamException, IOException {
         assertFalse(!AxisServiceClientUtils.isServiceAvailable(eprUrl));
         for (int i = 0; i < numberOfInstances; i++) {
             try {

@@ -133,24 +133,36 @@ public class FileManager {
         String fileName = jarFile.getName();
         String fileNameLastPart = fileName.substring(fileName.lastIndexOf(File.separator));
         File destinationFile = new File(destinationFileDirectory, fileNameLastPart);
-        JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(destinationFile));
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry jarEntry = entries.nextElement();
-            InputStream inputStream = jarFile.getInputStream(jarEntry);
-            //jarOutputStream.putNextEntry(jarEntry);
-            //create a new jarEntry to avoid ZipException: invalid jarEntry compressed size
-            jarOutputStream.putNextEntry(new JarEntry(jarEntry.getName()));
-            byte[] buffer = new byte[4096];
-            int bytesRead = 0;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                jarOutputStream.write(buffer, 0, bytesRead);
+        JarOutputStream jarOutputStream = null;
+        try {
+            jarOutputStream = new JarOutputStream(new FileOutputStream(destinationFile));
+            Enumeration<JarEntry> entries = jarFile.entries();
+            InputStream inputStream = null;
+            while (entries.hasMoreElements()) {
+                try {
+                    JarEntry jarEntry = entries.nextElement();
+                    inputStream = jarFile.getInputStream(jarEntry);
+                    //jarOutputStream.putNextEntry(jarEntry);
+                    //create a new jarEntry to avoid ZipException: invalid jarEntry compressed size
+                    jarOutputStream.putNextEntry(new JarEntry(jarEntry.getName()));
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = 0;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        jarOutputStream.write(buffer, 0, bytesRead);
+                    }
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                        jarOutputStream.flush();
+                        jarOutputStream.closeEntry();
+                    }
+                }
             }
-            inputStream.close();
-            jarOutputStream.flush();
-            jarOutputStream.closeEntry();
+        } finally {
+            if (jarOutputStream != null) {
+                jarOutputStream.close();
+            }
         }
-        jarOutputStream.close();
     }
 
     public static void copyJarFile(File sourceFile, String destinationDirectory)

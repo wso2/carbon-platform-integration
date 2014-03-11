@@ -104,9 +104,17 @@ public class OracleDatabaseManager implements DatabaseManager {
      */
     public ResultSet executeQuery(String sql) throws SQLException {
         ResultSet rs;
-        Statement st = connection.createStatement();
+        Statement st = null;
+
+        try{
+            st = connection.createStatement();
+
         log.debug(sql);
         rs = st.executeQuery(sql);
+        } finally {
+            assert st != null;
+            st.close();
+        }
         return rs;
     }
 
