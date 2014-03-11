@@ -27,7 +27,6 @@ import java.sql.SQLException;
 
 public class DatabaseFactory {
     private static final Log log = LogFactory.getLog(DatabaseFactory.class);
-
     private static String JDBC_URL;
     private static String JDBC_DRIVER;
     private static String DB_USER;
@@ -43,25 +42,19 @@ public class DatabaseFactory {
     public static DatabaseManager getDatabaseConnector(String databaseDriver, String jdbcUrl,
                                                        String userName, String passWord)
             throws ClassNotFoundException, SQLException, XPathExpressionException {
-
         return new SqlDatabaseManager(databaseDriver, jdbcUrl, userName, passWord);
-
-
     }
 
     public static DatabaseManager getDatabaseConnector(String jdbcUrl, String userName,
                                                        String passWord)
             throws ClassNotFoundException, SQLException, XPathExpressionException {
         init();
-
         return new SqlDatabaseManager(JDBC_DRIVER, jdbcUrl, userName, passWord);
-
     }
 
     public static DatabaseManager getDatabaseConnector()
             throws ClassNotFoundException, SQLException, XPathExpressionException {
         init();
         return new SqlDatabaseManager(JDBC_DRIVER, JDBC_URL, DB_USER, DB_PASSWORD);
-
     }
 }

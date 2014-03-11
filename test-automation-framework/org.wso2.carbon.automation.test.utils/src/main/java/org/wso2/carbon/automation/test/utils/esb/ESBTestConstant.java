@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.esb;
 
 public class ESBTestConstant {
@@ -23,7 +22,6 @@ public class ESBTestConstant {
     public static final String SECURE_STOCK_QUOTE_SERVICE = "SecureStockQuoteService";
     public static final String SIMPLE_AXIS2_SERVICE = "Axis2Service";
     public static final String STUDENT_REST_SERVICE = "StudentService";
-
     /**
      * ERROR MESSAGES
      */

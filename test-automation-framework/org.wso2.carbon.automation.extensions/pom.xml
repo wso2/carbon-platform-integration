@@ -297,7 +297,7 @@
         <operadriver.version>0.8.1</operadriver.version>
         <selenium.version>2.37.0</selenium.version>
         <testng.version>6.1.1</testng.version>
-        <stub.version>${project.version}</stub.version>
+        <stub.version>4.3.0-SNAPSHOT</stub.version>
         <emma.version>2.1.5320</emma.version>
         <orbit.version.axiom>1.2.11.wso2v3</orbit.version.axiom>
         <org.apache.cxf.version>2.7.2</org.apache.cxf.version>

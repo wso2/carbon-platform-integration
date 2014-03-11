@@ -20,9 +20,7 @@ package org.wso2.carbon.automation.test.utils.selenium;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-
 public class GregResourceURLUploader {
-
     public void uploadResource(WebDriver driver, String resourceURL, String resourceName) {
         driver.findElement(By.id("irFetchURL")).sendKeys(resourceURL);
         driver.findElement(By.id("irResourceName")).sendKeys(resourceName);

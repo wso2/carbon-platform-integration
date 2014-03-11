@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.esb;
 
 import org.apache.axiom.om.OMElement;
@@ -55,7 +54,6 @@ public class ESBBaseTest {
     private List<String> priorityExecutorList = null;
 
     public ESBBaseTest() throws Exception {
-
         axis2Client = new StockQuoteClient();
         automationContext = new AutomationContext("ESB", TestUserMode.SUPER_TENANT_ADMIN);
         esbUtils = new ESBTestCaseUtils();
@@ -76,7 +74,6 @@ public class ESBBaseTest {
     }
 
     public void updateESBConfiguration(OMElement synapseConfig) throws Exception {
-
         if (synapseConfiguration == null) {
             synapseConfiguration = synapseConfig;
         } else {
@@ -100,7 +97,6 @@ public class ESBBaseTest {
             parser = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
             builder = new StAXOMBuilder(parser);
             documentElement = builder.getDocumentElement().cloneOMElement();
-
         } finally {
             if (builder != null) {
                 builder.close();
@@ -670,5 +666,4 @@ public class ESBBaseTest {
         }
         return buf.toString();
     }*/
-
 }

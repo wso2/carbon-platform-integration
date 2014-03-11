@@ -27,7 +27,6 @@ import java.sql.*;
 
 public class SqlDatabaseManager implements DatabaseManager {
     private static final Log log = LogFactory.getLog(SqlDatabaseManager.class);
-
     private Connection connection;
 
     public SqlDatabaseManager(String jdbcDriver, String jdbcUrl, String userName, String passWord)
@@ -56,10 +55,8 @@ public class SqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql update Success");
-
     }
 
     /**
@@ -86,9 +83,7 @@ public class SqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
-
         log.debug("Sql execution Success");
     }
 
@@ -103,7 +98,6 @@ public class SqlDatabaseManager implements DatabaseManager {
         log.debug(sql);
         rs = st.executeQuery(sql);
         return rs;
-
     }
 
     /**
@@ -113,7 +107,6 @@ public class SqlDatabaseManager implements DatabaseManager {
      */
     public Statement getStatement(String sql) throws SQLException {
         return connection.createStatement();
-
     }
 
     /**
@@ -133,7 +126,6 @@ public class SqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql execution Success");
     }
@@ -151,12 +143,10 @@ public class SqlDatabaseManager implements DatabaseManager {
             if (!connection.isClosed()) {
                 disconnect();
             }
-
         } catch (SQLException e) {
             log.error("Error while disconnecting from database");
             throw new SQLException("Error while disconnecting from database");
         }
         super.finalize();
     }
-
 }

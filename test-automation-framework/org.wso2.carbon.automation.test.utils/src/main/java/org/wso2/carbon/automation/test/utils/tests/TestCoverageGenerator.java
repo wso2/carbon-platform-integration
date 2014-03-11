@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.tests;
 
 import org.apache.commons.logging.Log;
@@ -65,7 +64,6 @@ public class TestCoverageGenerator {
             }
         }));
         subDirs = new ArrayList<File>(subDirs);
-
         List<File> deepSubdirs = new ArrayList<File>();
         for (File subdir : subDirs) {
             deepSubdirs.addAll(getAllDirectories(subdir));

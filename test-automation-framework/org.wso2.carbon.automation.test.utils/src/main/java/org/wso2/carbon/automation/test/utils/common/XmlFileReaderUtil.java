@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.common;
 
 import org.apache.axiom.om.OMElement;
@@ -31,13 +30,12 @@ import java.io.IOException;
 
 public class XmlFileReaderUtil {
     public static OMElement read(String filePath) throws FileNotFoundException,
-                                                          XMLStreamException {
+            XMLStreamException {
         OMElement documentElement = null;
         FileInputStream inputStream = null;
         XMLStreamReader parser = null;
         File file = new File(filePath);
         try {
-
             inputStream = new FileInputStream(filePath);
             parser = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
             //create the builder
@@ -45,12 +43,10 @@ public class XmlFileReaderUtil {
             //get the root element
             documentElement = builder.getDocumentElement();
             documentElement.build();
-
         } finally {
             if (parser != null) {
                 parser.close();
             }
-
             if (inputStream != null) {
                 try {
                     inputStream.close();

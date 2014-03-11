@@ -22,12 +22,10 @@ import org.wso2.carbon.automation.engine.context.AutomationContext;
 import javax.xml.xpath.XPathExpressionException;
 
 public class GRegBackEndURLEvaluator {
-
     public String getBackEndURL() throws XPathExpressionException {
         String baseUrl;
-         //todo
+        //todo
         AutomationContext gregContext = new AutomationContext("GREG", "", "", "");
-
         baseUrl = "https://" + gregContext.getInstance().getHosts().get(0);
        /* if (gregContext.getConfigurationValue().getEnvironmentSettings().isEnablePort()
             && gregProperties.getHttpsPort() != null) {

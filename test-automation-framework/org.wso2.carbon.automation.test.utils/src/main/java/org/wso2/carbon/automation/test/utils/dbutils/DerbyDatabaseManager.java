@@ -41,8 +41,8 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * @throws Exception sql exceptions
      */
     public DerbyDatabaseManager(String jdbcURL) throws ClassNotFoundException,
-                                                       SQLException, IllegalAccessException,
-                                                       InstantiationException {
+            SQLException, IllegalAccessException,
+            InstantiationException {
         String driverClass = "org.apache.derby.jdbc.ClientDriver";
         Class.forName(driverClass).newInstance();
         dbConnection = DriverManager.getConnection(jdbcURL);
@@ -59,8 +59,8 @@ public class DerbyDatabaseManager implements DatabaseManager {
      */
     public DerbyDatabaseManager(String jdbcURL, String userName, String passWord)
             throws ClassNotFoundException,
-                   SQLException, IllegalAccessException,
-                   InstantiationException {
+            SQLException, IllegalAccessException,
+            InstantiationException {
         String driverClass = "org.apache.derby.jdbc.ClientDriver";
         Class.forName(driverClass).newInstance();
         dbConnection = DriverManager.getConnection(jdbcURL, userName, passWord);
@@ -90,7 +90,6 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * @throws Exception sql exception
      */
     public void executeUpdate(File sqlFile) throws SQLException, IOException {
-
         Statement st = null;
         String sql = FileManager.readFile(sqlFile).trim();
         log.debug("Query List:" + sql);
@@ -136,22 +135,19 @@ public class DerbyDatabaseManager implements DatabaseManager {
     }
 
     /**
-     *
      * @param sql
      * @return
      * @throws java.sql.SQLException
      */
-
     public Statement getStatement(String sql) throws SQLException {
         return dbConnection.createStatement();
-
     }
 
     /**
      * disconnect from database server
+     *
      * @throws java.sql.SQLException
      */
-
     public void disconnect() throws SQLException {
         dbConnection.close();
         log.debug("Disconnected from database");
@@ -162,12 +158,10 @@ public class DerbyDatabaseManager implements DatabaseManager {
             if (!dbConnection.isClosed()) {
                 disconnect();
             }
-
         } catch (SQLException e) {
             log.error("Error while disconnecting from database");
             throw new SQLException("Error while disconnecting from database");
         }
         super.finalize();
     }
-
 }

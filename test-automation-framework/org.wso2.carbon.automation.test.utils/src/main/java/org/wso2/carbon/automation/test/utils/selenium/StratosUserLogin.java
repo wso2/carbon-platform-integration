@@ -25,10 +25,8 @@ import org.openqa.selenium.WebDriver;
 
 import static org.testng.Assert.assertTrue;
 
-
 public class StratosUserLogin {
     private static final Log log = LogFactory.getLog(StratosUserLogin.class);
-
 
     public static void userLogin(WebDriver driver, Selenium selenium, String userName,
                                  String password,
@@ -37,21 +35,20 @@ public class StratosUserLogin {
         driver.findElement(By.id("username")).sendKeys(userName);
         driver.findElement(By.id("password")).sendKeys(password);
         driver.findElement(By.xpath("//tr[4]/td[2]/input")).click();
-
         if (productName.equalsIgnoreCase("manager")) {
             assertTrue(driver.findElement(By.id("middle")).findElement(By.id("cloudService"))
-                               .getText().contains("Application Server"),
-                       "Manager Home page Failed");
+                    .getText().contains("Application Server"),
+                    "Manager Home page Failed");
             String pageSource = driver.getPageSource();
             assertTrue(pageSource.contains("Mashup Server"), "Manager Home page Failed");
             assertTrue(pageSource.contains("Identity Server"), "Manager Home page Failed");
             assertTrue(pageSource.contains("Message Broker"), "Manager Home page Failed");
             assertTrue(pageSource.contains("Enterprise Service Bus"),
-                       "Manager Home page Failed");
+                    "Manager Home page Failed");
         } else {
             assertTrue(driver.findElement(By.className("dashboard-title"))
-                               .getText().toLowerCase().contains("quick start dashboard"),
-                       "Failed to display service home Page :");
+                    .getText().toLowerCase().contains("quick start dashboard"),
+                    "Failed to display service home Page :");
         }
     }
 }

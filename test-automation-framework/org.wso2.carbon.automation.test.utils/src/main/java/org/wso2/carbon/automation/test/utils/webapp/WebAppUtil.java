@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.webapp;
 
 import org.apache.commons.logging.Log;
@@ -26,28 +25,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class WebAppUtil {
-
     private static final Log log = LogFactory.getLog(WebAppUtil.class);
 
     protected static boolean webappTest(String url, String content) throws IOException {
         BufferedReader in;
         boolean webappStatus = false;
-
         URL u = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) u.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
         int code = connection.getResponseCode(); //get response code to check whether it is 200 or 404
-
         //check connection for success
         if (code == 200) {
             log.info("Connected to webapp successfully");
             in = new BufferedReader(
                     new InputStreamReader(
                             connection.getInputStream()));
-
             String inputLine;
-
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.contains(content)) {
                     log.info("Webapp output text " + content + " found");
@@ -61,7 +55,6 @@ public class WebAppUtil {
                 log.debug("webapp connection returned HTTP " + code + " error");
             }
         }
-
         return webappStatus;
     }
 
@@ -78,10 +71,8 @@ public class WebAppUtil {
                     Thread.sleep(500);
                     serviceTimeOut++;
                 } catch (InterruptedException ignored) {
-
                 }
             }
-
         } catch (IOException e) {
             log.error("Unable to wait for webapp deployment: IO Exception" + e);
             throw new IOException("Unable to wait for webapp deployment" + e);
@@ -101,7 +92,6 @@ public class WebAppUtil {
                     Thread.sleep(500);
                     serviceTimeOut++;
                 } catch (InterruptedException ignored) {
-
                 }
             }
         } catch (IOException e) {

@@ -38,44 +38,34 @@ public class SampleDataServiceClient {
         OMElement payload = fac.createOMElement("customersInBoston", omNs);
         OMElement result = new AxisServiceClient().sendReceive(payload, serviceEndpoint, "customersInBoston");
         Assert.assertTrue(result.toString().contains("<city>Boston</city>"), "Expected Result Mismatched");
-
     }
 
     public void addEmployee(String employeeNumber) throws AxisFault {
         OMElement payload = fac.createOMElement("addEmployee", omNs);
-
         OMElement empNo = fac.createOMElement("employeeNumber", omNs);
         empNo.setText(employeeNumber);
         payload.addChild(empNo);
-
         OMElement lastName = fac.createOMElement("lastName", omNs);
         lastName.setText("BBB");
         payload.addChild(lastName);
-
         OMElement fName = fac.createOMElement("firstName", omNs);
         fName.setText("AAA");
         payload.addChild(fName);
-
         OMElement email = fac.createOMElement("email", omNs);
         email.setText("aaa@ccc.com");
         payload.addChild(email);
-
         OMElement salary = fac.createOMElement("salary", omNs);
         salary.setText("50000");
         payload.addChild(salary);
-
         new AxisServiceClient().sendRobust(payload, serviceEndpoint, "addEmployee");
-
     }
 
     public OMElement getEmployeeById(String employeeNumber)
             throws AxisFault {
         OMElement payload = fac.createOMElement("employeesByNumber", omNs);
-
         OMElement empNo = fac.createOMElement("employeeNumber", omNs);
         empNo.setText(employeeNumber);
         payload.addChild(empNo);
-
         OMElement result = new AxisServiceClient().sendReceive(payload, serviceEndpoint, "employeesByNumber");
         return result;
     }
@@ -84,29 +74,21 @@ public class SampleDataServiceClient {
                                        String increment)
             throws AxisFault {
         OMElement payload = fac.createOMElement("incrementEmployeeSalary", omNs);
-
         OMElement empNo = fac.createOMElement("employeeNumber", omNs);
         empNo.setText(employeeNumber);
         payload.addChild(empNo);
-
         OMElement salary = fac.createOMElement("increment", omNs);
         salary.setText(increment);
         payload.addChild(salary);
-
         new AxisServiceClient().sendRobust(payload, serviceEndpoint, "incrementEmployeeSalary");
-
     }
 
     public void deleteEmployeeById(String employeeNumber)
             throws AxisFault {
         OMElement payload = fac.createOMElement("deleteEmployeeById", omNs);
-
         OMElement empNo = fac.createOMElement("employeeNumber", omNs);
         empNo.setText(employeeNumber);
         payload.addChild(empNo);
-
         new AxisServiceClient().sendRobust(payload, serviceEndpoint, "deleteEmployeeById");
-
-
     }
 }

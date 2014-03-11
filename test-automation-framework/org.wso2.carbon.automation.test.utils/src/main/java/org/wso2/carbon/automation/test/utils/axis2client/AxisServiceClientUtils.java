@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.axis2client;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -40,9 +39,7 @@ import java.util.List;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.fail;
 
-
 public class AxisServiceClientUtils {
-
     public final static boolean TWO_WAY = true;
     public final static boolean ONE_WAY = false;
     private static final Log log = LogFactory.getLog(AxisServiceClientUtils.class);
@@ -53,12 +50,10 @@ public class AxisServiceClientUtils {
         Options options = new Options();
         options.setTo(targetEPR);
         //options.setAction("urn:" + operation); //since soapAction = ""
-
         //Blocking invocation
         ServiceClient sender = new ServiceClient();
         sender.setOptions(options);
         OMElement result = sender.sendReceive(payload);
-
         //log.info(result.toString());
         return result;
     }
@@ -69,7 +64,6 @@ public class AxisServiceClientUtils {
         Options options = new Options();
         options.setTo(targetEPR);
         //options.setAction("urn:" + operation); //since soapAction = ""
-
         //Blocking invocation
         ServiceClient sender = new ServiceClient();
         sender.setOptions(options);
@@ -89,7 +83,6 @@ public class AxisServiceClientUtils {
         } catch (IOException e) {
             return false;// do nothing, wait for the service
         }
-
         if (wsdlIS != null) {
             BufferedReader in;
             try {
@@ -101,7 +94,6 @@ public class AxisServiceClientUtils {
                     }
                 }
                 in.close();
-
             } catch (IOException e) {
                 return false;
             }
@@ -122,7 +114,6 @@ public class AxisServiceClientUtils {
                 Thread.sleep(500);
                 serviceTimeOut++;
             } catch (InterruptedException ignored) {
-
             }
         }
     }
@@ -132,7 +123,6 @@ public class AxisServiceClientUtils {
                                    boolean twoWay) throws Exception {
         waitForServiceDeployment(eprUrl);
         assertFalse(!AxisServiceClientUtils.isServiceAvailable(eprUrl));
-
         for (int i = 0; i < numberOfInstances; i++) {
             try {
                 EndpointReference epr = new EndpointReference(eprUrl + "/" + operation);
@@ -161,14 +151,12 @@ public class AxisServiceClientUtils {
                                    int numberOfInstances, String expectedException, boolean twoWay)
             throws XMLStreamException, AxisFault {
         assertFalse(!AxisServiceClientUtils.isServiceAvailable(eprUrl));
-
         for (int i = 0; i < numberOfInstances; i++) {
             try {
                 EndpointReference epr = new EndpointReference(operation);
                 if (twoWay) {
                     OMElement result = AxisServiceClientUtils.sendRequest(payload, epr);
                     fail("Exception expected!!! : " + result.toString());
-
                 } else {
                     AxisServiceClientUtils.sendRequestOneWay(payload, epr);
                 }
@@ -189,7 +177,6 @@ public class AxisServiceClientUtils {
 
     public static void waitForServiceUnDeployment(String serviceUrl) throws Exception {
         int serviceTimeOut = 0;
-
         while (isServiceAvailable(serviceUrl)) {
             if (serviceTimeOut == 0) {
             } else if (serviceTimeOut > 60) { //Check for the service for 100 seconds
@@ -213,7 +200,6 @@ public class AxisServiceClientUtils {
         valueOfb.addChild(fac.createOMText(valueOfb, "220"));
         method.addChild(valueOfa);
         method.addChild(valueOfb);
-
         return method;
     }
 }

@@ -49,14 +49,12 @@ public class AxisOperationClient {
 
     public AxisOperationClient() {
         String repositoryPath = FrameworkPathUtil.getSystemResourceLocation() + File.separator + "client";
-
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());
-
         try {
             cfgCtx =
                     ConfigurationContextFactory.createConfigurationContextFromFileSystem(repository.getCanonicalPath(),
-                                                                                         null);
+                            null);
             serviceClient = new ServiceClient(cfgCtx, null);
             log.info("Sample client initialized successfully...");
         } catch (Exception e) {
@@ -79,15 +77,13 @@ public class AxisOperationClient {
     }
 
     /**
-     *
      * @param trpUrl
      * @param addUrl
      * @param payload
      * @param action
-     * @return   soap envelop
+     * @return soap envelop
      * @throws AxisFault
      */
-
     public OMElement send(String trpUrl, String addUrl, OMElement payload, String action) throws AxisFault {
         operationClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);
         setMessageContext(addUrl, trpUrl, action);
@@ -109,7 +105,6 @@ public class AxisOperationClient {
     private OMElement createMultipleQuoteRequestBody(String symbol, int iterations) {
         OMNamespace omNs = fac.createOMNamespace("http://services.samples", "ns");
         OMElement method = fac.createOMElement("getQuote", omNs);
-
         for (int i = 0; i < iterations; i++) {
             OMElement value1 = fac.createOMElement("request", omNs);
             OMElement value2 = fac.createOMElement("symbol", omNs);
@@ -140,7 +135,6 @@ public class AxisOperationClient {
         MessageContext inMsgtCtx = operationClient.getMessageContext("In");
         SOAPEnvelope response = inMsgtCtx.getEnvelope();
         return response;
-
     }
 
     /**
@@ -148,7 +142,7 @@ public class AxisOperationClient {
      *
      * @param addUrl
      * @param trpUrl
-     *  @param action
+     * @param action
      */
     private void setMessageContext(String addUrl, String trpUrl, String action) {
         outMsgCtx = new MessageContext();
@@ -161,7 +155,7 @@ public class AxisOperationClient {
         if (addUrl != null && !"null".equals(addUrl)) {
             options.setTo(new EndpointReference(addUrl));
         }
-        if(action != null && !"null".equals(action)) {
+        if (action != null && !"null".equals(action)) {
             options.setAction(action);
         }
     }
@@ -184,7 +178,6 @@ public class AxisOperationClient {
      * @param payload
      * @return
      */
-
     private SOAPEnvelope createSOAPEnvelope(OMElement payload) {
         fac = OMAbstractFactory.getSOAP11Factory();
         envelope = fac.getDefaultEnvelope();
@@ -193,7 +186,7 @@ public class AxisOperationClient {
     }
 
     /**
-     *   Destroy objects
+     * Destroy objects
      */
     public void destroy() {
         try {
@@ -209,6 +202,5 @@ public class AxisOperationClient {
         cfgCtx = null;
         envelope = null;
         fac = null;
-        
     }
 }

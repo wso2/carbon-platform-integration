@@ -15,9 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.esb.client;
-
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -37,9 +35,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
-
 public class FIXClient {
-
     private String addUrl = null;
     private String trpUrl = null;
     private String prxyUrl = null;
@@ -47,37 +43,30 @@ public class FIXClient {
     private String mode;
     private String qty;
     private String repo;
-
     private Options options;
     private ServiceClient serviceClient;
     private ConfigurationContext configContext = null;
     private String pathToRepo;
 
     public FIXClient() throws IOException {
-
         options = new Options();
-
         repo = FrameworkPathUtil.getSystemResourceLocation() + File.separator + "client";
-
         pathToRepo = (new File(repo)).getCanonicalPath();
     }
 
     //send the request and get the response as a string
     public String send(String symbol, String mode, String qty, String addUrl, String trpUrl,
                        String prxUrl) throws Exception {
-
         setSymbol(symbol);
         setMode(mode);
         setQty(qty);
         setAddUrl(addUrl);
         setTrpUrl(trpUrl);
         setPrxyUrl(prxUrl);
-
         String side = "1";
         if (getMode().equals("sell")) {
             side = "2";
         }
-
         if (pathToRepo != null && !"null".equals(pathToRepo)) {
             configContext =
                     ConfigurationContextFactory.
@@ -86,13 +75,11 @@ public class FIXClient {
         } else {
             serviceClient = new ServiceClient();
         }
-
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMElement message = factory.createOMElement("message", null);
         message.addChild(getHeader(factory));
         message.addChild(getBody(factory, getSymbol(), side, getQty()));
         message.addChild(factory.createOMElement("trailer", null));
-
         // set addressing, transport and proxy url
         if (getAddUrl() != null && !"null".equals(getAddUrl())) {
             serviceClient.engageModule("addressing");
@@ -112,80 +99,64 @@ public class FIXClient {
             proxyProperties.setDomain("");
             options.setProperty(HTTPConstants.PROXY, proxyProperties);
         }
-
         options.setAction("urn:mediate");
         serviceClient.setOptions(options);
         OMElement response = serviceClient.sendReceive(message);
         Thread.sleep(5000);
-
         try {
             if (configContext != null) {
                 configContext.terminate();
             }
         } catch (Exception ignore) {
         }
-
-
         return response.toString();
     }
 
     private OMElement getHeader(OMFactory factory) {
         OMElement header = factory.createOMElement("header", null);
-
         OMElement msgType = factory.createOMElement("field", null);
         msgType.addAttribute(factory.createOMAttribute("id", null, "35"));
         factory.createOMText(msgType, "D");
         header.addChild(msgType);
-
         OMElement sendingTime = factory.createOMElement("field", null);
         sendingTime.addAttribute(factory.createOMAttribute("id", null, "52"));
         factory.createOMText(sendingTime, new Date().toString());
         header.addChild(sendingTime);
-
         return header;
     }
 
     private OMElement getBody(OMFactory factory, String text, String mode, String qtyValue) {
         OMElement body = factory.createOMElement("body", null);
-
         OMElement clordID = factory.createOMElement("field", null);
         clordID.addAttribute(factory.createOMAttribute("id", null, "11"));
         factory.createOMText(clordID, "122333");
         body.addChild(clordID);
-
         OMElement handleIns = factory.createOMElement("field", null);
         handleIns.addAttribute(factory.createOMAttribute("id", null, "21"));
         factory.createOMText(handleIns, "1");
         body.addChild(handleIns);
-
         OMElement qty = factory.createOMElement("field", null);
         qty.addAttribute(factory.createOMAttribute("id", null, "38"));
         factory.createOMText(qty, qtyValue);
         body.addChild(qty);
-
         OMElement ordType = factory.createOMElement("field", null);
         ordType.addAttribute(factory.createOMAttribute("id", null, "40"));
         factory.createOMText(ordType, "1");
         body.addChild(ordType);
-
         OMElement side = factory.createOMElement("field", null);
         side.addAttribute(factory.createOMAttribute("id", null, "54"));
         factory.createOMText(side, mode);
         body.addChild(side);
-
         OMElement symbol = factory.createOMElement("field", null);
         symbol.addAttribute(factory.createOMAttribute("id", null, "55"));
         factory.createOMText(symbol, text);
         body.addChild(symbol);
-
         OMElement timeInForce = factory.createOMElement("field", null);
         timeInForce.addAttribute(factory.createOMAttribute("id", null, "59"));
         factory.createOMText(timeInForce, "0");
         body.addChild(timeInForce);
-
         return body;
     }
-
 
     public String getAddUrl() {
         return addUrl;

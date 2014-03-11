@@ -14,7 +14,6 @@
 *KIND, either express or implied.  See the License for the
 *specific language governing permissions and limitations
 *under the License.*/
-
 package org.wso2.carbon.automation.test.utils.selenium;
 
 import org.openqa.selenium.By;
@@ -25,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class UserManagementSeleniumUtils {
-
     public static void deleteUserByName(WebDriver driver, String userName) {
         WebElement table =
                 driver.findElement(By.id("userTable"));
@@ -38,15 +36,14 @@ public class UserManagementSeleniumUtils {
             WebElement row = i.next();
             List<WebElement> columns = row.findElements(By.tagName("td"));
             for (WebElement column : columns) {
-
                 if (column.getText().equals(userName)) {
                     status = true;
                 }
                 if (status && column.getText().contains("Delete")) {
                     outStatus = true;
                     driver.findElement(By.xpath("/html/body/table/tbody/tr[2]/td[3]/table/tbody/tr[2]" +
-                                                "/td/div/div/table/tbody/tr[" + counter +
-                                                "]/td[2]/a[3]")).click();
+                            "/td/div/div/table/tbody/tr[" + counter +
+                            "]/td[2]/a[3]")).click();
                     driver.findElement(By.xpath("//button")).click();
                     break;
                 }
@@ -70,7 +67,6 @@ public class UserManagementSeleniumUtils {
             WebElement row = i.next();
             List<WebElement> columns = row.findElements(By.tagName("td"));
             for (WebElement column : columns) {
-
                 if (column.getText().equals(roleName)) {
                     status = true;
                 }
@@ -78,8 +74,8 @@ public class UserManagementSeleniumUtils {
                     outStatus = true;
                     driver.findElement(By.xpath
                             ("/html/body/table/tbody/tr[2]/td[3]/table/tbody/" +
-                             "tr[2]/td/div/div/table/tbody/tr[" +
-                             counter + "]/td[2]/a[4]")).click();
+                                    "tr[2]/td/div/div/table/tbody/tr[" +
+                                    counter + "]/td[2]/a[4]")).click();
                     driver.findElement(By.xpath("//button")).click();
                     break;
                 }
@@ -90,6 +86,4 @@ public class UserManagementSeleniumUtils {
             counter++;
         }
     }
-
-
 }

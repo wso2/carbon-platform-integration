@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EntitlementManagementSeleniumUtil {
-
     public static void deleteEntitlementPolicies(WebDriver driver) throws InterruptedException {
         WebElement table = driver.findElement(By.id("dataTable"));
         List<WebElement> rows = table.findElements(By.tagName("tr"));
@@ -20,7 +19,7 @@ public class EntitlementManagementSeleniumUtil {
             if (columns.size() > 0) {
                 if (!columns.get(0).getText().contains("No policies defined")) {
                     driver.findElement(By.xpath("//tr[2]/td/div/div/form[2]/table/tbody/tr[" +
-                                                counter + "]/td[2]/input  ")).click();
+                            counter + "]/td[2]/input  ")).click();
                     counter++;
                     if (rows.size() == counter) {
                         driver.findElement(By.id("delete1")).click();

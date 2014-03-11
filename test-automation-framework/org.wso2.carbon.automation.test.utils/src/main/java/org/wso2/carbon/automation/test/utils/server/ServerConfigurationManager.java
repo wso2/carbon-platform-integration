@@ -18,13 +18,13 @@
 package org.wso2.carbon.automation.test.utils.server;
 
 import org.apache.axis2.AxisFault;
-import org.wso2.carbon.automation.test.api.clients.server.admin.ServerAdminClient;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.context.beans.User;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.extensions.servers.carbonserver.ClientConnectionUtil;
+import org.wso2.carbon.automation.test.api.clients.server.admin.ServerAdminClient;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.utils.ServerConstants;
 
@@ -93,8 +93,9 @@ public class ServerConfigurationManager {
     }
 
     /**
-     *  Backup a file residing in a cabron server.
-     *  @param file file residing in server to backup.
+     * Backup a file residing in a cabron server.
+     *
+     * @param file file residing in server to backup.
      */
     private void backupConfiguration(File file) {
         //restore backup configuration
@@ -105,36 +106,33 @@ public class ServerConfigurationManager {
     }
 
     /**
-     *  Apply configuration from source file to a target file without restarting.
+     * Apply configuration from source file to a target file without restarting.
+     *
      * @param sourceFile Source file to copy.
      * @param targetFile Target file that is to be backed up and replaced.
-     * @param backup boolean value, set this to true if you want to backup the original file.
-     *
+     * @param backup     boolean value, set this to true if you want to backup the original file.
      * @throws Exception
      */
     public void applyConfigurationWithoutRestart(File sourceFile, File targetFile, boolean backup) throws Exception {
         // Using inputstreams to copy bytes instead of Readers that copy chars. Otherwise thigns like JKS files get corrupted during copy.
         FileChannel source = null;
         FileChannel destination = null;
-
-        if(backup) {
+        if (backup) {
             backupConfiguration(targetFile);
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(originalConfig).getChannel();
         } else {
-            if(!targetFile.exists()) {
+            if (!targetFile.exists()) {
                 targetFile.createNewFile();
             }
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(targetFile).getChannel();
         }
-
         destination.transferFrom(source, 0, source.size());
-
-        if(source != null) {
+        if (source != null) {
             source.close();
         }
-        if(destination != null) {
+        if (destination != null) {
             destination.close();
         }
     }
@@ -145,7 +143,6 @@ public class ServerConfigurationManager {
      * @throws Exception
      */
     public void restoreToLastConfiguration() throws Exception {
-
         if (isFileBackUp) {
             backUpConfig.renameTo(originalConfig);
             isFileBackUp = false;
@@ -165,11 +162,9 @@ public class ServerConfigurationManager {
         FileReader in = new FileReader(newConfig);
         FileWriter out = new FileWriter(originalConfig);
         int c;
-
         while ((c = in.read()) != -1) {
             out.write(c);
         }
-
         in.close();
         out.close();
         restartGracefully();
@@ -187,11 +182,9 @@ public class ServerConfigurationManager {
         FileReader in = new FileReader(newConfig);
         FileWriter out = new FileWriter(originalConfig);
         int c;
-
         while ((c = in.read()) != -1) {
             out.write(c);
         }
-
         in.close();
         out.close();
     }
@@ -209,11 +202,9 @@ public class ServerConfigurationManager {
         FileReader in = new FileReader(sourceFile);
         FileWriter out = new FileWriter(originalConfig);
         int c;
-
         while ((c = in.read()) != -1) {
             out.write(c);
         }
-
         in.close();
         out.close();
         restartGracefully();
@@ -234,7 +225,6 @@ public class ServerConfigurationManager {
         ClientConnectionUtil.waitForLogin(backEndUrl, AutomationConfiguration.
                 getConfigurationValue(ContextXpathConstants.SUPER_TENANT_DOMAIN), admin.getUserName(),
                 admin.getPassword());
-
     }
 
     /**
@@ -253,7 +243,6 @@ public class ServerConfigurationManager {
         ClientConnectionUtil.waitForLogin(backEndUrl, AutomationConfiguration.
                 getConfigurationValue(ContextXpathConstants.SUPER_TENANT_DOMAIN), admin.getUserName(),
                 admin.getPassword());
-
     }
 
     /**
@@ -280,7 +269,6 @@ public class ServerConfigurationManager {
         String filePath = carbonHome + File.separator + "repository" + File.separator + "components" + File.separator
                 + "lib" + File.separator + fileName;
         FileManager.deleteFile(filePath);
-
 //      removing osgi bundle from dropins; OSGI bundle versioning starts with _1.0.0
         fileName = fileName.replace("-", "_");
         fileName = fileName.replace(".jar", "_1.0.0.jar");

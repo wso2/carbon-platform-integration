@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.esb.client;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -57,10 +56,8 @@ public class LoadbalanceFailoverClient {
     public LoadbalanceFailoverClient() {
         String repositoryPath = "samples" + File.separator + "axis2Client" +
                 File.separator + "client_repo";
-
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());
-
         try {
             cfgCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(
                     repository.getCanonicalPath(), null);
@@ -73,203 +70,158 @@ public class LoadbalanceFailoverClient {
 
     private final static String COOKIE = "Cookie";
     private final static String SET_COOKIE = "Set-Cookie";
-
     private final static String DEFAULT_CLIENT_REPO = "client_repo";
 
-
     public void sendLoadBalanceRequests() throws Exception {
-
         new LoadbalanceFailoverClient().sessionlessClient();
-
     }
 
-
     public String sessionlessClient() throws AxisFault {
-
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement value = fac.createOMElement("Value", null);
         value.setText("Sample string");
-
         Options options = new Options();
         options.setTo(new EndpointReference("http://localhost:8280/services/LBService1"));
-
         options.setAction("urn:sampleOperation");
-
-
         long timeout = Integer.parseInt(getProperty("timeout", "10000000"));
         System.out.println("timeout=" + timeout);
         options.setTimeOutInMilliSeconds(timeout);
-
         // set addressing, transport and proxy url
         serviceClient.engageModule("addressing");
         options.setTo(new EndpointReference("http://localhost:8280"));
-
         serviceClient.setOptions(options);
         String testString = "";
-
         long i = 0;
         while (i < 100) {
-
             serviceClient.getOptions().setManageSession(true);
             OMElement responseElement = serviceClient.sendReceive(value);
             String response = responseElement.getText();
-
             i++;
             System.out.println("Request: " + i + " ==> " + response);
             testString = testString.concat(":" + i + ">" + response + ":");
         }
-
         return testString;
     }
 
     /**
      * This method is used to send a single request to the load balancing service
-     * @param proxyURL will be the location where load balancing proxy or sequence is defined.
+     *
+     * @param proxyURL   will be the location where load balancing proxy or sequence is defined.
      * @param serviceURL will be the URL for LBService
      * @return the response
      * @throws AxisFault
      */
-    public String sendLoadBalanceRequest(String proxyURL,String serviceURL) throws AxisFault {
-
+    public String sendLoadBalanceRequest(String proxyURL, String serviceURL) throws AxisFault {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement value = fac.createOMElement("Value", null);
         value.setText("Sample string");
-
         Options options = new Options();
         if (proxyURL != null && !"null".equals(proxyURL)) {
             options.setTo(new EndpointReference(proxyURL));
         }
-
         options.setAction("urn:sampleOperation");
-
         long timeout = Integer.parseInt(getProperty("timeout", "10000000"));
         System.out.println("timeout=" + timeout);
         options.setTimeOutInMilliSeconds(timeout);
-
         if (serviceURL != null && !"null".equals(serviceURL)) {
             // set addressing, transport and proxy url
             serviceClient.engageModule("addressing");
             options.setTo(new EndpointReference(serviceURL));
         }
-
         serviceClient.setOptions(options);
-
         serviceClient.getOptions().setManageSession(true);
         OMElement responseElement = serviceClient.sendReceive(value);
         String response = responseElement.getText();
-
         return response;
     }
 
     /**
      * This method is used to send a single request to the load balancing service
-     * @param proxyURL will be the location where load balancing proxy or sequence is defined.
+     *
+     * @param proxyURL   will be the location where load balancing proxy or sequence is defined.
      * @param serviceURL will be the URL for LBService
      * @return the response
      * @throws AxisFault
      */
-    public String sendLoadBalanceRequest(String proxyURL,String serviceURL,String clientTimeoutInMilliSeconds) throws AxisFault {
-
+    public String sendLoadBalanceRequest(String proxyURL, String serviceURL, String clientTimeoutInMilliSeconds) throws AxisFault {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement value = fac.createOMElement("Value", null);
         value.setText("Sample string");
-
         Options options = new Options();
         if (proxyURL != null && !"null".equals(proxyURL)) {
             options.setTo(new EndpointReference(proxyURL));
         }
-
         options.setAction("urn:sampleOperation");
-
         long timeout = Integer.parseInt(getProperty("timeout", clientTimeoutInMilliSeconds));
         System.out.println("timeout=" + timeout);
         options.setTimeOutInMilliSeconds(timeout);
-
         if (serviceURL != null && !"null".equals(serviceURL)) {
             // set addressing, transport and proxy url
             serviceClient.engageModule("addressing");
             options.setTo(new EndpointReference(serviceURL));
         }
-
         serviceClient.setOptions(options);
-
         serviceClient.getOptions().setManageSession(true);
         OMElement responseElement = serviceClient.sendReceive(value);
         String response = responseElement.getText();
-
         return response;
     }
 
     /**
      * This method is used to send a single request to the load balancing service which will invoke a sleep in the service
-     * @param proxyURL will be the location where load balancing proxy or sequence is defined.
+     *
+     * @param proxyURL                    will be the location where load balancing proxy or sequence is defined.
      * @param sleepTimeInMilliSeconds
      * @param clientTimeoutInMilliSeconds
      * @return
      * @throws AxisFault
      */
-    public String sendSleepRequest(String proxyURL,String sleepTimeInMilliSeconds, String clientTimeoutInMilliSeconds) throws AxisFault {
+    public String sendSleepRequest(String proxyURL, String sleepTimeInMilliSeconds, String clientTimeoutInMilliSeconds) throws AxisFault {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMNamespace omNs = fac.createOMNamespace("http://services.samples", "ns");
         OMElement sleepOperation = fac.createOMElement("sleepOperation", omNs);
-        OMElement load = fac.createOMElement("load",null);
+        OMElement load = fac.createOMElement("load", null);
         load.setText(sleepTimeInMilliSeconds);
         sleepOperation.addChild(load);
-
-
-
         Options options = new Options();
         if (proxyURL != null && !"null".equals(proxyURL)) {
             options.setTo(new EndpointReference(proxyURL));
         }
-
         options.setAction("urn:sleepOperation");
-
         long timeout = Integer.parseInt(getProperty("timeout", clientTimeoutInMilliSeconds));
         System.out.println("timeout=" + timeout);
         options.setTimeOutInMilliSeconds(timeout);
-
         serviceClient.setOptions(options);
-
         serviceClient.getOptions().setManageSession(true);
-         OMElement responseElement = serviceClient.sendReceive(sleepOperation);
+        OMElement responseElement = serviceClient.sendReceive(sleepOperation);
         String response = responseElement.getText();
-
         return response;
     }
 
     /**
      * This method is used to send a single request to the load balancing service. No service endpoint is needed
-     * @param URL will be the location where load balancing proxy or sequence is defined.     * 
+     *
+     * @param URL will be the location where load balancing proxy or sequence is defined.     *
      * @return the response
      * @throws AxisFault
      */
     public String sendLoadBalanceFailoverRequest(String URL) throws AxisFault {
-
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement value = fac.createOMElement("Value", null);
         value.setText("Sample string");
-
         Options options = new Options();
         options.setTo(new EndpointReference(URL));
-
         options.setAction("urn:sampleOperation");
-
-
         long timeout = Integer.parseInt(getProperty("timeout", "10000000"));
         System.out.println("timeout=" + timeout);
         options.setTimeOutInMilliSeconds(timeout);
-
         // set addressing, transport and proxy url
         serviceClient.engageModule("addressing");
         options.setTo(new EndpointReference("http://localhost:8280"));
-
         serviceClient.setOptions(options);
-
         serviceClient.getOptions().setManageSession(true);
         OMElement responseElement = serviceClient.sendReceive(value);
         String response = responseElement.getText();
-
         return response;
     }
 
@@ -281,11 +233,9 @@ public class LoadbalanceFailoverClient {
      * observed that one session number always associated with one server ID.
      */
     private void sessionfullClient() {
-
         String synapsePort = "8280";
         int iterations = 100;
         boolean infinite = true;
-
         String pPort = getProperty("port", synapsePort);
         String pIterations = getProperty("i", null);
         String addUrl = getProperty("addurl", null);
@@ -293,7 +243,6 @@ public class LoadbalanceFailoverClient {
         String prxUrl = getProperty("prxurl", null);
         String sleep = getProperty("sleep", null);
         String session = getProperty("session", null);
-
         long sleepTime = -1;
         if (sleep != null) {
             try {
@@ -301,17 +250,14 @@ public class LoadbalanceFailoverClient {
             } catch (NumberFormatException ignored) {
             }
         }
-
         if (pPort != null) {
             try {
-
                 Integer.parseInt(pPort);
                 synapsePort = pPort;
             } catch (NumberFormatException e) {
                 // run with default value
             }
         }
-
         if (pIterations != null) {
             try {
                 iterations = Integer.parseInt(pIterations);
@@ -322,28 +268,21 @@ public class LoadbalanceFailoverClient {
                 // run with default values
             }
         }
-
         Options options = new Options();
         options.setTo(new EndpointReference("http://localhost:" + synapsePort + "/services/LBService1"));
         options.setAction("urn:sampleOperation");
         options.setTimeOutInMilliSeconds(10000000);
-
-
         try {
-
             SOAPEnvelope env1 = buildSoapEnvelope("c1", "v1");
             SOAPEnvelope env2 = buildSoapEnvelope("c2", "v1");
             SOAPEnvelope env3 = buildSoapEnvelope("c3", "v1");
             SOAPEnvelope[] envelopes = {env1, env2, env3};
-
             String repoLocationProperty = System.getProperty("repository");
             String repo = repoLocationProperty != null ? repoLocationProperty : DEFAULT_CLIENT_REPO;
             ConfigurationContext configContext =
                     ConfigurationContextFactory.createConfigurationContextFromFileSystem(
                             repo, repo + File.separator + "conf" + File.separator + "axis2.xml");
-
             ServiceClient client = new ServiceClient(configContext, null);
-
             // set addressing, transport and proxy url
             if (addUrl != null && !"null".equals(addUrl)) {
                 client.engageModule("addressing");
@@ -370,14 +309,12 @@ public class LoadbalanceFailoverClient {
                 }
             }
             client.setOptions(options);
-
             int i = 0;
             int sessionNumber;
             String[] cookies = new String[3];
             boolean httpSession = session != null && "http".equals(session);
             int cookieNumber;
             while (i < iterations || infinite) {
-
                 i++;
                 if (sleepTime != -1) {
                     try {
@@ -385,11 +322,8 @@ public class LoadbalanceFailoverClient {
                     } catch (InterruptedException ignored) {
                     }
                 }
-
                 MessageContext messageContext = new MessageContext();
                 sessionNumber = getSessionTurn(envelopes.length);
-
-
                 messageContext.setEnvelope(envelopes[sessionNumber]);
                 cookieNumber = getSessionTurn(cookies.length);
                 String cookie = cookies[cookieNumber];
@@ -400,20 +334,16 @@ public class LoadbalanceFailoverClient {
                     OperationClient op = client.createClient(ServiceClient.ANON_OUT_IN_OP);
                     op.addMessageContext(messageContext);
                     op.execute(true);
-
                     MessageContext responseContext =
                             op.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
                     String receivedCookie = extractSessionID(responseContext);
                     String receivedSetCookie = getSetCookieHeader(responseContext);
                     if (httpSession) {
-
                         if (receivedSetCookie != null && !"".equals(receivedSetCookie)) {
                             cookies[cookieNumber] = receivedCookie;
                         }
                     }
-
                     SOAPEnvelope responseEnvelope = responseContext.getEnvelope();
-
                     OMElement vElement =
                             responseEnvelope.getBody().getFirstChildWithName(new QName("Value"));
                     System.out.println(
@@ -428,7 +358,6 @@ public class LoadbalanceFailoverClient {
                             "- Get a Fault : " + axisFault.getMessage());
                 }
             }
-
         } catch (AxisFault axisFault) {
             System.out.println(axisFault.getMessage());
         }
@@ -440,9 +369,7 @@ public class LoadbalanceFailoverClient {
     }
 
     protected String extractSessionID(MessageContext axis2MessageContext) {
-
         Object o = axis2MessageContext.getProperty(MessageContext.TRANSPORT_HEADERS);
-
         if (o != null && o instanceof Map) {
             Map headerMap = (Map) o;
             String cookie = (String) headerMap.get(SET_COOKIE);
@@ -457,9 +384,7 @@ public class LoadbalanceFailoverClient {
     }
 
     protected String getSetCookieHeader(MessageContext axis2MessageContext) {
-
         Object o = axis2MessageContext.getProperty(MessageContext.TRANSPORT_HEADERS);
-
         if (o != null && o instanceof Map) {
             Map headerMap = (Map) o;
             return (String) headerMap.get(SET_COOKIE);
@@ -468,7 +393,6 @@ public class LoadbalanceFailoverClient {
     }
 
     protected void setSessionID(MessageContext axis2MessageContext, String value) {
-
         if (value == null) {
             return;
         }
@@ -482,25 +406,19 @@ public class LoadbalanceFailoverClient {
 
     private SOAPEnvelope buildSoapEnvelope(String clientID, String value) {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP12Factory();
-
         SOAPEnvelope envelope = soapFactory.createSOAPEnvelope();
-
         SOAPHeader header = soapFactory.createSOAPHeader();
         envelope.addChild(header);
-
         OMNamespace synNamespace = soapFactory.
                 createOMNamespace("http://ws.apache.org/ns/synapse", "syn");
         OMElement clientIDElement = soapFactory.createOMElement("ClientID", synNamespace);
         clientIDElement.setText(clientID);
         header.addChild(clientIDElement);
-
         SOAPBody body = soapFactory.createSOAPBody();
         envelope.addChild(body);
-
         OMElement valueElement = soapFactory.createOMElement("Value", null);
         valueElement.setText(value);
         body.addChild(valueElement);
-
         return envelope;
     }
 
@@ -511,6 +429,4 @@ public class LoadbalanceFailoverClient {
         }
         return result;
     }
-
-
 }

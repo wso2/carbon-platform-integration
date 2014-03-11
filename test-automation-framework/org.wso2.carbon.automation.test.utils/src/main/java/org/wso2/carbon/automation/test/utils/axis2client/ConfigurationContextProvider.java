@@ -43,16 +43,13 @@ public class ConfigurationContextProvider {
             HttpConnectionManagerParams params;
             configurationContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(
                     FrameworkPathUtil.getSystemResourceLocation() + File.separator + "client", null);
-
             httpConnectionManager = new MultiThreadedHttpConnectionManager();
             params = new HttpConnectionManagerParams();
             params.setDefaultMaxConnectionsPerHost(25);
             httpConnectionManager.setParams(params);
             httpClient = new HttpClient(httpConnectionManager);
-
             configurationContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
             configurationContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
-
         } catch (AxisFault axisFault) {
             log.error(axisFault);
         }
@@ -65,5 +62,4 @@ public class ConfigurationContextProvider {
     public ConfigurationContext getConfigurationContext() {
         return configurationContext;
     }
-
 }

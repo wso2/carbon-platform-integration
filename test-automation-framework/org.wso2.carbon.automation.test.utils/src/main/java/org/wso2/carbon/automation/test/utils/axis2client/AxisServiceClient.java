@@ -29,7 +29,6 @@ import org.testng.Assert;
 
 import javax.xml.namespace.QName;
 
-
 public class AxisServiceClient {
     private static final Log log = LogFactory.getLog(AxisServiceClient.class);
 
@@ -51,7 +50,6 @@ public class AxisServiceClient {
             options.setTimeOutInMilliSeconds(45000);
             options.setAction("urn:" + operation);
             sender.setOptions(options);
-
             response = sender.sendReceive(payload);
             if (log.isDebugEnabled()) {
                 log.debug("Response Message : " + response);
@@ -82,9 +80,7 @@ public class AxisServiceClient {
             options.setTo(new EndpointReference(endPointReference));
             options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
             options.setAction("urn:" + operation);
-
             sender.setOptions(options);
-
             response = sender.sendReceive(payload);
             if (log.isDebugEnabled()) {
                 log.debug("Response Message : " + response);
@@ -117,7 +113,6 @@ public class AxisServiceClient {
             options.setAction("urn:" + operation);
             options.setProperty(Constants.Configuration.MESSAGE_TYPE, contentType);
             sender.setOptions(options);
-
             response = sender.sendReceive(payload);
             if (log.isDebugEnabled()) {
                 log.debug("Response Message : " + response);
@@ -146,16 +141,12 @@ public class AxisServiceClient {
             options.setTo(new EndpointReference(endPointReference));
             options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
             options.setAction("urn:" + operation);
-
             sender.setOptions(options);
-
             sender.sendRobust(payload);
-
         } catch (AxisFault axisFault) {
             log.error(axisFault.getMessage());
             throw new AxisFault("AxisFault while getting response :" + axisFault.getMessage(), axisFault);
         }
-
     }
 
     //one way communication
@@ -174,15 +165,11 @@ public class AxisServiceClient {
             options.setTo(new EndpointReference(endPointReference));
             options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
             options.setAction("urn:" + operation);
-
             sender.setOptions(options);
-
             sender.fireAndForget(payload);
-
         } catch (AxisFault axisFault) {
             log.error(axisFault.getMessage());
             throw new AxisFault("AxisFault while getting response :" + axisFault.getMessage(), axisFault);
         }
-
     }
 }

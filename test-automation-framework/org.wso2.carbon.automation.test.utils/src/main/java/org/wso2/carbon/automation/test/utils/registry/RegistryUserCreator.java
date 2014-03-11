@@ -3,22 +3,20 @@ package org.wso2.carbon.automation.test.utils.registry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
-import org.wso2.carbon.automation.test.api.clients.authenticators.AuthenticatorClient;
-import org.wso2.carbon.automation.test.api.clients.user.mgt.UserManagementClient;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.beans.User;
+import org.wso2.carbon.automation.test.api.clients.authenticators.AuthenticatorClient;
+import org.wso2.carbon.automation.test.api.clients.user.mgt.UserManagementClient;
 import org.wso2.carbon.user.mgt.common.UserAdminException;
 import org.wso2.carbon.user.mgt.stub.UserAdminUserAdminException;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.rmi.RemoteException;
 
-
 public class RegistryUserCreator {
     private static final Log log = LogFactory.getLog(RegistryUserCreator.class);
     private UserManagementClient userAdminStub;
     private String sessionCookie;
-
 
     protected static String login(String userName, String password, String hostName)
             throws RemoteException, LoginAuthenticationExceptionException {
@@ -43,18 +41,15 @@ public class RegistryUserCreator {
         }
     }
 
-    public void setInfoRolesAndUsers(String  adminUserKey)
+    public void setInfoRolesAndUsers(String adminUserKey)
             throws LoginAuthenticationExceptionException, RemoteException,
-                   XPathExpressionException {
+            XPathExpressionException {
         //todo -
 //        FrameworkProperties isProperties = FrameworkFactory.getFrameworkProperties(ProductConstant.IS_SERVER_NAME);
         AutomationContext isContext = new AutomationContext("IS", "is", "carbon.supper", adminUserKey);
         User userAdminDetails = isContext.getUser();
         sessionCookie = login(userAdminDetails.getUserName(), userAdminDetails.getPassword(),
-                              isContext.getContextUrls().getBackEndUrl());
+                isContext.getContextUrls().getBackEndUrl());
         userAdminStub = new UserManagementClient(isContext.getContextUrls().getBackEndUrl(), sessionCookie);
-
-
     }
-
 }

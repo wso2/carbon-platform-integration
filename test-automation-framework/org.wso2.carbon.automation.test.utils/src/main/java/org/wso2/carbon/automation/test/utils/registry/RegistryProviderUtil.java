@@ -13,7 +13,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.registry;
 
 import org.apache.axis2.AxisFault;
@@ -49,10 +48,9 @@ public class RegistryProviderUtil {
         ConfigurationContext configContext;
         String serverURL;
         AutomationContext automationContext = new AutomationContext(productGroup, instance, tenantDomain, userKey);
-
-        String axis2Repo = FrameworkPathUtil.getSystemResourceLocation() + File.separator +  "client";
+        String axis2Repo = FrameworkPathUtil.getSystemResourceLocation() + File.separator + "client";
         String axis2Conf = FrameworkPathUtil.getSystemResourceLocation() + "axis2config" +
-                           File.separator + "axis2_client.xml";
+                File.separator + "axis2_client.xml";
         setKeyStoreProperties();
         try {
             configContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(axis2Repo, axis2Conf);
@@ -71,7 +69,6 @@ public class RegistryProviderUtil {
         }
         return registry;
     }
-
 
     /*public WSRegistryServiceClient getWSRegistry(String userName, String password,
                                                  String productName)
@@ -108,12 +105,11 @@ public class RegistryProviderUtil {
         return registry;
     }
 */
-    public Registry getGovernanceRegistry(Registry registry,  String userName)
+    public Registry getGovernanceRegistry(Registry registry, String userName)
             throws RegistryException, XPathExpressionException {
         Registry governance;
         setKeyStoreProperties();
         System.setProperty("carbon.repo.write.mode", "true");
-
         try {
             governance = GovernanceUtils.getGovernanceUserRegistry(registry, userName);
         } catch (RegistryException e) {
@@ -160,13 +156,11 @@ public class RegistryProviderUtil {
 
     private static void setKeyStoreProperties() throws XPathExpressionException {
         AutomationContext context = new AutomationContext();
-
         System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-                                                       +context.getConfigurationValue("//keystore/fileName/text()"));
+                + context.getConfigurationValue("//keystore/fileName/text()"));
         System.setProperty("javax.net.ssl.trustStorePassword",
-                           context.getConfigurationValue("//keystore/keyPassword/text()"));
+                context.getConfigurationValue("//keystore/keyPassword/text()"));
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-
         if (log.isDebugEnabled()) {
             log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
             log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));

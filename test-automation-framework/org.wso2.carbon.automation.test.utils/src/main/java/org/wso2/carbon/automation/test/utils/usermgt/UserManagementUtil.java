@@ -15,36 +15,34 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.usermgt;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.context.beans.User;
 import org.wso2.carbon.automation.test.api.clients.registry.ResourceAdminServiceClient;
 import org.wso2.carbon.automation.test.api.clients.user.mgt.UserManagementClient;
-import org.wso2.carbon.automation.engine.context.beans.User;
 
 public class UserManagementUtil {
     private static final Log log = LogFactory.getLog(UserManagementUtil.class);
 
     /**
      * Add new user to given role
-     * @param backendUrl - backend url of products
-     * @param newUserName - user name of the new user to be added
-     * @param newUserPassword  - password of the new user to be added.
-     * @param roleName - role of the user
-     * @param userInfo - UserBean of user
+     *
+     * @param backendUrl      - backend url of products
+     * @param newUserName     - user name of the new user to be added
+     * @param newUserPassword - password of the new user to be added.
+     * @param roleName        - role of the user
+     * @param userInfo        - UserBean of user
      * @throws Exception - throws if user addition fails.
      */
     public static void createUser(String backendUrl, String newUserName,
                                   String newUserPassword, String roleName,
                                   User userInfo)
             throws Exception {
-
         UserManagementClient userManagementClient = null;
         userManagementClient = new UserManagementClient(backendUrl, userInfo.getUserName(),
-                                                        userInfo.getPassword());
-
+                userInfo.getPassword());
         if (userManagementClient.roleNameExists(roleName)) {
             userManagementClient.addUser(newUserName, newUserPassword, new String[]{roleName}, null);
             log.info("User " + newUserName + " was created successfully");
@@ -54,9 +52,9 @@ public class UserManagementUtil {
     /**
      * The role will be created with all permissions and read, write, delete and authorize permission fro registry browser
      *
-     * @param roleName - name of the role to be added
+     * @param roleName   - name of the role to be added
      * @param backendUrl - backendURL of the product
-     * @param userInfo - UserBean of admin user
+     * @param userInfo   - UserBean of admin user
      * @throws Exception - throws if role addition fails
      */
     public static void createRoleWithAllPermissions(String roleName, String backendUrl,
@@ -68,9 +66,9 @@ public class UserManagementUtil {
         UserManagementClient userManagementClient = null;
         String[] permissions = {"/permission/"};
         resourceAdmin = new ResourceAdminServiceClient(backendUrl, userInfo.getUserName(),
-                                                       userInfo.getPassword());
+                userInfo.getPassword());
         userManagementClient = new UserManagementClient(backendUrl, userInfo.getUserName(),
-                                                        userInfo.getPassword());
+                userInfo.getPassword());
         String[] userList = null;
         if (!userManagementClient.roleNameExists(roleName)) {
             userManagementClient.addRole(roleName, userList, permissions);

@@ -20,9 +20,7 @@ package org.wso2.carbon.automation.test.utils.selenium;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-
 public class GregUserLogout {
-
     public void userLogout(WebDriver driver) throws InterruptedException {
 //        driver.findElement(By.xpath("//li[7]/a")).click();
         Thread.sleep(3000L);

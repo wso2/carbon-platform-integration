@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.http.client;
-
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
@@ -46,7 +44,6 @@ public class HttpClientUtil {
             InputStream in = httpCon.getInputStream();
             xmlContent = getStringFromInputStream(in);
             responseCode = httpCon.getResponseCode();
-
             in.close();
         } catch (Exception e) {
             log.error("Failed to get the response " + e);
@@ -63,7 +60,6 @@ public class HttpClientUtil {
             } catch (XMLStreamException e) {
                 log.error("Error while processing response to OMElement" + e);
                 throw new XMLStreamException("Error while processing response to OMElement" + e);
-
             }
         } else {
             return null;
@@ -105,7 +101,6 @@ public class HttpClientUtil {
             } catch (XMLStreamException e) {
                 log.error("Error while processing response to OMElement" + e);
                 throw new XMLStreamException("Error while processing response to OMElement" + e);
-
             }
         } else {
             return null;
@@ -148,7 +143,6 @@ public class HttpClientUtil {
             out.close();
             responseCode = httpCon.getResponseCode();
             httpCon.getInputStream().close();
-
         } catch (Exception e) {
             log.error("Failed to get the response " + e);
             throw new Exception("Failed to get the response :" + e);
@@ -177,7 +171,6 @@ public class HttpClientUtil {
             out.close();
             responseCode = httpCon.getResponseCode();
             httpCon.getInputStream().close();
-
         } catch (Exception e) {
             log.error("Failed to get the response " + e);
             throw new Exception("Failed to get the response :" + e);

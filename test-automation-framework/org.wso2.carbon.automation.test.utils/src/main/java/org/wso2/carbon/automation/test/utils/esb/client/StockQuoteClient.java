@@ -15,7 +15,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.esb.client;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -37,13 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StockQuoteClient {
-
     private static final Log log = LogFactory.getLog(StockQuoteClient.class);
-
     private List<Header> httpHeaders = new ArrayList<Header>();
 
     public StockQuoteClient() {
-
     }
 
 /*    public void setHeader(String localName, String ns, String value) throws AxisFault {
@@ -60,9 +56,7 @@ public class StockQuoteClient {
 
     public OMElement sendSimpleStockQuoteRequest(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient sc = getServiceClient(trpUrl, addUrl);
-
         try {
             return buildResponse(sc.sendReceive(createStandardRequest(symbol)));
         } finally {
@@ -78,12 +72,10 @@ public class StockQuoteClient {
         } finally {
             sc.cleanupTransport();
         }
-
     }
 
     public OMElement sendSimpleQuoteRequest(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient sc = getServiceClient(trpUrl, addUrl, "getSimpleQuote");
         try {
             return buildResponse(sc.sendReceive(createStandardSimpleRequest(symbol)));
@@ -94,7 +86,6 @@ public class StockQuoteClient {
 
     public OMElement sendSimpleQuoteRequest_REST(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient serviceClient = getRESTEnabledServiceClient(trpUrl, addUrl, "getSimpleQuote");
         try {
             return buildResponse(serviceClient.sendReceive(createStandardSimpleRequest(symbol)));
@@ -105,7 +96,6 @@ public class StockQuoteClient {
 
     public OMElement sendSimpleStockQuoteSoap11(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         serviceClient.getOptions()
                 .setSoapVersionURI(org.apache.axiom.soap.SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI);
@@ -116,10 +106,8 @@ public class StockQuoteClient {
         }
     }
 
-
     public OMElement sendSimpleStockQuoteSoap12(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         serviceClient.getOptions()
                 .setSoapVersionURI(org.apache.axiom.soap.SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
@@ -132,7 +120,6 @@ public class StockQuoteClient {
 
     public OMElement sendSimpleStockQuoteRequest(String trpUrl, String addUrl, OMElement payload)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(payload));
@@ -144,7 +131,6 @@ public class StockQuoteClient {
     public OMElement sendSimpleStockQuoteRequest_REST(String trpUrl, String addUrl,
                                                       OMElement payload)
             throws AxisFault {
-
         ServiceClient serviceClient = getRESTEnabledServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(payload));
@@ -153,10 +139,8 @@ public class StockQuoteClient {
         }
     }
 
-
     public OMElement sendCustomQuoteRequest(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(createCustomQuoteRequest(symbol)));
@@ -167,7 +151,6 @@ public class StockQuoteClient {
 
     public OMElement send(String trpUrl, String addUrl, String action, OMElement payload)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl, action);
         try {
             return buildResponse(serviceClient.sendReceive(payload));
@@ -176,10 +159,8 @@ public class StockQuoteClient {
         }
     }
 
-
     public OMElement sendCustomQuoteRequest_REST(String trpUrl, String addUrl, String symbol)
             throws AxisFault {
-
         ServiceClient serviceClient = getRESTEnabledServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(createCustomQuoteRequest(symbol)));
@@ -190,7 +171,6 @@ public class StockQuoteClient {
 
     public OMElement sendMultipleQuoteRequest(String trpUrl, String addUrl, String symbol, int n)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(createMultipleQuoteRequest(symbol, n)));
@@ -202,7 +182,6 @@ public class StockQuoteClient {
     public OMElement sendMultipleQuoteRequest_REST(String trpUrl, String addUrl, String symbol,
                                                    int n)
             throws AxisFault {
-
         ServiceClient serviceClient = getRESTEnabledServiceClient(trpUrl, addUrl);
         try {
             return buildResponse(serviceClient.sendReceive(createMultipleQuoteRequest(symbol, n)));
@@ -212,13 +191,11 @@ public class StockQuoteClient {
     }
 
     private ServiceClient getServiceClient(String trpUrl, String addUrl) throws AxisFault {
-
         return getServiceClient(trpUrl, addUrl, "getQuote");
     }
 
     private ServiceClient getRESTEnabledServiceClient(String trpUrl, String addUrl)
             throws AxisFault {
-
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl);
         serviceClient.getOptions().setProperty("enableREST", "true");
         return serviceClient;
@@ -226,10 +203,8 @@ public class StockQuoteClient {
 
     private ServiceClient getServiceClient(String trpUrl, String addUrl, String operation)
             throws AxisFault {
-
         ServiceClient serviceClient;
         Options options = new Options();
-
         if (addUrl != null && !"null".equals(addUrl)) {
             serviceClient = new ServiceClient(ConfigurationContextProvider.getInstance().getConfigurationContext(), null);
             serviceClient.engageModule("addressing");
@@ -238,18 +213,14 @@ public class StockQuoteClient {
             //otherwise it will engage addressing all the time once addressing is engaged by ConfigurationContext to service client
             serviceClient = new ServiceClient();
         }
-
         if (trpUrl != null && !"null".equals(trpUrl)) {
             options.setProperty(Constants.Configuration.TRANSPORT_URL, trpUrl);
         }
-
         options.setAction("urn:" + operation);
         if (httpHeaders.size() > 0) {
             options.setProperty(HTTPConstants.HTTP_HEADERS, httpHeaders);
         }
-
         serviceClient.setOptions(options);
-
         return serviceClient;
     }
 
@@ -258,7 +229,6 @@ public class StockQuoteClient {
             throws AxisFault {
         ServiceClient serviceClient = getServiceClient(trpUrl, addUrl, operation);
         serviceClient.getOptions().setProperty("enableREST", "true");
-
         return serviceClient;
     }
 
@@ -272,11 +242,9 @@ public class StockQuoteClient {
         OMElement method = fac.createOMElement("getQuote", omNs);
         OMElement value1 = fac.createOMElement("request", omNs);
         OMElement value2 = fac.createOMElement("symbol", omNs);
-
         value2.addChild(fac.createOMText(value1, symbol));
         value1.addChild(value2);
         method.addChild(value1);
-
         return method;
     }
 
@@ -285,10 +253,8 @@ public class StockQuoteClient {
         OMNamespace omNs = fac.createOMNamespace("http://services.samples", "ns");
         OMElement method = fac.createOMElement("getSimpleQuote", omNs);
         OMElement value1 = fac.createOMElement("symbol", omNs);
-
         value1.addChild(fac.createOMText(method, symbol));
         method.addChild(value1);
-
         return method;
     }
 
@@ -296,7 +262,6 @@ public class StockQuoteClient {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMNamespace omNs = fac.createOMNamespace("http://services.samples", "ns");
         OMElement method = fac.createOMElement("getQuote", omNs);
-
         for (int i = 0; i < iterations; i++) {
             OMElement value1 = fac.createOMElement("request", omNs);
             OMElement value2 = fac.createOMElement("symbol", omNs);

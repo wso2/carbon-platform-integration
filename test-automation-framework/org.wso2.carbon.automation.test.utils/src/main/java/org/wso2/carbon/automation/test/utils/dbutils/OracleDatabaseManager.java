@@ -27,7 +27,6 @@ import java.sql.*;
 
 public class OracleDatabaseManager implements DatabaseManager {
     private static final Log log = LogFactory.getLog(OracleDatabaseManager.class);
-
     private Connection connection;
 
     public OracleDatabaseManager(String jdbcUrl, String userName, String passWord)
@@ -40,7 +39,6 @@ public class OracleDatabaseManager implements DatabaseManager {
     }
 
     /**
-     *
      * @param sql
      * @throws java.sql.SQLException
      */
@@ -58,14 +56,11 @@ public class OracleDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql update Success");
-
     }
 
     /**
-     *
      * @param sqlFile
      * @throws java.sql.SQLException
      * @throws java.io.IOException
@@ -89,25 +84,20 @@ public class OracleDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
-
         log.debug("Sql execution Success");
     }
 
     /**
-     *
      * @param sql
      * @return
      * @throws java.sql.SQLException
      */
     public Statement getStatement(String sql) throws SQLException {
         return connection.createStatement();
-
     }
 
     /**
-     *
      * @param sql
      * @return
      * @throws java.sql.SQLException
@@ -118,11 +108,9 @@ public class OracleDatabaseManager implements DatabaseManager {
         log.debug(sql);
         rs = st.executeQuery(sql);
         return rs;
-
     }
 
     /**
-     *
      * @param sql
      * @throws java.sql.SQLException
      */
@@ -139,13 +127,11 @@ public class OracleDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql execution Success");
     }
 
     /**
-     *
      * @throws java.sql.SQLException
      */
     public void disconnect() throws SQLException {
@@ -158,7 +144,6 @@ public class OracleDatabaseManager implements DatabaseManager {
             if (!connection.isClosed()) {
                 disconnect();
             }
-
         } catch (SQLException e) {
             log.error("Error while disconnecting from database");
             throw new SQLException("Error while disconnecting from database");

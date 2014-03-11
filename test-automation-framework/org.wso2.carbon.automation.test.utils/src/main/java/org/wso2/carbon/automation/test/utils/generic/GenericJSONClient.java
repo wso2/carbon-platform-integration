@@ -31,9 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class GenericJSONClient {
-
     public static final Log log = LogFactory.getLog(GenericJSONClient.class);
-
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
 
@@ -50,13 +48,11 @@ public class GenericJSONClient {
             conn.setRequestProperty(GenericJSONClient.HEADER_ACCEPT_CHARSET, charset);
             conn.setRequestProperty("Content-Length", "1000");
             conn.setReadTimeout(30000);
-            System.setProperty("java.net.preferIPv4Stack" , "true");
+            System.setProperty("java.net.preferIPv4Stack", "true");
             conn.setRequestProperty("Connection", "close");
-
             conn.setDoOutput(true);
             os = conn.getOutputStream();
             os.write(query.getBytes(charset));
-
             is = conn.getInputStream();
             String out = null;
             if (is != null) {
@@ -70,7 +66,7 @@ public class GenericJSONClient {
             }
             return new JSONObject(out);
         } catch (IOException e) {
-                throw new Exception("Error occurred while executing the GET operation", e);
+            throw new Exception("Error occurred while executing the GET operation", e);
         } catch (JSONException e) {
             throw new Exception("Error occurred while parsing the response to a JSONObject", e);
         } finally {
@@ -79,7 +75,6 @@ public class GenericJSONClient {
             os.close();
             assert is != null;
             is.close();
-
         }
     }
 
@@ -98,17 +93,14 @@ public class GenericJSONClient {
             os.write(queryString.getBytes(charset));
             os.flush();
             os.close();
-
             int responseCode = conn.getResponseCode();
             conn.getInputStream().close();
-
             if (responseCode != 202) {
-                throw new Exception("Server responded with an inappropriate response code : '" + 
+                throw new Exception("Server responded with an inappropriate response code : '" +
                         responseCode + "'");
             }
         } catch (IOException e) {
             throw new Exception("Error occurred while executing the GET operation", e);
         }
     }
-
 }

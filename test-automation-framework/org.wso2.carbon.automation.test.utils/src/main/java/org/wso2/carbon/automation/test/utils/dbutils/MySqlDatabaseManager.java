@@ -17,7 +17,6 @@
 */
 package org.wso2.carbon.automation.test.utils.dbutils;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
@@ -28,7 +27,6 @@ import java.sql.*;
 
 public class MySqlDatabaseManager implements DatabaseManager {
     private static final Log log = LogFactory.getLog(MySqlDatabaseManager.class);
-
     private Connection connection;
 
     public MySqlDatabaseManager(String jdbcUrl, String userName, String passWord)
@@ -40,7 +38,6 @@ public class MySqlDatabaseManager implements DatabaseManager {
     }
 
     /**
-     *
      * @param sql
      * @throws java.sql.SQLException
      */
@@ -58,14 +55,11 @@ public class MySqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql update Success");
-
     }
 
     /**
-     *
      * @param sqlFile
      * @throws java.sql.SQLException
      * @throws java.io.IOException
@@ -89,14 +83,11 @@ public class MySqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
-
         log.debug("Sql execution Success");
     }
 
     /**
-     *
      * @param sql
      * @return
      * @throws java.sql.SQLException
@@ -107,11 +98,9 @@ public class MySqlDatabaseManager implements DatabaseManager {
         log.debug(sql);
         rs = st.executeQuery(sql);
         return rs;
-
     }
 
     /**
-     *
      * @param sql
      * @throws java.sql.SQLException
      */
@@ -128,24 +117,20 @@ public class MySqlDatabaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql execution Success");
     }
 
     /**
-     *
      * @param sql
      * @return
      * @throws java.sql.SQLException
      */
     public Statement getStatement(String sql) throws SQLException {
         return connection.createStatement();
-
     }
 
     /**
-     *
      * @throws java.sql.SQLException
      */
     public void disconnect() throws SQLException {
@@ -158,13 +143,11 @@ public class MySqlDatabaseManager implements DatabaseManager {
             if (!connection.isClosed()) {
                 disconnect();
             }
-
         } catch (SQLException e) {
             log.error("Error while disconnecting from database");
             throw new SQLException("Error while disconnecting from database");
         }
         super.finalize();
     }
-
 }
 

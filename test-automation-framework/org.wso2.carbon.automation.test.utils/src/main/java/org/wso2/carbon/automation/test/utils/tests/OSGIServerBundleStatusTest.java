@@ -39,7 +39,6 @@ import static org.testng.Assert.assertTrue;
   (eg: unsatisfied) in server startup
  */
 public abstract class OSGIServerBundleStatusTest {
-
     private static final Log log = LogFactory.getLog(OSGIServerBundleStatusTest.class);
     private static int telnetPort = 2000;
     private TelnetClient telnet = new TelnetClient();

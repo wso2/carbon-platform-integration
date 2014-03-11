@@ -31,7 +31,6 @@ import java.net.URLConnection;
 public class JSONClient {
     private static final Log log = LogFactory.getLog(JSONClient.class);
 
-
     /**
      * Send simple get quote request in json format
      *
@@ -72,7 +71,6 @@ public class JSONClient {
         return sendRequest(addUrl, query);
     }
 
-
     private JSONObject sendRequest(String addUrl, String query)
             throws IOException, JSONException {
         String charset = "UTF-8";
@@ -80,7 +78,7 @@ public class JSONClient {
         connection.setDoOutput(true);
         connection.setRequestProperty("Accept-Charset", charset);
         connection.setRequestProperty("Content-Type",
-                                      "application/json;charset=" + charset);
+                "application/json;charset=" + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -105,9 +103,7 @@ public class JSONClient {
             }
             out = sb.toString();
         }
-
         JSONObject jsonObject = new JSONObject(out);
-
         return jsonObject;
     }
 
@@ -119,7 +115,7 @@ public class JSONClient {
         connection.setRequestProperty("Accept-Charset", charset);
         connection.setRequestProperty("SOAPAction", action);
         connection.setRequestProperty("Content-Type",
-                                      "application/json;charset=" + charset);
+                "application/json;charset=" + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -144,9 +140,7 @@ public class JSONClient {
             }
             out = sb.toString();
         }
-
         JSONObject jsonObject = new JSONObject(out);
-
         return jsonObject;
     }
 }

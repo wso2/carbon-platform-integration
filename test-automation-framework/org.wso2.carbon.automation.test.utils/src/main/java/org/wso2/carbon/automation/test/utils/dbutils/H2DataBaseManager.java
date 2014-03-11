@@ -27,7 +27,6 @@ import java.sql.*;
 
 public class H2DataBaseManager implements DatabaseManager {
     private static final Log log = LogFactory.getLog(H2DataBaseManager.class);
-
     private Connection connection;
 
     public H2DataBaseManager(String jdbcUrl, String userName, String passWord)
@@ -37,13 +36,11 @@ public class H2DataBaseManager implements DatabaseManager {
         jdbcDataSource.setUser(userName);
         jdbcDataSource.setPassword(passWord);
         connection = jdbcDataSource.getConnection();*/
-
         Class.forName("org.h2.Driver");
         log.debug("JDBC Url: " + jdbcUrl);
         connection = DriverManager.getConnection(jdbcUrl, userName, passWord);
         log.debug("Connected to database");
     }
-
 
     /**
      * @param sql
@@ -63,10 +60,8 @@ public class H2DataBaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql update Success");
-
     }
 
     /**
@@ -93,9 +88,7 @@ public class H2DataBaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
-
         log.debug("Sql execution Success");
     }
 
@@ -106,7 +99,6 @@ public class H2DataBaseManager implements DatabaseManager {
      */
     public Statement getStatement(String sql) throws SQLException {
         return connection.createStatement();
-
     }
 
     /**
@@ -120,7 +112,6 @@ public class H2DataBaseManager implements DatabaseManager {
         log.debug(sql);
         rs = st.executeQuery(sql);
         return rs;
-
     }
 
     /**
@@ -140,7 +131,6 @@ public class H2DataBaseManager implements DatabaseManager {
                     //can do nothing
                 }
             }
-
         }
         log.debug("Sql execution Success");
     }
@@ -161,12 +151,10 @@ public class H2DataBaseManager implements DatabaseManager {
             if (!connection.isClosed()) {
                 disconnect();
             }
-
         } catch (SQLException e) {
             log.error("Error while disconnecting from database");
             throw new SQLException("Error while disconnecting from database");
         }
         super.finalize();
     }
-
 }

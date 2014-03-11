@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.governance;
 
 import org.apache.axiom.om.OMElement;
@@ -33,30 +32,24 @@ import javax.xml.stream.XMLStreamException;
 import java.rmi.RemoteException;
 
 public class ArtifactServiceClient {
-
     public static OMElement sendAndReceive(String backEndURL, String artifactServiceEPR,
                                            String action, String payLoad, String userName,
                                            String password, String hostName) throws RemoteException,
-                                                                                    LoginAuthenticationExceptionException,
-                                                                                    XMLStreamException {
+            LoginAuthenticationExceptionException,
+            XMLStreamException {
         OMElement omElement;
         AuthenticatorClient authenticatorClient = new AuthenticatorClient(backEndURL);
         Stub stub = authenticatorClient.getAuthenticationAdminStub();
-
         ServiceClient client = stub._getServiceClient();
         Options options = client.getOptions();
         options.setManageSession(true);
-
         authenticatorClient.login(userName, password, hostName);
-
         options.setTo(new EndpointReference(artifactServiceEPR));
         options.setAction(action);
         options.setManageSession(true);
         omElement = client.sendReceive(AXIOMUtil.stringToOM(payLoad));
-
         return omElement;
     }
-
 
     public static String getArtifactId(OMElement omElement) throws JaxenException {
         String artifactId;

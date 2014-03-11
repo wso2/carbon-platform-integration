@@ -18,7 +18,6 @@
 package org.wso2.carbon.automation.test.utils.concurrency.test.exception;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
-
     private Throwable throwable;
     private int failCount;
 
@@ -30,7 +29,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         throwable = e;
         failCount++;
     }
-    
+
     public void setException(Throwable e) {
         throwable = e;
         failCount++;
@@ -43,7 +42,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     public int getFailCount() {
         return failCount;
     }
-    
+
     public Throwable getException() {
         return throwable;
     }

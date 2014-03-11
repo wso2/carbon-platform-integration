@@ -17,27 +17,16 @@
 */
 package org.wso2.carbon.automation.test.utils.common;
 
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-
 
 public class FileManager {
     private static final Log log = LogFactory.getLog(FileManager.class);
@@ -51,7 +40,6 @@ public class FileManager {
         reader = new BufferedReader(new FileReader(filePath));
         stringBuilder = new StringBuilder();
         ls = System.getProperty("line.separator");
-
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
             stringBuilder.append(ls);
@@ -65,11 +53,9 @@ public class FileManager {
         StringBuilder stringBuilder;
         String line;
         String ls;
-
         reader = new BufferedReader(new FileReader(file));
         stringBuilder = new StringBuilder();
         ls = System.getProperty("line.separator");
-
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
             stringBuilder.append(ls);
@@ -91,13 +77,10 @@ public class FileManager {
                 //ignore
             }
         }
-
-
     }
 
     public static void copyFile(File sourceFile, String destinationPath) throws IOException {
         File destinationFile = new File(destinationPath);
-
         FileReader in = new FileReader(sourceFile);
         FileWriter out = new FileWriter(destinationFile);
         int c;
@@ -117,23 +100,18 @@ public class FileManager {
                 //ignore
             }
         }
-
     }
 
     public static File copyResourceToFileSystem(String sourcePath, String targetPath,
                                                 String fileName)
             throws IOException {
-
         File file = new File(targetPath + File.separator + fileName);
         if (file.exists()) {
             FileUtils.deleteQuietly(file);
         }
-
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-
         InputStream is = new FileInputStream(sourcePath);
-
         if (is != null) {
             byte[] data = new byte[1024];
             int len;
@@ -147,7 +125,6 @@ public class FileManager {
         return file;
     }
 
-
     public void copyJarFile(String sourceFileLocationWithFileName, String destinationDirectory)
             throws IOException, URISyntaxException {
         File sourceFile = new File(getClass().getResource(sourceFileLocationWithFileName).toURI());
@@ -156,14 +133,11 @@ public class FileManager {
         String fileName = jarFile.getName();
         String fileNameLastPart = fileName.substring(fileName.lastIndexOf(File.separator));
         File destinationFile = new File(destinationFileDirectory, fileNameLastPart);
-
         JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(destinationFile));
         Enumeration<JarEntry> entries = jarFile.entries();
-
         while (entries.hasMoreElements()) {
             JarEntry jarEntry = entries.nextElement();
             InputStream inputStream = jarFile.getInputStream(jarEntry);
-
             //jarOutputStream.putNextEntry(jarEntry);
             //create a new jarEntry to avoid ZipException: invalid jarEntry compressed size
             jarOutputStream.putNextEntry(new JarEntry(jarEntry.getName()));
@@ -190,11 +164,9 @@ public class FileManager {
         try {
             jarOutputStream = new JarOutputStream(new FileOutputStream(destinationFile));
             Enumeration<JarEntry> entries = jarFile.entries();
-
             while (entries.hasMoreElements()) {
                 JarEntry jarEntry = entries.nextElement();
                 InputStream inputStream = jarFile.getInputStream(jarEntry);
-
                 //jarOutputStream.putNextEntry(jarEntry);
                 //create a new jarEntry to avoid ZipException: invalid jarEntry compressed size
                 jarOutputStream.putNextEntry(new JarEntry(jarEntry.getName()));
@@ -212,11 +184,9 @@ public class FileManager {
                 try {
                     jarOutputStream.close();
                 } catch (IOException e) {
-
                 }
             }
         }
-
     }
 
     public static boolean deleteFile(String filePathWithFileName) {

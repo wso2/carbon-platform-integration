@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.esb;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -63,7 +62,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ESBTestCaseUtils {
-
     protected Log log = LogFactory.getLog(getClass());
     private static int SERVICE_DEPLOYMENT_DELAY = TestConfigurationProvider.getServiceDeploymentDelay();
     private static final String PROXY = "proxy";
@@ -78,7 +76,6 @@ public class ESBTestCaseUtils {
     private static final String KEY = "key";
     private static final String NAME = "name";
 
-
     /**
      * Loads the specified resource from the classpath and returns its content as an OMElement.
      *
@@ -86,7 +83,7 @@ public class ESBTestCaseUtils {
      * @return An OMElement containing the resource content
      */
     public OMElement loadResource(String path) throws FileNotFoundException,
-                                                               XMLStreamException {
+            XMLStreamException {
         OMElement documentElement = null;
         FileInputStream inputStream = null;
         XMLStreamReader parser = null;
@@ -119,7 +116,6 @@ public class ESBTestCaseUtils {
                         //ignore
                     }
                 }
-
             }
         } else {
             throw new FileNotFoundException("File Not Exist at " + path);
@@ -134,7 +130,7 @@ public class ESBTestCaseUtils {
      * @throws java.rmi.RemoteException If an error occurs while loading the specified configuration
      */
     public void loadESBConfigurationFrom(String synapseFilePath, String backendURL,
-                                                  String sessionCookie)
+                                         String sessionCookie)
             throws Exception {
         OMElement configElement = loadResource(synapseFilePath);
         updateESBConfiguration(configElement, backendURL, sessionCookie);
@@ -149,7 +145,7 @@ public class ESBTestCaseUtils {
     public OMElement loadESBSampleConfiguration(int number)
             throws Exception {
         String filePath = TestConfigurationProvider.getResourceLocation("ESB") +
-                          File.separator + "samples" + File.separator + "synapse_sample_" + number + ".xml";
+                File.separator + "samples" + File.separator + "synapse_sample_" + number + ".xml";
         File configFile = new File(filePath);
         FileInputStream inputStream = null;
         XMLStreamReader parser = null;
@@ -160,7 +156,6 @@ public class ESBTestCaseUtils {
             parser = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
             builder = new StAXOMBuilder(parser);
             documentElement = builder.getDocumentElement().cloneOMElement();
-
         } finally {
             if (builder != null) {
                 builder.close();
@@ -207,7 +202,6 @@ public class ESBTestCaseUtils {
         SequenceTemplateAdminServiceClient sequenceTemplateAdminServiceClient = new SequenceTemplateAdminServiceClient(backendURL, sessionCookie);
         RestApiAdminClient apiAdminClient = new RestApiAdminClient(backendURL, sessionCookie);
         PriorityMediationAdminClient priorityMediationAdminClient = new PriorityMediationAdminClient(backendURL, sessionCookie);
-
         Iterator<OMElement> localEntries = synapseConfig.getChildrenWithLocalName(LOCAL_ENTRY);
         while (localEntries.hasNext()) {
             OMElement localEntry = localEntries.next();
@@ -219,7 +213,6 @@ public class ESBTestCaseUtils {
             Assert.assertTrue(localEntryAdminServiceClient.addLocalEntry(localEntry), le + " Local Entry addition failed");
             log.info(le + " LocalEntry Uploaded");
         }
-
         Iterator<OMElement> endpoints = synapseConfig.getChildrenWithLocalName(ENDPOINT);
         while (endpoints.hasNext()) {
             OMElement endpoint = endpoints.next();
@@ -231,7 +224,6 @@ public class ESBTestCaseUtils {
             Assert.assertTrue(endPointAdminClient.addEndPoint(endpoint), ep + " Endpoint addition failed");
             log.info(ep + " Endpoint Uploaded");
         }
-
         Iterator<OMElement> sequences = synapseConfig.getChildrenWithLocalName(SEQUENCE);
         while (sequences.hasNext()) {
             OMElement sequence = sequences.next();
@@ -248,7 +240,6 @@ public class ESBTestCaseUtils {
             }
             log.info(sqn + " Sequence Uploaded");
         }
-
         Iterator<OMElement> proxies = synapseConfig.getChildrenWithLocalName(PROXY);
         while (proxies.hasNext()) {
             OMElement proxy = proxies.next();
@@ -260,7 +251,6 @@ public class ESBTestCaseUtils {
             proxyAdmin.addProxyService(proxy);
             log.info(proxyName + " Proxy Uploaded");
         }
-
         Iterator<OMElement> messageStores = synapseConfig.getChildrenWithLocalName(MESSAGE_STORE);
         while (messageStores.hasNext()) {
             OMElement messageStore = messageStores.next();
@@ -272,7 +262,6 @@ public class ESBTestCaseUtils {
             messageStoreAdminClient.addMessageStore(messageStore);
             log.info(mStore + " Message Store Uploaded");
         }
-
         Iterator<OMElement> messageProcessors = synapseConfig.getChildrenWithLocalName(MESSAGE_PROCESSOR);
         while (messageProcessors.hasNext()) {
             OMElement messageProcessor = messageProcessors.next();
@@ -285,8 +274,6 @@ public class ESBTestCaseUtils {
             messageProcessorClient.addMessageProcessor(messageProcessor);
             log.info(mProcessor + " Message Processor Uploaded");
         }
-
-
         Iterator<OMElement> templates = synapseConfig.getChildrenWithLocalName(TEMPLATE);
         while (templates.hasNext()) {
             OMElement template = templates.next();
@@ -298,9 +285,7 @@ public class ESBTestCaseUtils {
                             , templateName + " Sequence Template undeployment failed");
                 }
                 sequenceTemplateAdminServiceClient.addSequenceTemplate(template);
-
             } else {
-
                 if (ArrayUtils.contains(endpointTemplateAdminServiceClient.getEndpointTemplates(), templateName)) {
                     endpointTemplateAdminServiceClient.deleteEndpointTemplate(templateName);
                     Assert.assertTrue(isEndpointTemplateUnDeployed(backendURL, sessionCookie, templateName)
@@ -310,7 +295,6 @@ public class ESBTestCaseUtils {
             }
             log.info(templateName + " Template Uploaded");
         }
-
         Iterator<OMElement> apiElements = synapseConfig.getChildrenWithLocalName(API);
         while (apiElements.hasNext()) {
             OMElement api = apiElements.next();
@@ -323,7 +307,6 @@ public class ESBTestCaseUtils {
             apiAdminClient.add(api);
             log.info(apiName + " API Uploaded");
         }
-
         Iterator<OMElement> priorityExecutorList = synapseConfig.getChildrenWithLocalName(PRIORITY_EXECUTOR);
         while (priorityExecutorList.hasNext()) {
             OMElement executor = priorityExecutorList.next();
@@ -336,11 +319,9 @@ public class ESBTestCaseUtils {
             priorityMediationAdminClient.addPriorityMediator(executorName, executor);
             log.info(executorName + " Priority Executor Uploaded");
         }
-
         Thread.sleep(1000);
         verifySynapseDeployment(synapseConfig, backendURL, sessionCookie);
         log.info("Synapse configuration  Deployed");
-
     }
 
     /**
@@ -359,10 +340,8 @@ public class ESBTestCaseUtils {
         proxyAdmin.addProxyService(proxyConfig);
         String proxyName = proxyConfig.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isProxyDeployed(backEndUrl, sessionCookie, proxyName),
-                          "Proxy Deployment failed or time out");
-
+                "Proxy Deployment failed or time out");
     }
-
 
     /**
      * @param backEndUrl
@@ -376,9 +355,8 @@ public class ESBTestCaseUtils {
         endPointAdminClient.addEndPoint(endpointConfig);
         String ep = endpointConfig.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isEndpointDeployed(backEndUrl, sessionCookie, ep),
-                          ep + "Endpoint deployment not found or time out");
+                ep + "Endpoint deployment not found or time out");
     }
-
 
     /**
      * @param backEndUrl
@@ -390,17 +368,15 @@ public class ESBTestCaseUtils {
     public void addLocalEntry(String backEndUrl, String sessionCookie,
                               OMElement localEntryConfig) throws Exception {
         LocalEntriesAdminClient localEntryAdminServiceClient = new LocalEntriesAdminClient(backEndUrl,
-                                                                                           sessionCookie);
+                sessionCookie);
         boolean value = localEntryAdminServiceClient.addLocalEntry(localEntryConfig);
         Assert.assertTrue(value, "LocalEntry Addition failed");
         if (value) {
             String le = localEntryConfig.getAttributeValue(new QName(KEY));
             Assert.assertTrue(isLocalEntryDeployed(backEndUrl, sessionCookie, le),
-                              le + "LocalEntry deployment not found or time out");
+                    le + "LocalEntry deployment not found or time out");
         }
-
     }
-
 
     /**
      * @param backEndUrl
@@ -411,14 +387,12 @@ public class ESBTestCaseUtils {
     public void addSequence(String backEndUrl, String sessionCookie, OMElement sequenceConfig)
             throws Exception {
         SequenceAdminServiceClient sequenceAdminClient = new SequenceAdminServiceClient(backEndUrl,
-                                                                                        sessionCookie);
+                sessionCookie);
         sequenceAdminClient.addSequence(sequenceConfig);
         String sqn = sequenceConfig.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isSequenceDeployed(backEndUrl, sessionCookie, sqn),
-                          sqn + "Sequence deployment not found or time out");
-
+                sqn + "Sequence deployment not found or time out");
     }
-
 
     /**
      * @param backEndUrl
@@ -433,7 +407,6 @@ public class ESBTestCaseUtils {
         String mStoreName = messageStore.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isMessageStoreDeployed(backEndUrl, sessionCookie, mStoreName), "Message Store Deployment failed");
     }
-
 
     /**
      * @param backEndUrl
@@ -456,7 +429,6 @@ public class ESBTestCaseUtils {
         sequenceTemplateAdminServiceClient.addSequenceTemplate(sequenceTemplate);
         String seqTmpName = sequenceTemplate.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isSequenceTemplateDeployed(backEndUrl, sessionCookie, seqTmpName), "Sequence Template deployment failed");
-
     }
 
     public void addEndpointTemplate(String backEndUrl, String sessionCookie,
@@ -465,7 +437,6 @@ public class ESBTestCaseUtils {
         endpointTemplateAdminServiceClient.addEndpointTemplate(endpointTemplate);
         String endpointTmpName = endpointTemplate.getAttributeValue(new QName(NAME));
         Assert.assertTrue(isEndpointTemplateDeployed(backEndUrl, sessionCookie, endpointTmpName), "Endpoint Template deployment failed");
-
     }
 
     public void addAPI(String backEndUrl, String sessionCookie,
@@ -485,7 +456,6 @@ public class ESBTestCaseUtils {
         Assert.assertTrue(isPriorityExecutorDeployed(backEndUrl, sessionCookie, executorName), "Priority Executor deployment failed");
     }
 
-
     /**
      * @param backEndUrl
      * @param sessionCookie
@@ -499,9 +469,8 @@ public class ESBTestCaseUtils {
         taskAdminClient.addTask(taskDescription);
         Assert.assertTrue(isScheduleTaskDeployed(backEndUrl, sessionCookie
                 , taskDescription.getAttributeValue(new QName("name"))),
-                          "ScheduleTask deployment failed");
+                "ScheduleTask deployment failed");
     }
-
 
     /**
      * Waiting for proxy to deploy
@@ -515,7 +484,6 @@ public class ESBTestCaseUtils {
     public boolean isProxyDeployed(String backEndUrl, String sessionCookie, String proxyName)
             throws RemoteException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Proxy deployment " + proxyName);
-
         boolean isServiceDeployed = false;
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -529,12 +497,9 @@ public class ESBTestCaseUtils {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isServiceDeployed;
-
     }
 
     /**
@@ -549,7 +514,7 @@ public class ESBTestCaseUtils {
     public boolean isEndpointDeployed(String backEndUrl, String sessionCookie, String endpointName)
             throws EndpointAdminEndpointAdminException, RemoteException {
         EndPointAdminClient endPointAdminClient = new EndPointAdminClient(backEndUrl,
-                                                                          sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Endpoint " + endpointName);
         boolean isEndpointExist = false;
         Calendar startTime = Calendar.getInstance();
@@ -558,7 +523,6 @@ public class ESBTestCaseUtils {
             String[] endpoints = endPointAdminClient.getEndpointNames();
             if (endpoints != null && endpoints.length > 0) {
                 for (String endpoint : endpoints) {
-
                     if (endpointName.equals(endpoint)) {
                         isEndpointExist = true;
                         log.info(endpointName + " Endpoint Found in " + time + " millis");
@@ -598,7 +562,6 @@ public class ESBTestCaseUtils {
             String[] messageProcessors = messageProcessorClient.getMessageProcessorNames();
             if (messageProcessors != null && messageProcessors.length > 0) {
                 for (String mp : messageProcessors) {
-
                     if (mp.equals(messageProcessorName)) {
                         isMessageStoreExist = true;
                         log.info(messageProcessorName + " Message Processor Found in " + time + " millis");
@@ -629,7 +592,7 @@ public class ESBTestCaseUtils {
     public boolean isSequenceDeployed(String backEndUrl, String sessionCookie, String sequenceName)
             throws SequenceEditorException, RemoteException {
         SequenceAdminServiceClient sequenceAdminServiceClient = new SequenceAdminServiceClient(backEndUrl,
-                                                                                               sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Sequence " + sequenceName);
         boolean isSequenceExist = false;
         Calendar startTime = Calendar.getInstance();
@@ -638,7 +601,6 @@ public class ESBTestCaseUtils {
             String[] sequences = sequenceAdminServiceClient.getSequences();
             if (sequences != null && sequences.length > 0) {
                 for (String sequence : sequences) {
-
                     if (sequence.equals(sequenceName)) {
                         isSequenceExist = true;
                         log.info(sequenceName + " Sequence Found in " + time + " millis");
@@ -678,7 +640,6 @@ public class ESBTestCaseUtils {
             String[] messageStores = messageStoreAdminClient.getMessageStores();
             if (messageStores != null && messageStores.length > 0) {
                 for (String ms : messageStores) {
-
                     if (ms.equals(messageStoreName)) {
                         isMessageStoreExist = true;
                         log.info(messageStoreName + " Message Store Found in " + time + " millis");
@@ -709,7 +670,6 @@ public class ESBTestCaseUtils {
             String[] templates = sequenceTemplateAdminServiceClient.getSequenceTemplates();
             if (templates != null && templates.length > 0) {
                 for (String tmpl : templates) {
-
                     if (tmpl.equals(sequenceTemplateName)) {
                         isSequenceTmpFound = true;
                         log.info(sequenceTemplateName + " Sequence Template Found in " + time + " millis");
@@ -740,7 +700,6 @@ public class ESBTestCaseUtils {
             String[] templates = endpointTemplateAdminServiceClient.getEndpointTemplates();
             if (templates != null && templates.length > 0) {
                 for (String tmpl : templates) {
-
                     if (tmpl.equals(endpointTemplateName)) {
                         isEndpointTmpFound = true;
                         log.info(endpointTemplateName + " Endpoint Template Found in " + time + " millis");
@@ -771,7 +730,6 @@ public class ESBTestCaseUtils {
             String[] apiList = apiAdminClient.getApiNames();
             if (apiList != null && apiList.length > 0) {
                 for (String restApi : apiList) {
-
                     if (restApi.equals(apiName)) {
                         isApiFound = true;
                         log.info(apiName + " API Found in " + time + " millis");
@@ -803,7 +761,6 @@ public class ESBTestCaseUtils {
             String[] executorList = priorityMediationAdminClient.getExecutorList();
             if (executorList != null && executorList.length > 0) {
                 for (String executor : executorList) {
-
                     if (executor.equals(executorName)) {
                         isExecutorFound = true;
                         log.info(executorName + " Priority Executor Found in " + time + " millis");
@@ -836,7 +793,6 @@ public class ESBTestCaseUtils {
     public boolean isScheduleTaskDeployed(String backEndUrl, String sessionCookie, String taskName)
             throws RemoteException, TaskManagementException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Task deployment " + taskName);
-
         boolean isTaskDeployed = false;
         TaskAdminClient taskAdminClient = new TaskAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -850,13 +806,10 @@ public class ESBTestCaseUtils {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isTaskDeployed;
     }
-
 
     /**
      * @param backEndUrl
@@ -869,9 +822,7 @@ public class ESBTestCaseUtils {
             throws RemoteException {
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         return adminServiceService.isServiceExists(proxyName);
-
     }
-
 
     /**
      * @param backEndUrl
@@ -884,14 +835,13 @@ public class ESBTestCaseUtils {
     public boolean isLocalEntryExist(String backEndUrl, String sessionCookie, String localEntryName)
             throws LocalEntryAdminException, RemoteException {
         LocalEntriesAdminClient localEntryAdminServiceClient = new LocalEntriesAdminClient(backEndUrl,
-                                                                                           sessionCookie);
+                sessionCookie);
         String[] localEntries = localEntryAdminServiceClient.getEntryNames();
         if (localEntries == null || localEntries.length == 0) {
             return false;
         }
         return ArrayUtils.contains(localEntries, localEntryName);
     }
-
 
     /**
      * @param backEndUrl
@@ -904,14 +854,13 @@ public class ESBTestCaseUtils {
     public boolean isSequenceExist(String backEndUrl, String sessionCookie, String sequenceName)
             throws SequenceEditorException, RemoteException {
         SequenceAdminServiceClient sequenceAdminServiceClient = new SequenceAdminServiceClient(backEndUrl,
-                                                                                               sessionCookie);
+                sessionCookie);
         String[] sequences = sequenceAdminServiceClient.getSequences();
         if (sequences == null || sequences.length == 0) {
             return false;
         }
         return ArrayUtils.contains(sequences, sequenceName);
     }
-
 
     /**
      * @param backEndUrl
@@ -925,7 +874,7 @@ public class ESBTestCaseUtils {
     public boolean isEndpointExist(String backEndUrl, String sessionCookie, String endpointName)
             throws EndpointAdminEndpointAdminException, RemoteException {
         EndPointAdminClient endPointAdminClient = new EndPointAdminClient(backEndUrl,
-                                                                          sessionCookie);
+                sessionCookie);
         String[] endpoints = endPointAdminClient.getEndpointNames();
         if (endpoints == null || endpoints.length == 0) {
             return false;
@@ -944,7 +893,6 @@ public class ESBTestCaseUtils {
                                        String messageProcessor) throws RemoteException {
         MessageStoreAdminClient messageStoreAdminClient = new MessageStoreAdminClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(messageStoreAdminClient.getMessageStores(), messageProcessor);
-
     }
 
     /**
@@ -958,35 +906,30 @@ public class ESBTestCaseUtils {
                                            String messageProcessor) throws RemoteException {
         MessageProcessorClient messageProcessorClient = new MessageProcessorClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(messageProcessorClient.getMessageProcessorNames(), messageProcessor);
-
     }
 
     public boolean isSequenceTemplateExist(String backEndUrl, String sessionCookie,
                                            String sequenceTemplate) throws RemoteException {
         SequenceTemplateAdminServiceClient sequenceTemplateAdminServiceClient = new SequenceTemplateAdminServiceClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(sequenceTemplateAdminServiceClient.getSequenceTemplates(), sequenceTemplate);
-
     }
 
     public boolean isEndpointTemplateExist(String backEndUrl, String sessionCookie,
                                            String endpointTemplate) throws RemoteException {
         EndpointTemplateAdminServiceClient endpointTemplateAdminServiceClient = new EndpointTemplateAdminServiceClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(endpointTemplateAdminServiceClient.getEndpointTemplates(), endpointTemplate);
-
     }
 
     public boolean isApiExist(String backEndUrl, String sessionCookie, String apiName)
             throws RemoteException, RestApiAdminAPIException {
         RestApiAdminClient apiAdminClient = new RestApiAdminClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(apiAdminClient.getApiNames(), apiName);
-
     }
 
     public boolean isPriorityExecutorExist(String backEndUrl, String sessionCookie,
                                            String priorityExecutorName) throws RemoteException {
         PriorityMediationAdminClient priorityMediationAdminClient = new PriorityMediationAdminClient(backEndUrl, sessionCookie);
         return ArrayUtils.contains(priorityMediationAdminClient.getExecutorList(), priorityExecutorName);
-
     }
 
     public boolean isScheduleTaskExist(String backEndUrl, String sessionCookie, String taskName)
@@ -994,7 +937,6 @@ public class ESBTestCaseUtils {
         TaskAdminClient taskAdminClient = new TaskAdminClient(backEndUrl, sessionCookie);
         return taskAdminClient.getScheduleTaskList().contains(taskName);
     }
-
 
     /**
      * @param backEndUrl
@@ -1021,10 +963,9 @@ public class ESBTestCaseUtils {
     public void deleteLocalEntry(String backEndUrl, String sessionCookie, String localEntryName)
             throws LocalEntryAdminException, RemoteException {
         LocalEntriesAdminClient localEntryAdminServiceClient = new LocalEntriesAdminClient(backEndUrl,
-                                                                                           sessionCookie);
+                sessionCookie);
         Assert.assertTrue(localEntryAdminServiceClient.deleteLocalEntry(localEntryName), "LocalEntry Deletion failed");
         Assert.assertTrue(isLocalEntryUnDeployed(backEndUrl, sessionCookie, localEntryName), "LocalEntry undeployment failed");
-
     }
 
     /**
@@ -1038,7 +979,7 @@ public class ESBTestCaseUtils {
     public void deleteEndpoint(String backEndUrl, String sessionCookie, String endpointName)
             throws EndpointAdminEndpointAdminException, RemoteException {
         EndPointAdminClient endPointAdminClient = new EndPointAdminClient(backEndUrl,
-                                                                          sessionCookie);
+                sessionCookie);
         Assert.assertTrue(endPointAdminClient.deleteEndpoint(endpointName), "Endpoint deletion failed");
         Assert.assertTrue(isEndpointUnDeployed(backEndUrl, sessionCookie, endpointName), "Endpoint undeployment failed");
     }
@@ -1053,11 +994,10 @@ public class ESBTestCaseUtils {
     public void deleteSequence(String backEndUrl, String sessionCookie, String sequenceName)
             throws SequenceEditorException, RemoteException {
         SequenceAdminServiceClient sequenceAdminServiceClient = new SequenceAdminServiceClient(backEndUrl,
-                                                                                               sessionCookie);
+                sessionCookie);
         sequenceAdminServiceClient.deleteSequence(sequenceName);
         Assert.assertTrue(isSequenceUnDeployed(backEndUrl, sessionCookie, sequenceName), "Sequence undeployment failed");
     }
-
 
     /**
      * @param backEndUrl
@@ -1089,7 +1029,6 @@ public class ESBTestCaseUtils {
     public void deleteEndpointTemplate(String backEndUrl, String sessionCookie,
                                        String endpointTemplate)
             throws RemoteException, SequenceEditorException, EndpointAdminEndpointAdminException {
-
         EndpointTemplateAdminServiceClient endpointTemplateAdminServiceClient = new EndpointTemplateAdminServiceClient(backEndUrl, sessionCookie);
         endpointTemplateAdminServiceClient.deleteEndpointTemplate(endpointTemplate);
         Assert.assertTrue(isEndpointTemplateUnDeployed(backEndUrl, sessionCookie, endpointTemplate), "Endpoint Template undeployment failed");
@@ -1117,7 +1056,6 @@ public class ESBTestCaseUtils {
         Assert.assertTrue(isPriorityExecutorUnDeployed(backEndUrl, sessionCookie, executorName), "Priority Executor undeployment failed");
     }
 
-
     /**
      * @param backEndUrl
      * @param sessionCookie
@@ -1132,8 +1070,7 @@ public class ESBTestCaseUtils {
         TaskAdminClient taskAdminClient = new TaskAdminClient(backEndUrl, sessionCookie);
         taskAdminClient.deleteTask(taskName, group);
         Assert.assertTrue(isScheduleTaskUnDeployed(backEndUrl, sessionCookie, taskName),
-                          "ScheduleTask deployment failed");
-
+                "ScheduleTask deployment failed");
     }
 
     /**
@@ -1145,7 +1082,6 @@ public class ESBTestCaseUtils {
      * @return
      * @throws RemoteException
      */
-
     public boolean isProxyUnDeployed(String backEndUrl, String sessionCookie, String proxyName)
             throws RemoteException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Proxy undeployment");
@@ -1162,7 +1098,6 @@ public class ESBTestCaseUtils {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-
             }
         }
         return isServiceDeleted;
@@ -1182,7 +1117,6 @@ public class ESBTestCaseUtils {
                 isMessageStoreDeleted = true;
                 break;
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -1191,7 +1125,6 @@ public class ESBTestCaseUtils {
         }
         return isMessageStoreDeleted;
     }
-
 
     public boolean isMessageProcessorUnDeployed(String backEndUrl, String sessionCookie,
                                                 String messageProcessorName)
@@ -1207,7 +1140,6 @@ public class ESBTestCaseUtils {
                 isMessageProcessorDeleted = true;
                 break;
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -1229,7 +1161,7 @@ public class ESBTestCaseUtils {
                                         String localEntryName)
             throws LocalEntryAdminException, RemoteException {
         LocalEntriesAdminClient localEntryAdminServiceClient = new LocalEntriesAdminClient(backEndUrl,
-                                                                                           sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for LocalEntry " + localEntryName);
         boolean isLocalEntryExist = false;
         Calendar startTime = Calendar.getInstance();
@@ -1238,7 +1170,6 @@ public class ESBTestCaseUtils {
             String[] localEntries = localEntryAdminServiceClient.getEntryNames();
             if (localEntries != null && localEntries.length > 0) {
                 for (String localEntry : localEntries) {
-
                     if (localEntryName.equals(localEntry)) {
                         isLocalEntryExist = true;
                         log.info(localEntryName + " LocalEntry Found in " + time + " millis");
@@ -1270,7 +1201,7 @@ public class ESBTestCaseUtils {
                                           String localEntryName)
             throws LocalEntryAdminException, RemoteException {
         LocalEntriesAdminClient localEntryAdminServiceClient = new LocalEntriesAdminClient(backEndUrl,
-                                                                                           sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Undeployment LocalEntry " + localEntryName);
         boolean isLocalEntryUnDeployed = false;
         Calendar startTime = Calendar.getInstance();
@@ -1281,7 +1212,6 @@ public class ESBTestCaseUtils {
                 isLocalEntryUnDeployed = true;
                 break;
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -1303,7 +1233,7 @@ public class ESBTestCaseUtils {
                                         String sequenceName)
             throws SequenceEditorException, RemoteException {
         SequenceAdminServiceClient sequenceAdminServiceClient = new SequenceAdminServiceClient(backEndUrl,
-                                                                                               sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Undeployment Sequence " + sequenceName);
         boolean isSequenceUnDeployed = false;
         Calendar startTime = Calendar.getInstance();
@@ -1314,7 +1244,6 @@ public class ESBTestCaseUtils {
                 isSequenceUnDeployed = true;
                 break;
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -1337,7 +1266,7 @@ public class ESBTestCaseUtils {
                                         String endpointName)
             throws EndpointAdminEndpointAdminException, RemoteException {
         EndPointAdminClient endPointAdminClient = new EndPointAdminClient(backEndUrl,
-                                                                          sessionCookie);
+                sessionCookie);
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Undeployment Endpoint " + endpointName);
         boolean isEndpointUnDeployed = false;
         Calendar startTime = Calendar.getInstance();
@@ -1463,7 +1392,6 @@ public class ESBTestCaseUtils {
                                             String taskName)
             throws RemoteException, TaskManagementException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Task Undeployment " + taskName);
-
         boolean isTaskUnDeployed = false;
         TaskAdminClient taskAdminClient = new TaskAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -1477,10 +1405,8 @@ public class ESBTestCaseUtils {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isTaskUnDeployed;
     }
 
@@ -1497,78 +1423,68 @@ public class ESBTestCaseUtils {
     public void verifySynapseDeployment(OMElement synapseConfig, String backendURL,
                                         String sessionCookie)
             throws LocalEntryAdminException, RemoteException, EndpointAdminEndpointAdminException,
-                   SequenceEditorException, RestApiAdminAPIException {
+            SequenceEditorException, RestApiAdminAPIException {
         Iterator<OMElement> localEntries = synapseConfig.getChildrenWithLocalName(LOCAL_ENTRY);
         while (localEntries.hasNext()) {
             String le = localEntries.next().getAttributeValue(new QName(KEY));
             Assert.assertTrue(isLocalEntryDeployed(backendURL, sessionCookie, le),
-                              le + " LocalEntry deployment not found or time out");
+                    le + " LocalEntry deployment not found or time out");
         }
-
         Iterator<OMElement> endpoints = synapseConfig.getChildrenWithLocalName(ENDPOINT);
         while (endpoints.hasNext()) {
             String ep = endpoints.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isEndpointDeployed(backendURL, sessionCookie, ep),
-                              ep + " Endpoint deployment not found or time out");
+                    ep + " Endpoint deployment not found or time out");
         }
-
         Iterator<OMElement> sequences = synapseConfig.getChildrenWithLocalName(SEQUENCE);
         while (sequences.hasNext()) {
             String sqn = sequences.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isSequenceDeployed(backendURL, sessionCookie, sqn),
-                              sqn + " Sequence deployment not found or time out");
+                    sqn + " Sequence deployment not found or time out");
         }
-
         Iterator<OMElement> proxies = synapseConfig.getChildrenWithLocalName(PROXY);
         while (proxies.hasNext()) {
             String proxy = proxies.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isProxyDeployed(backendURL, sessionCookie, proxy),
-                              proxy + " Proxy Deployment not found or time out");
+                    proxy + " Proxy Deployment not found or time out");
         }
-
         Iterator<OMElement> messageStores = synapseConfig.getChildrenWithLocalName(MESSAGE_STORE);
         while (messageStores.hasNext()) {
             String mStore = messageStores.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isMessageStoreDeployed(backendURL, sessionCookie, mStore),
-                              mStore + " Message Store Deployment not found or time out");
+                    mStore + " Message Store Deployment not found or time out");
         }
-
         Iterator<OMElement> messageProcessor = synapseConfig.getChildrenWithLocalName(MESSAGE_PROCESSOR);
         while (messageProcessor.hasNext()) {
             String mProcessor = messageProcessor.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isMessageProcessorDeployed(backendURL, sessionCookie, mProcessor),
-                              mProcessor + " Message Processor Deployment not found or time out");
+                    mProcessor + " Message Processor Deployment not found or time out");
         }
-
         Iterator<OMElement> templates = synapseConfig.getChildrenWithLocalName(TEMPLATE);
         while (templates.hasNext()) {
             OMElement template = templates.next();
             String templateName = template.getAttributeValue(new QName(NAME));
             if (template.getFirstChildWithName(new QName(template.getNamespace().getNamespaceURI(), SEQUENCE)) != null) {
                 Assert.assertTrue(isSequenceTemplateDeployed(backendURL, sessionCookie, templateName),
-                                  templateName + " Sequence Template Deployment not found or time out");
+                        templateName + " Sequence Template Deployment not found or time out");
             } else {
-
                 Assert.assertTrue(isEndpointTemplateDeployed(backendURL, sessionCookie, templateName),
-                                  templateName + " Endpoint Template Deployment not found or time out");
+                        templateName + " Endpoint Template Deployment not found or time out");
             }
             log.info("Template Uploaded");
         }
-
         Iterator<OMElement> apiList = synapseConfig.getChildrenWithLocalName(API);
         while (apiList.hasNext()) {
             String apiName = apiList.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isApiDeployed(backendURL, sessionCookie, apiName),
-                              apiName + " API Deployment not found or time out");
+                    apiName + " API Deployment not found or time out");
         }
-
         Iterator<OMElement> executorList = synapseConfig.getChildrenWithLocalName(PRIORITY_EXECUTOR);
         while (executorList.hasNext()) {
             String executorName = executorList.next().getAttributeValue(new QName(NAME));
             Assert.assertTrue(isPriorityExecutorDeployed(backendURL, sessionCookie, executorName),
-                              executorName + " Priority Executor Deployment not found or time out");
+                    executorName + " Priority Executor Deployment not found or time out");
         }
-
     }
 
     public void deleteArtifact(OMElement synapseConfig, String backendURL,
@@ -1583,7 +1499,6 @@ public class ESBTestCaseUtils {
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backendURL, sessionCookie);
         RestApiAdminClient apiAdminClient = new RestApiAdminClient(backendURL, sessionCookie);
         PriorityMediationAdminClient priorityMediationAdminClient = new PriorityMediationAdminClient(backendURL, sessionCookie);
-
         Iterator<OMElement> localEntries = synapseConfig.getChildrenWithLocalName(LOCAL_ENTRY);
         while (localEntries.hasNext()) {
             OMElement localEntry = localEntries.next();
@@ -1593,7 +1508,6 @@ public class ESBTestCaseUtils {
                 Assert.assertTrue(isLocalEntryUnDeployed(backendURL, sessionCookie, le), le + " Local Entry undeployment failed");
             }
         }
-
         Iterator<OMElement> endpoints = synapseConfig.getChildrenWithLocalName(ENDPOINT);
         while (endpoints.hasNext()) {
             OMElement endpoint = endpoints.next();
@@ -1603,7 +1517,6 @@ public class ESBTestCaseUtils {
                 Assert.assertTrue(isEndpointUnDeployed(backendURL, sessionCookie, ep), ep + " Endpoint undeployment failed");
             }
         }
-
         Iterator<OMElement> sequences = synapseConfig.getChildrenWithLocalName(SEQUENCE);
         while (sequences.hasNext()) {
             OMElement sequence = sequences.next();
@@ -1615,9 +1528,7 @@ public class ESBTestCaseUtils {
                 sequenceAdminClient.deleteSequence(sqn);
                 Assert.assertTrue(isSequenceUnDeployed(backendURL, sessionCookie, sqn), sqn + " Sequence undeployment failed");
             }
-
         }
-
         Iterator<OMElement> proxies = synapseConfig.getChildrenWithLocalName(PROXY);
         while (proxies.hasNext()) {
             OMElement proxy = proxies.next();
@@ -1627,7 +1538,6 @@ public class ESBTestCaseUtils {
                 Assert.assertTrue(isProxyUnDeployed(backendURL, sessionCookie, proxyName), proxyName + " Undeployment failed");
             }
         }
-
         Iterator<OMElement> messageStores = synapseConfig.getChildrenWithLocalName(MESSAGE_STORE);
         while (messageStores.hasNext()) {
             OMElement messageStore = messageStores.next();
@@ -1637,7 +1547,6 @@ public class ESBTestCaseUtils {
                 Assert.assertTrue(isMessageStoreUnDeployed(backendURL, sessionCookie, mStore), mStore + " Message Store undeployment failed");
             }
         }
-
         Iterator<OMElement> messageProcessors = synapseConfig.getChildrenWithLocalName(MESSAGE_PROCESSOR);
         while (messageProcessors.hasNext()) {
             OMElement messageProcessor = messageProcessors.next();
@@ -1648,20 +1557,17 @@ public class ESBTestCaseUtils {
                         , mProcessor + " Message Processor undeployment failed");
             }
         }
-
         Iterator<OMElement> templates = synapseConfig.getChildrenWithLocalName(TEMPLATE);
         while (templates.hasNext()) {
             OMElement template = templates.next();
             String templateName = template.getAttributeValue(new QName(NAME));
             if (template.getFirstChildWithName(new QName(template.getNamespace().getNamespaceURI(), SEQUENCE)) != null) {
                 deleteSequenceTemplate(backendURL, sessionCookie, templateName);
-
             } else {
                 deleteEndpointTemplate(backendURL, sessionCookie, templateName);
             }
             log.info("Template UnUploaded");
         }
-
         Iterator<OMElement> apiList = synapseConfig.getChildrenWithLocalName(API);
         while (apiList.hasNext()) {
             OMElement api = apiList.next();
@@ -1672,7 +1578,6 @@ public class ESBTestCaseUtils {
                         , apiName + " API undeployment failed");
             }
         }
-
         Iterator<OMElement> executorList = synapseConfig.getChildrenWithLocalName(PRIORITY_EXECUTOR);
         while (executorList.hasNext()) {
             OMElement executor = executorList.next();
@@ -1683,39 +1588,27 @@ public class ESBTestCaseUtils {
                         , executorName + " Priority Executor undeployment failed");
             }
         }
-
         log.info("Synapse configuration  unDeployed");
-
     }
 
     public void deploySynapseArtifactsFromFileSystem(String directoryPath, String backendURL,
                                                      String sessionCookie) throws Exception {
-
         File[] fileList = new File(directoryPath).listFiles();
-
         HashMap<String, File[]> fileStructure = new HashMap<String, File[]>();
-
         for (int x = 0; x <= fileList.length - 1; x++) {
             File FileName = fileList[x];
             fileStructure.put(FileName.getName(), FileName.listFiles());
         }
-
         for (Map.Entry<String, File[]> stringEntry : fileStructure.entrySet()) {
-
             Map.Entry entry = (Map.Entry) stringEntry;
             File[] fileArr = (File[]) entry.getValue();
-
             if (entry.getKey().equals("api")) {
-
                 OMElement apiOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the api to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     apiOmElement = loadResource(filePathArr[1]);
-
                     String apiName = apiOmElement.getAttributeValue(new QName("name"));
-
                     if (isApiExist(backendURL, sessionCookie, apiName)) {
                         deleteApi(backendURL, sessionCookie, apiName);
                     }
@@ -1725,14 +1618,11 @@ public class ESBTestCaseUtils {
                 }
             } else if (entry.getKey().equals("endpoints")) {
                 OMElement endpointOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the endpoints to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     endpointOmElement = loadResource(filePathArr[1]);
-
                     String endpointName = endpointOmElement.getAttributeValue(new QName("name"));
-
                     if (isEndpointExist(backendURL, sessionCookie, endpointName)) {
                         deleteEndpoint(backendURL, sessionCookie, endpointName);
                     }
@@ -1742,14 +1632,11 @@ public class ESBTestCaseUtils {
                 }
             } else if (entry.getKey().equals("priority-executors")) {
                 OMElement priorityExecutorsOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the priority-executors to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     priorityExecutorsOmElement = loadResource(filePathArr[1]);
-
                     String proxyExecutorName = priorityExecutorsOmElement.getAttributeValue(new QName("name"));
-
                     if (isPriorityExecutorExist(backendURL, sessionCookie, proxyExecutorName)) {
                         deletePriorityExecutor(backendURL, sessionCookie, proxyExecutorName);
                     }
@@ -1757,17 +1644,13 @@ public class ESBTestCaseUtils {
                     Assert.assertTrue(isPriorityExecutorDeployed(backendURL, sessionCookie, proxyExecutorName),
                             "priority-executor " + proxyExecutorName + "deployment failure");
                 }
-
             } else if (entry.getKey().equals("sequences")) {
                 OMElement sequencesOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the sequences to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     sequencesOmElement = loadResource(filePathArr[1]);
-
                     String sequenceName = sequencesOmElement.getAttributeValue(new QName("name"));
-
                     if (isSequenceExist(backendURL, sessionCookie, sequenceName)) {
                         deleteSequence(backendURL, sessionCookie, sequenceName);
                     }
@@ -1777,14 +1660,11 @@ public class ESBTestCaseUtils {
                 }
             } else if (entry.getKey().equals("proxy-services")) {
                 OMElement proxyServicesOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the proxy-services to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     proxyServicesOmElement = loadResource(filePathArr[1]);
-
                     String proxyServiceName = proxyServicesOmElement.getAttributeValue(new QName("name"));
-
                     if (isProxyServiceExist(backendURL, sessionCookie, proxyServiceName)) {
                         deleteProxyService(backendURL, sessionCookie, proxyServiceName);
                     }
@@ -1794,14 +1674,11 @@ public class ESBTestCaseUtils {
                 }
             } else if (entry.getKey().equals("local-entries")) {
                 OMElement localEntriesOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the local-entries to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     localEntriesOmElement = loadResource(filePathArr[1]);
-
                     String localEntryKey = localEntriesOmElement.getAttributeValue(new QName("key"));
-
                     if (isLocalEntryExist(backendURL, sessionCookie, localEntryKey)) {
                         deleteLocalEntry(backendURL, sessionCookie, localEntryKey);
                     }
@@ -1811,35 +1688,27 @@ public class ESBTestCaseUtils {
                 }
             } else if (entry.getKey().equals("tasks")) {
                 OMElement taskOmElement;
-
                 for (File aFileArr : fileArr) {
                     //deploying the tasks to esb
                     String filePathArr[] = aFileArr.getAbsolutePath().split(TestConfigurationProvider.getResourceLocation());
                     taskOmElement = loadResource(filePathArr[1]);
-
                     if (taskOmElement.getNamespace().getPrefix().equals("")) {
-
                         OMFactory fac = OMAbstractFactory.getOMFactory();
                         OMNamespace omNs = fac.createOMNamespace("http://www.wso2.org/products/wso2commons/tasks", "task");
                         taskOmElement.setNamespace(omNs);
-
                         Iterator it = taskOmElement.getChildElements();
-
                         while (it.hasNext()) {
                             ((OMElement) it.next()).setNamespace(omNs);
                         }
                     }
-
                     String taskName = taskOmElement.getAttributeValue(new QName("name"));
                     String taskGroup = taskOmElement.getAttributeValue(new QName("group"));
-
                     if (isScheduleTaskExist(backendURL, sessionCookie, taskName)) {
                         deleteScheduleTask(backendURL, sessionCookie, taskName, taskGroup);
                     }
                     addScheduleTask(backendURL, sessionCookie, taskOmElement);
                     Assert.assertTrue(isScheduleTaskDeployed(backendURL, sessionCookie, taskName),
                             "task " + taskName + "deployment failure");
-
                 }
             } else {
                 log.info(entry.getKey() + " was not deployed");

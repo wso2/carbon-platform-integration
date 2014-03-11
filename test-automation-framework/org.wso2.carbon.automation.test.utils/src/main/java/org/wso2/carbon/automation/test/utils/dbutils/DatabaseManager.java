@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public interface DatabaseManager {
-
     public void executeUpdate(String sql) throws SQLException;
 
     public void executeUpdate(File sqlFile) throws SQLException, IOException;
@@ -19,6 +18,5 @@ public interface DatabaseManager {
     public void execute(String sql) throws SQLException;
 
     public void disconnect() throws SQLException;
-
 }
 

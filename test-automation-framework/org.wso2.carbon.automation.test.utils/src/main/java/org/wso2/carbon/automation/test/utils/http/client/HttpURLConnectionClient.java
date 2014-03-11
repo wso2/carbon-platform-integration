@@ -15,21 +15,11 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.http.client;
-
 
 import org.wso2.carbon.automation.test.utils.http.HttpResponse;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -39,7 +29,6 @@ import java.net.URL;
  */
 @SuppressWarnings("unused")
 public class HttpURLConnectionClient {
-
     /**
      * Sends an HTTP GET request to a url
      *
@@ -62,7 +51,6 @@ public class HttpURLConnectionClient {
             conn.setDoOutput(true);
             conn.setReadTimeout(10000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -109,7 +97,6 @@ public class HttpURLConnectionClient {
             conn.setRequestProperty("charset", "UTF-8");
             conn.setReadTimeout(10000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -262,7 +249,6 @@ public class HttpURLConnectionClient {
      * @param contentType content type of the message
      * @throws Exception If an error occurs while POSTing
      */
-
     public static void sendPutRequest(Reader data, URL endpoint, Writer output, String contentType)
             throws Exception {
         HttpURLConnection urlConnection = null;
@@ -355,7 +341,6 @@ public class HttpURLConnectionClient {
             }
             InputStream in = urlConnection.getInputStream();
             resultData = getStringFromInputStream(in);
-
             if (in != null) {
                 in.close();
             }
@@ -366,7 +351,6 @@ public class HttpURLConnectionClient {
                 urlConnection.disconnect();
             }
         }
-
         return resultData;
     }
 
@@ -392,7 +376,6 @@ public class HttpURLConnectionClient {
             conn.setDoOutput(true);
             conn.setReadTimeout(10000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -436,13 +419,10 @@ public class HttpURLConnectionClient {
      * @return String
      */
     private static String getStringFromInputStream(InputStream is) {
-
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
-
         String line;
         try {
-
             br = new BufferedReader(new InputStreamReader(is));
             while ((line = br.readLine()) != null) {
                 sb.append(line);
@@ -458,7 +438,6 @@ public class HttpURLConnectionClient {
                 }
             }
         }
-
         return sb.toString();
     }
 }

@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.governance;
 
 import org.wso2.carbon.automation.test.utils.common.FileManager;
@@ -45,10 +44,8 @@ public class MetaDataUtils {
         for (String serviceId : serviceManager.getAllServiceIds()) {
             service = serviceManager.getService(serviceId);
             if (service.getPath().endsWith(serviceName) && service.getPath().contains("trunk")) {
-
                 return service.getPath();
             }
-
         }
         throw new Exception("Getting Service path failed");
     }
@@ -69,7 +66,6 @@ public class MetaDataUtils {
         policyManager.addPolicy(policy);
         policy = policyManager.getPolicy(policy.getId());
         return policy.getPath();
-
     }
 
     public static String addWSDL(String name, Registry governance, String wsdlFilePath, Wsdl wsdl)
@@ -78,7 +74,6 @@ public class MetaDataUtils {
         wsdl = wsdlManager.newWsdl(FileManager.readFile(wsdlFilePath).getBytes(), name);
         wsdlManager.addWsdl(wsdl);
         wsdl = wsdlManager.getWsdl(wsdl.getId());
-
         return wsdl.getPath();
     }
 }

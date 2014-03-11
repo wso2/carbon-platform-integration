@@ -31,7 +31,6 @@ import java.util.Queue;
 
 public class ConcurrencyTest {
     private static final Log log = LogFactory.getLog(ConcurrencyTest.class);
-
     private int concurrencyNumber;
     private int numberOfIterations;
     private Queue<OMElement> messageQueue;
@@ -64,7 +63,7 @@ public class ConcurrencyTest {
                     final String operation)
             throws ConcurrencyTestFailedError, InterruptedException {
         log.info("Starting Concurrency test with " + concurrencyNumber + " Threads and " + numberOfIterations
-                 + " loop count");
+                + " loop count");
         clearQueue();
         clearErrorQueue();
         final ExceptionHandler handler = new ExceptionHandler();
@@ -84,13 +83,10 @@ public class ConcurrencyTest {
                 }
             });
             clientThread[i].setUncaughtExceptionHandler(handler);
-
         }
-
         for (int i = 0; i < concurrencyNumber; i++) {
             clientThread[i].start();
         }
-
         int aliveCount = 0;
         Calendar startTime = Calendar.getInstance();
         while (aliveCount < concurrencyNumber) {
@@ -105,11 +101,10 @@ public class ConcurrencyTest {
         }
         if (!handler.isTestPass()) {
             throw new ConcurrencyTestFailedError(handler.getFailCount() + " service invocation/s failed out of "
-                                                 + concurrencyNumber * numberOfIterations + " service invocations.\n"
-                                                 + "Concurrency Test Failed for Thread Group=" + concurrencyNumber
-                                                 + " and loop count=" + numberOfIterations, handler.getException());
+                    + concurrencyNumber * numberOfIterations + " service invocations.\n"
+                    + "Concurrency Test Failed for Thread Group=" + concurrencyNumber
+                    + " and loop count=" + numberOfIterations, handler.getException());
         }
-
     }
 
     private synchronized void addToMessageQueue(OMElement response) {

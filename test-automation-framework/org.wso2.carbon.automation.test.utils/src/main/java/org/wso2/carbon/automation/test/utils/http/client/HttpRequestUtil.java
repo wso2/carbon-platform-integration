@@ -19,15 +19,7 @@ package org.wso2.carbon.automation.test.utils.http.client;
 
 import org.wso2.carbon.automation.test.utils.http.HttpResponse;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -40,7 +32,6 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public class HttpRequestUtil {
-
     /**
      * Sends an HTTP GET request to a url
      *
@@ -63,7 +54,6 @@ public class HttpRequestUtil {
             conn.setDoOutput(true);
             conn.setReadTimeout(10000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -168,7 +158,6 @@ public class HttpRequestUtil {
                     out.close();
                 }
             }
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -193,7 +182,6 @@ public class HttpRequestUtil {
                 }
             }
             return new HttpResponse(sb.toString(), urlConnection.getResponseCode(), headers);
-
         } catch (IOException e) {
             throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
@@ -217,14 +205,12 @@ public class HttpRequestUtil {
             urlConnection.setDoInput(true);
             urlConnection.setUseCaches(false);
             urlConnection.setAllowUserInteraction(false);
-
             //setting headers
             if (headers != null && headers.size() > 0) {
                 Iterator<String> itr = headers.keySet().iterator();
                 String key = itr.next();
                 urlConnection.setRequestProperty(key, headers.get(key));
             }
-
             OutputStream out = urlConnection.getOutputStream();
             try {
                 Writer writer = new OutputStreamWriter(out, "UTF-8");
@@ -237,7 +223,6 @@ public class HttpRequestUtil {
                     out.close();
                 }
             }
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -262,7 +247,6 @@ public class HttpRequestUtil {
                 }
             }
             return new HttpResponse(sb.toString(), urlConnection.getResponseCode(), responseHeaders);
-
         } catch (IOException e) {
             throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
@@ -272,7 +256,7 @@ public class HttpRequestUtil {
         }
     }
 
-    public static HttpResponse doGet(String endpoint,  Map<String, String> headers) throws IOException {
+    public static HttpResponse doGet(String endpoint, Map<String, String> headers) throws IOException {
         HttpResponse httpResponse;
         if (endpoint.startsWith("http://")) {
             URL url = new URL(endpoint);
@@ -280,16 +264,13 @@ public class HttpRequestUtil {
             conn.setRequestMethod("GET");
             conn.setDoOutput(true);
             conn.setReadTimeout(30000);
-
             //setting headers
             if (headers != null && headers.size() > 0) {
                 Iterator<String> itr = headers.keySet().iterator();
                 String key = itr.next();
                 conn.setRequestProperty(key, headers.get(key));
             }
-
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -301,7 +282,6 @@ public class HttpRequestUtil {
                 }
                 httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
                 httpResponse.setResponseMessage(conn.getResponseMessage());
-
             } catch (IOException ignored) {
                 rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 String line;
@@ -315,12 +295,10 @@ public class HttpRequestUtil {
                     rd.close();
                 }
             }
-
             return httpResponse;
         }
         return null;
     }
-
 
     /**
      * Reads data from the data reader and posts it to a server via POST request.
@@ -396,7 +374,6 @@ public class HttpRequestUtil {
      * @param contentType content type of the message
      * @throws Exception If an error occurs while POSTing
      */
-
     public static void sendPutRequest(Reader data, URL endpoint, Writer output, String contentType)
             throws Exception {
         HttpURLConnection urlConnection = null;
@@ -444,7 +421,6 @@ public class HttpRequestUtil {
             }
         }
     }
-
 
     /**
      * Pipes everything from the reader to the writer via a buffer

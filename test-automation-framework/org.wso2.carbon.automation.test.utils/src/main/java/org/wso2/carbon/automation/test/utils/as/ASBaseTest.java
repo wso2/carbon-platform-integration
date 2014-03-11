@@ -15,17 +15,14 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.as;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.test.api.clients.security.SecurityAdminServiceClient;
 
-
 public class ASBaseTest {
     private static final Log log = LogFactory.getLog(ASBaseTest.class);
-
     public SecurityAdminServiceClient securityAdminServiceClient;
 
    /* public void init() throws Exception {

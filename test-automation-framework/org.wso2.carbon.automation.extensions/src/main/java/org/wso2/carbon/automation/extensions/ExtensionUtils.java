@@ -91,18 +91,6 @@ public class ExtensionUtils {
         return getCarbonHome() + File.separator + "repository" + File.separator + "conf";
     }
 
-    public String login() throws RemoteException,
-            LoginAuthenticationExceptionException {
-        String sessionCookie = null;
-/*        AuthenticationAdminClient authenticationAdminClient
-                = new AuthenticationAdminClient(UrlGenerationUtil.getBackendURL(productGroupName, managerInstanceName));
-        sessionCookie = authenticationAdminClient.
-                login(tenantsDomain, AutomationConfiguration.getTenantUsername(tenantsDomain, tenantKey),
-                        AutomationConfiguration.getTenantPassword(tenantsDomain, tenantKey),
-                        AutomationConfiguration.getManagementHost(productGroupName, managerInstanceName));*/
-        return sessionCookie;
-    }
-
 
     public static String getCarbonHome() {
         if (System.getProperty("user.dir") != null) {

@@ -15,9 +15,7 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.http.client;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,15 +27,10 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 
 public class HttpsURLConnectionClient {
-
     private static final Log log = LogFactory.getLog(HttpsURLConnectionClient.class);
 
     public static HttpResponse getRequest(String Uri, String requestParameters)
@@ -51,17 +44,14 @@ public class HttpsURLConnectionClient {
             URL url = new URL(urlStr);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-
             conn.setDoOutput(true);
             conn.setHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
                     return true;
                 }
             });
-
             conn.setReadTimeout(30000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -85,7 +75,7 @@ public class HttpsURLConnectionClient {
     }
 
     public static HttpResponse getWithBasicAuth(String Uri, String requestParameters,
-                                                 String userName, String password)
+                                                String userName, String password)
             throws IOException, XPathExpressionException {
         if (Uri.startsWith("https://")) {
             setKeyStoreProperties();
@@ -96,9 +86,7 @@ public class HttpsURLConnectionClient {
             URL url = new URL(urlStr);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
-
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true);
             conn.setHostnameVerifier(new HostnameVerifier() {
@@ -106,10 +94,8 @@ public class HttpsURLConnectionClient {
                     return true;
                 }
             });
-
             conn.setReadTimeout(30000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -132,18 +118,15 @@ public class HttpsURLConnectionClient {
     }
 
     public static HttpResponse postWithBasicAuth(String uri, String requestQuery, String userName,
-                                                  String password)
+                                                 String password)
             throws IOException, XPathExpressionException {
         if (uri.startsWith("https://")) {
             setKeyStoreProperties();
-
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-
             String encode =
                     new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
-
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -157,12 +140,9 @@ public class HttpsURLConnectionClient {
             });
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
             wr.writeBytes(requestQuery);
-
             conn.setReadTimeout(10000);
             conn.connect();
-
             System.out.println(conn.getRequestMethod());
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -187,18 +167,15 @@ public class HttpsURLConnectionClient {
     }
 
     public static HttpResponse postWithBasicAuth(String uri, String requestQuery,
-                                                  String contentType,
-                                                  String userName, String password)
+                                                 String contentType,
+                                                 String userName, String password)
             throws IOException, XPathExpressionException {
         if (uri.startsWith("https://")) {
             setKeyStoreProperties();
-
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
-
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
@@ -212,12 +189,9 @@ public class HttpsURLConnectionClient {
             });
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
             wr.writeBytes(requestQuery);
-
             conn.setReadTimeout(10000);
             conn.connect();
-
             System.out.println(conn.getRequestMethod());
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -242,18 +216,15 @@ public class HttpsURLConnectionClient {
     }
 
     public static HttpResponse putWithBasicAuth(String uri, String requestQuery,
-                                                 String contentType, String userName,
-                                                 String password)
+                                                String contentType, String userName,
+                                                String password)
             throws IOException, XPathExpressionException {
         if (uri.startsWith("https://")) {
             setKeyStoreProperties();
-
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
-
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
@@ -267,10 +238,8 @@ public class HttpsURLConnectionClient {
             });
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
             wr.writeBytes(requestQuery);
-
             conn.setReadTimeout(10000);
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -295,17 +264,14 @@ public class HttpsURLConnectionClient {
     }
 
     public static HttpResponse deleteWithBasicAuth(String uri, String contentType, String userName,
-                                                    String password)
+                                                   String password)
             throws IOException, XPathExpressionException {
         if (uri.startsWith("https://")) {
             setKeyStoreProperties();
-
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
-
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
-
             conn.setRequestProperty("Authorization", "Basic " + encode);
             if (contentType != null) {
                 conn.setRequestProperty("Content-Type", contentType);
@@ -319,7 +285,6 @@ public class HttpsURLConnectionClient {
                     return true;
                 }
             });
-
             conn.connect();
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
@@ -343,13 +308,11 @@ public class HttpsURLConnectionClient {
 
     private static void setKeyStoreProperties() throws XPathExpressionException {
         AutomationContext context = new AutomationContext();
-
         System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-                                                       +context.getConfigurationValue("//keystore/fileName/text()"));
+                + context.getConfigurationValue("//keystore/fileName/text()"));
         System.setProperty("javax.net.ssl.trustStorePassword",
-                           context.getConfigurationValue("//keystore/keyPassword/text()"));
+                context.getConfigurationValue("//keystore/keyPassword/text()"));
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-
         if (log.isDebugEnabled()) {
             log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
             log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));

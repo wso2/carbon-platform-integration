@@ -23,9 +23,9 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
-import org.wso2.carbon.automation.test.api.clients.rssmanager.RSSManagerAdminServiceClient;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.extensions.XPathConstants;
+import org.wso2.carbon.automation.test.api.clients.rssmanager.RSSManagerAdminServiceClient;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.automation.test.utils.dbutils.DatabaseFactory;
 import org.wso2.carbon.automation.test.utils.dbutils.DatabaseManager;
@@ -43,9 +43,7 @@ import java.util.List;
 import java.util.Random;
 
 public class SqlDataSourceUtil {
-
     private static final Log log = LogFactory.getLog(SqlDataSourceUtil.class);
-
     private String jdbcUrl = null;
     private String jdbcDriver = null;
     private String databaseName;
@@ -93,11 +91,9 @@ public class SqlDataSourceUtil {
     }
 
     public DataHandler createArtifact(String dbsFilePath) throws XMLStreamException, IOException, XPathExpressionException {
-
-        if(automationContext==null){
-             init();
+        if (automationContext == null) {
+            init();
         }
-
         Assert.assertNotNull(jdbcUrl, "Initialize jdbcUrl");
         try {
             OMElement dbsFile = AXIOMUtil.stringToOM(FileManager.readFile(dbsFilePath));
@@ -128,20 +124,16 @@ public class SqlDataSourceUtil {
         }
     }
 
-
     private void createDataBase(String driver, String jdbc, String user, String password)
             throws ClassNotFoundException, SQLException, XPathExpressionException {
-
-         if(automationContext==null){
+        if (automationContext == null) {
             init();
         }
-
         try {
             DatabaseManager dbm = DatabaseFactory.getDatabaseConnector(driver, jdbc, user, password);
             dbm.executeUpdate("DROP DATABASE IF EXISTS " + databaseName);
             dbm.executeUpdate("CREATE DATABASE " + databaseName);
             jdbcUrl = jdbc + "/" + databaseName;
-
             dbm.disconnect();
         } catch (ClassNotFoundException e) {
             log.error("Class Not Found. Check MySql-jdbc Driver in classpath: ", e);
@@ -153,17 +145,14 @@ public class SqlDataSourceUtil {
     }
 
     public void createDataSource(List<File> sqlFileList) throws Exception {
-
         if (automationContext == null) {
             init();
         }
-
         databaseName = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_NAME);
         databasePassword = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_DB_PASSWORD);
         jdbcUrl = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_URL);
         jdbcDriver = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_DRIVER_CLASS_NAME);
         databaseUser = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_DB_USER_NAME);
-
         if (jdbcUrl.contains("h2") && jdbcDriver.contains("h2")) {
             //Random number appends to a database name to create new database for H2*//*
             databaseName = databaseName + new Random().nextInt();
@@ -186,7 +175,6 @@ public class SqlDataSourceUtil {
 
     private void executeUpdate(List<File> sqlFileList)
             throws IOException, ClassNotFoundException, SQLException, XPathExpressionException {
-
         DatabaseManager dbm = null;
         try {
             dbm = DatabaseFactory.getDatabaseConnector(jdbcDriver, jdbcUrl, databaseUser, databasePassword);

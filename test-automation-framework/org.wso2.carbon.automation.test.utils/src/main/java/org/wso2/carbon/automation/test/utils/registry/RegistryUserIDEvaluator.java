@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.registry;
 
 public class RegistryUserIDEvaluator {
@@ -32,5 +31,4 @@ public class RegistryUserIDEvaluator {
         //todo - useless logic
         return 3;
     }
-
 }

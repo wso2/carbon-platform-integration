@@ -15,9 +15,7 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.dataservice;
-
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axiom.om.OMElement;
@@ -83,7 +81,6 @@ public class DataServiceBaseTest {
     }
 
     public File selectSqlFile(String fileName) throws XPathExpressionException {
-
         String driver = automationContext.getConfigurationValue(XPathConstants.DATA_SOURCE_URL);
         String type = "";
         if (driver.contains("h2")) {
@@ -93,7 +90,6 @@ public class DataServiceBaseTest {
         } else if (driver.contains("oracle")) {
             type = "oracle";
         }
-
         return new File(FrameworkPathUtil.getSystemResourceLocation() + "artifacts"
                 + File.separator + "DSS" + File.separator + "sql" + File.separator
                 + type + File.separator + fileName);

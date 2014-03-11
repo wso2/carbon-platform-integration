@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.selenium;
 
 import org.apache.commons.logging.Log;
@@ -27,7 +26,6 @@ import org.openqa.selenium.WebDriverException;
 import static org.testng.Assert.assertTrue;
 
 public class GRegSeleniumUtils {
-
     private static final Log log = LogFactory.getLog(GRegSeleniumUtils.class);
 
     public static int getResourceId(WebDriver driver, String resourceName) {
@@ -35,20 +33,18 @@ public class GRegSeleniumUtils {
         int id = 0;
         long currentTime = System.currentTimeMillis();
         long actualTime;
-
         do {
             if (driver.getPageSource().contains(resourceName)) {
                 for (int i = 1; i <= pageCount; i++) {
                     if (driver.findElement(By.id("resourceView" + i)).getText().equals(resourceName) ||
-                        driver.findElement(By.id("resourceView" + i)).getText().equals(resourceName +
-                                                                                       " " + "..")) {
+                            driver.findElement(By.id("resourceView" + i)).getText().equals(resourceName +
+                                    " " + "..")) {
                         return i;
                     }
                 }
             }
             actualTime = System.currentTimeMillis();
         } while (!(((actualTime - currentTime) / 1000) > 10));
-
         return id;
     }
 
@@ -59,10 +55,10 @@ public class GRegSeleniumUtils {
                 driver.findElement(By.id("actionLink" + resourceRowId)).click();
                 resourceRowId = ((resourceRowId - 1) * 7) + 2;
                 driver.findElement(By.xpath("//tr[2]/td[3]/table/tbody/tr[2]/td/div/div/table/tbody/tr/td" +
-                                            "/div[2]/div[3]/div[3]/div[9]/table/tbody/tr["
-                                            + resourceRowId + "]/td/div/a[3]")).click();
+                        "/div[2]/div[3]/div[3]/div[9]/table/tbody/tr["
+                        + resourceRowId + "]/td/div/a[3]")).click();
                 assertTrue(driver.findElement(By.id("ui-dialog-title-dialog")).getText().contains("WSO2 Carbon"),
-                           "Popup not found :");
+                        "Popup not found :");
                 driver.findElement(By.xpath("//button")).click();
             } catch (WebDriverException ignored) {
                 log.info("Web element not found");
@@ -87,7 +83,6 @@ public class GRegSeleniumUtils {
         } while (!(((exceededTime - currentTime) / 1000) > 60));
         return false;
     }
-
 
     public static boolean waitForElement(WebDriver driver, String elementType, String element) {
         long currentTime = System.currentTimeMillis();

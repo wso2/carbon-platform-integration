@@ -21,9 +21,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.test.api.clients.dataservices.DataServiceFileUploaderClient;
 import org.wso2.carbon.automation.test.api.clients.service.mgt.ServiceAdminClient;
-import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 import org.wso2.carbon.dataservices.ui.fileupload.stub.ExceptionException;
 
@@ -59,7 +59,7 @@ public class DSSTestCaseUtils {
      * @return An OMElement containing the resource content
      */
     public OMElement loadClasspathResource(String path) throws FileNotFoundException,
-                                                               XMLStreamException {
+            XMLStreamException {
         OMElement documentElement = null;
         FileInputStream inputStream = null;
         XMLStreamReader parser = null;
@@ -91,7 +91,6 @@ public class DSSTestCaseUtils {
                         //ignore
                     }
                 }
-
             }
         } else {
             throw new FileNotFoundException("File Not Exist at " + path);
@@ -119,7 +118,6 @@ public class DSSTestCaseUtils {
     public boolean isServiceDeployed(String backEndUrl, String sessionCookie, String serviceName)
             throws RemoteException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for service deployment");
-
         boolean isServiceDeployed = false;
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -133,17 +131,13 @@ public class DSSTestCaseUtils {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isServiceDeployed;
-
     }
 
     public boolean isServiceFaulty(String backEndUrl, String sessionCookie, String serviceName)
             throws RemoteException {
-
         boolean isServiceDeployed = false;
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -156,12 +150,9 @@ public class DSSTestCaseUtils {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-
             }
         }
         return isServiceDeployed;
-
-
     }
 
     public boolean isServiceExist(String backEndUrl, String sessionCookie, String serviceName)
@@ -202,10 +193,8 @@ public class DSSTestCaseUtils {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-
             }
         }
         return isServiceDeleted;
     }
-
 }

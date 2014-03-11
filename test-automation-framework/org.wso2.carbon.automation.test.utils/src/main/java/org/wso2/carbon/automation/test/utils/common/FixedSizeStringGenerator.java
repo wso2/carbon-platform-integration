@@ -15,69 +15,60 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.wso2.carbon.automation.test.utils.common;
 
 /**
- * 
  * This class can be used to create strings of predefined size of MB or KB
  * These strings can be used to create SOAP messages of approximate sizes
  */
-
 public class FixedSizeStringGenerator {
+    /**
+     * @param size size in KB
+     * @return
+     */
+    public static String generateMessageKB(double size) {
+        StringBuilder sb = new StringBuilder();
+        String waitMessage = "Testing message";
+        int length = waitMessage.length();
+        double bytes = size * 1024;
+        sb.append(" WSO2 ");
+        for (int i = 0; i < bytes; i += length) {
+            sb.append(waitMessage);
+        }
+        return sb.toString();
+    }
 
-	/**
-	 * 
-	 * @param size size in KB
-	 * @return
-	 */
-	public static String generateMessageKB(double size) {
-		StringBuilder sb = new StringBuilder();
-		String waitMessage = "Testing message";
-		int length = waitMessage.length();
-		double bytes = size * 1024;
-		sb.append(" WSO2 ");
-		for (int i = 0; i < bytes; i += length) {
-			sb.append(waitMessage );
-		}
-		return sb.toString();
-	}
+    /**
+     * @param size size in MB
+     * @return
+     */
+    public static String generateMessageMB(double size) {
+        return generateMessageKB(size * 1024);
+    }
 
-	/**
-	 * 
-	 * @param size size in MB
-	 * @return
-	 */
-	public static String generateMessageMB(double size) {
-		return generateMessageKB(size * 1024);
-	}
-	
-	/**
-	 * 
-	 * @param size size in KB
-	 * @param repeatingMessage this will be repeated in the output String
-	 * @return
-	 */
-	public static String generateCustomMessageKB(double size,String repeatingMessage) {
-		StringBuilder sb = new StringBuilder();
-		String waitMessage = repeatingMessage;
-		int length = waitMessage.length();
-		double bytes = size * 1024;
-		sb.append(" WSO2 ");
-		for (int i = 0; i < bytes; i += length) {
-			sb.append(waitMessage );
-		}
-		return sb.toString();
-	}
-	
-	/**
-	 * 
-	 * @param size size in MB
-	 * @param repeatingMessage this will be repeated in the output String
-	 * @return
-	 */
-	public static String generateCustomMessageMB(double size,String repeatingMessage) {
-		return generateCustomMessageKB(size * 1024,repeatingMessage);
-	}
+    /**
+     * @param size             size in KB
+     * @param repeatingMessage this will be repeated in the output String
+     * @return
+     */
+    public static String generateCustomMessageKB(double size, String repeatingMessage) {
+        StringBuilder sb = new StringBuilder();
+        String waitMessage = repeatingMessage;
+        int length = waitMessage.length();
+        double bytes = size * 1024;
+        sb.append(" WSO2 ");
+        for (int i = 0; i < bytes; i += length) {
+            sb.append(waitMessage);
+        }
+        return sb.toString();
+    }
 
+    /**
+     * @param size             size in MB
+     * @param repeatingMessage this will be repeated in the output String
+     * @return
+     */
+    public static String generateCustomMessageMB(double size, String repeatingMessage) {
+        return generateCustomMessageKB(size * 1024, repeatingMessage);
+    }
 }

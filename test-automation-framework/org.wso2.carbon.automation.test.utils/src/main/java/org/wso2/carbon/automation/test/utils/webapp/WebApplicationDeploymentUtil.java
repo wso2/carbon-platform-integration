@@ -35,14 +35,12 @@ public class WebApplicationDeploymentUtil {
         List<String> webAppList;
         List<String> faultyWebAppList;
         String webAppName = webAppFileName + ".war";
-
         boolean isWebAppDeployed = false;
         Calendar startTime = Calendar.getInstance();
         long time;
         while ((time = (Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis())) < WEBAPP_DEPLOYMENT_DELAY) {
             webAppList = webAppAdminClient.getWebApplist(webAppFileName);
             faultyWebAppList = webAppAdminClient.getFaultyWebAppList(webAppFileName);
-
             for (String faultWebAppName : faultyWebAppList) {
                 if (webAppName.equalsIgnoreCase(faultWebAppName)) {
                     isWebAppDeployed = false;
@@ -50,7 +48,6 @@ public class WebApplicationDeploymentUtil {
                     return isWebAppDeployed;
                 }
             }
-
             for (String name : webAppList) {
                 if (webAppName.equalsIgnoreCase(name)) {
                     isWebAppDeployed = true;
@@ -58,11 +55,9 @@ public class WebApplicationDeploymentUtil {
                     return isWebAppDeployed;
                 }
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
         return isWebAppDeployed;
@@ -73,7 +68,6 @@ public class WebApplicationDeploymentUtil {
         log.info("waiting " + WEBAPP_DEPLOYMENT_DELAY + " millis for webApp undeployment " + webAppFileName);
         WebAppAdminClient webAppAdminClient = new WebAppAdminClient(backEndUrl, sessionCookie);
         List<String> webAppList;
-
         boolean isWebAppUnDeployed = false;
         Calendar startTime = Calendar.getInstance();
         while ((Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis()) < WEBAPP_DEPLOYMENT_DELAY) {
@@ -92,7 +86,6 @@ public class WebApplicationDeploymentUtil {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
         return isWebAppUnDeployed;
@@ -104,7 +97,6 @@ public class WebApplicationDeploymentUtil {
         WebAppAdminClient webAppAdminClient = new WebAppAdminClient(backEndUrl, sessionCookie);
         List<String> faultyWebAppList;
         String webAppName = webAppFileName + ".war";
-
         boolean isWebAppDeployed = false;
         Calendar startTime = Calendar.getInstance();
         while ((Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis()) < WEBAPP_DEPLOYMENT_DELAY) {
@@ -120,11 +112,9 @@ public class WebApplicationDeploymentUtil {
             } else {
                 return true;
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
         return isWebAppDeployed;

@@ -17,38 +17,30 @@
 */
 package org.wso2.carbon.automation.test.utils.common;
 
-
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.extensions.XPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 
 public class HomePageGenerator {
-
     public static String getProductHomeURL(AutomationContext automationContext) throws XPathExpressionException {
-
         String indexURL;
-        String webContextRoot=null;
+        String webContextRoot = null;
         String hostName;
-        String httpsPort=null;
+        String httpsPort = null;
         boolean webContextEnabled = false;
         boolean portEnabled = false;
-
-
         if (automationContext.getConfigurationNodeList
-                (String.format(XPathConstants.WEB_CONTEXT_ENABLED)).equals("true")) {  
+                (String.format(XPathConstants.WEB_CONTEXT_ENABLED)).equals("true")) {
             webContextEnabled = true;
             webContextRoot = automationContext.getConfigurationNodeList
                     (String.format(XPathConstants.WEB_CONTEXT_ROOT)).toString();
         }
-
-        if (automationContext.getInstance().getPorts().size()!=0){
+        if (automationContext.getInstance().getPorts().size() != 0) {
             portEnabled = true;
             httpsPort = automationContext.getInstance().getPorts().get("https");
         }
-
         hostName = automationContext.getInstance().getHosts().get("default");
-
         if (portEnabled && webContextEnabled) {
             if (webContextRoot != null && httpsPort != null) {
                 indexURL = "https://" + hostName + ":" + httpsPort + "/" + webContextRoot + "/" +
@@ -67,7 +59,6 @@ public class HomePageGenerator {
         } else {
             indexURL = "https://" + hostName + "/" + "carbon";
         }
-        return indexURL;     
-
+        return indexURL;
     }
 }

@@ -66,12 +66,11 @@ public class DerbyDatabaseServer {
         if (isServerRunning()) {
             try {
                 jdbc = "jdbc:derby:" + networkServerControl.getCurrentProperties().getProperty("derby.drda.host")
-                       + ":" + networkServerControl.getCurrentProperties().getProperty("derby.drda.portNumber") + "/";
+                        + ":" + networkServerControl.getCurrentProperties().getProperty("derby.drda.portNumber") + "/";
             } catch (Exception e) {
                 log.error(e);
             }
         }
         return jdbc;
     }
-
 }

@@ -26,21 +26,17 @@ import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import java.io.File;
 import java.io.IOException;
 
-
 public class SeleniumScreenCapture {
-
     public void getScreenshot(WebDriver driver, String directoryName, String testCaseID)
             throws IOException {
         String resourcePath = FrameworkPathUtil.getSystemResourceLocation();
         String imagePath = resourcePath + File.separator + "seleniumImageFiles" +
-                           File.separator + directoryName + File.separator + testCaseID + ".png";
+                File.separator + directoryName + File.separator + testCaseID + ".png";
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(scrFile, new File(imagePath));
-
         } catch (IOException e) {
             throw new IOException("Cannot find the image store path");
         }
-
     }
 }

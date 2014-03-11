@@ -15,23 +15,19 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.server;
 
-import org.wso2.carbon.automation.test.api.clients.server.admin.ServerAdminClient;
 import org.wso2.carbon.automation.engine.frameworkutils.ClientConnectionUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
+import org.wso2.carbon.automation.test.api.clients.server.admin.ServerAdminClient;
 import org.wso2.carbon.utils.ServerConstants;
 
 public class ServerManagementUtils {
-
     public synchronized void restartGracefully(ServerAdminClient serverAdminClient, int port,
-                                         String hostName, String backendURL)
+                                               String hostName, String backendURL)
             throws Exception {
-
         serverAdminClient.restartGracefully();
         Thread.sleep(5000);//wait for port to close
-
         ClientConnectionUtil.waitForPort(port, hostName);
         //todo - wait for login
 //        ClientConnectionUtil.waitForLogin(port, hostName, backendURL);

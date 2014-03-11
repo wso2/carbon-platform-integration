@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.services;
 
 import org.apache.commons.logging.Log;
@@ -39,12 +38,10 @@ public class ServiceDeploymentUtil {
     private static int SERVICE_DEPLOYMENT_DELAY = 90 * 1000;
     private static Log log = LogFactory.getLog(ServiceDeploymentUtil.class);
 
-
     public static void deployArrService(String backEndUrl, String sessionCookie, String serviceName,
                                         String serviceFilePath, int deploymentDelay)
             throws RemoteException, MalformedURLException, LoginAuthenticationExceptionException,
-                   ExceptionException {
-
+            ExceptionException {
         AARServiceUploaderClient adminServiceAARServiceUploader =
                 new AARServiceUploaderClient(backEndUrl, sessionCookie);
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
@@ -52,7 +49,6 @@ public class ServiceDeploymentUtil {
             adminServiceService.deleteService(new String[]{serviceName});
             isServiceUnDeployed(backEndUrl, sessionCookie, serviceName, deploymentDelay);
         }
-
         adminServiceAARServiceUploader.uploadAARFile(serviceName + ".aar", serviceFilePath, "");
         Assert.assertTrue(isServiceDeployed(backEndUrl, sessionCookie, serviceName)
                 , serviceName + " deployment failed in Application Server");
@@ -62,7 +58,7 @@ public class ServiceDeploymentUtil {
                                           String serviceName,
                                           int deploymentDelay)
             throws RemoteException, MalformedURLException, LoginAuthenticationExceptionException,
-                   ExceptionException {
+            ExceptionException {
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         if (adminServiceService.isServiceExists(serviceName)) {
             adminServiceService.deleteService(new String[]{serviceName});
@@ -74,7 +70,6 @@ public class ServiceDeploymentUtil {
                                             String serviceName)
             throws RemoteException {
         log.info("waiting " + SERVICE_DEPLOYMENT_DELAY + " millis for Service deployment " + serviceName);
-
         boolean isServiceDeployed = false;
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -88,12 +83,9 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isServiceDeployed;
-
     }
 
     public static boolean isServiceUnDeployed(String backEndUrl, String sessionCookie,
@@ -114,7 +106,6 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-
             }
         }
         return isServiceDeleted;
@@ -122,11 +113,8 @@ public class ServiceDeploymentUtil {
 
     public static boolean isServiceWSDlExist(String serviceUrl, long synchronizingDelay)
             throws Exception {
-
         log.info("waiting " + synchronizingDelay + " millis for Proxy deployment in worker");
-
         boolean isServiceDeployed = false;
-
         Calendar startTime = Calendar.getInstance();
         long time;
         while ((time = (Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis())) < synchronizingDelay) {
@@ -138,21 +126,15 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isServiceDeployed;
-
     }
 
     public static boolean isServiceWSDlNotExist(String serviceUrl, long synchronizingDelay)
             throws Exception {
-
         log.info("waiting " + synchronizingDelay + " millis for Proxy undeployment in worker");
-
         boolean isServiceUnDeployed = false;
-
         Calendar startTime = Calendar.getInstance();
         long time;
         while ((time = (Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis())) < synchronizingDelay) {
@@ -164,12 +146,9 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
-
             }
         }
-
         return isServiceUnDeployed;
-
     }
 
     public static boolean isWSDLAvailable(String serviceEndpoint) throws IOException {
@@ -183,10 +162,8 @@ public class ServiceDeploymentUtil {
         conn.setReadTimeout(6000);
         try {
             conn.connect();
-
             // Get the response
             StringBuilder sb = new StringBuilder();
-
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             while ((line = rd.readLine()) != null) {
@@ -212,7 +189,6 @@ public class ServiceDeploymentUtil {
 
     public static boolean isServiceFaulty(String backEndUrl, String sessionCookie, String serviceName)
             throws RemoteException {
-
         boolean isServiceDeployed = false;
         ServiceAdminClient adminServiceService = new ServiceAdminClient(backEndUrl, sessionCookie);
         Calendar startTime = Calendar.getInstance();
@@ -225,12 +201,9 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ignored) {
-
             }
         }
         return isServiceDeployed;
-
-
     }
 
     public static boolean isServiceExist(String backEndUrl, String sessionCookie, String serviceName)
@@ -271,7 +244,6 @@ public class ServiceDeploymentUtil {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ignored) {
-
             }
         }
         return isServiceDeleted;

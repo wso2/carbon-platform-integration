@@ -15,7 +15,6 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-
 package org.wso2.carbon.automation.test.utils.common;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +30,6 @@ public class TestConfigurationProvider {
     private AutomationContext context;
     private static TestConfigurationProvider instance = new TestConfigurationProvider();
 
-
     private TestConfigurationProvider() {
         try {
             context = new AutomationContext();
@@ -39,7 +37,6 @@ public class TestConfigurationProvider {
             log.error("Loading Automation Configuration failed", e);
         }
     }
-
 
     public static String getResourceLocation(String productName) {
         return FrameworkPathUtil.getSystemResourceLocation() + File.separator + "artifacts" + File.separator + productName;
@@ -81,7 +78,7 @@ public class TestConfigurationProvider {
         return instance.context.getConfigurationValue("//executionEnvironment");
     }
 
-    public static int getServiceDeploymentDelay()  {
+    public static int getServiceDeploymentDelay() {
         try {
             return Integer.parseInt(instance.context.getConfigurationValue("//deploymentDelay"));
         } catch (XPathExpressionException e) {
