@@ -10,9 +10,9 @@
     <name>WSO2 Carbon Automation - Parent core project</name>
 
     <modules>
-        <module>org.wso2.carbon.automation.engine</module>
-        <module>org.wso2.carbon.automation.extensions</module>
-        <module>org.wso2.carbon.automation.test.utils</module>
+        <module>test-automation-framework/org.wso2.carbon.automation.engine</module>
+        <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
+        <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
     </modules>
 
     <build>
