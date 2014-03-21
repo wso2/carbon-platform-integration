@@ -263,16 +263,11 @@
 
     <listenerExtensions>
 
-        <!--<className>org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerExtension</className>-->
         <platformExecutionManager>
             <extentionClasses>
-                <!--<className>org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerExtension</className>-->
                 <className>
-                    org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerExtension
-                </className>
-                <!--<className>org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerExtension</className>-->
-                <className>org.wso2.carbon.automation.extensions.usermgt.UserPopulateExtension
-                </className>
+                    org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerExtension</className>
+                <className>org.wso2.carbon.automation.extensions.usermgt.UserPopulateExtension</className>
             </extentionClasses>
         </platformExecutionManager>
 

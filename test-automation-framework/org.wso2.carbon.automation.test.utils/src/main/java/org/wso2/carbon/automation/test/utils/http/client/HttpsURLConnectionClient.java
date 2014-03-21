@@ -17,26 +17,16 @@
 */
 package org.wso2.carbon.automation.test.utils.http.client;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.automation.engine.context.AutomationContext;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-import org.wso2.carbon.automation.test.utils.http.HttpResponse;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
-import javax.xml.xpath.XPathExpressionException;
 import java.io.*;
 import java.net.URL;
 
 public class HttpsURLConnectionClient {
-    private static final Log log = LogFactory.getLog(HttpsURLConnectionClient.class);
-
-    public static HttpResponse getRequest(String Uri, String requestParameters)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse getRequest(String Uri, String requestParameters)
+            throws IOException {
         if (Uri.startsWith("https://")) {
-            setKeyStoreProperties();
             String urlStr = Uri;
             if (requestParameters != null && requestParameters.length() > 0) {
                 urlStr += "?" + requestParameters;
@@ -69,16 +59,15 @@ public class HttpsURLConnectionClient {
                 }
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+            return new HttpsResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
     }
 
-    public static HttpResponse getWithBasicAuth(String Uri, String requestParameters,
-                                                String userName, String password)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse getWithBasicAuth(String Uri, String requestParameters,
+                                                 String userName, String password)
+            throws IOException {
         if (Uri.startsWith("https://")) {
-            setKeyStoreProperties();
             String urlStr = Uri;
             if (requestParameters != null && requestParameters.length() > 0) {
                 urlStr += "?" + requestParameters;
@@ -112,21 +101,20 @@ public class HttpsURLConnectionClient {
                 }
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+            return new HttpsResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
     }
 
-    public static HttpResponse postWithBasicAuth(String uri, String requestQuery, String userName,
-                                                 String password)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse postWithBasicAuth(String uri, String requestQuery, String userName,
+                                                  String password) throws IOException {
         if (uri.startsWith("https://")) {
-            setKeyStoreProperties();
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             String encode =
                     new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -152,6 +140,7 @@ public class HttpsURLConnectionClient {
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
                 }
+                return new HttpsResponse(sb.toString(), conn.getResponseCode());
             } catch (FileNotFoundException ignored) {
             } finally {
                 if (rd != null) {
@@ -161,21 +150,20 @@ public class HttpsURLConnectionClient {
                 wr.close();
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
     }
 
-    public static HttpResponse postWithBasicAuth(String uri, String requestQuery,
-                                                 String contentType,
-                                                 String userName, String password)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse postWithBasicAuth(String uri, String requestQuery,
+                                                  String contentType,
+                                                  String userName, String password)
+            throws IOException {
         if (uri.startsWith("https://")) {
-            setKeyStoreProperties();
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            String encode =
+                    new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
@@ -210,21 +198,20 @@ public class HttpsURLConnectionClient {
                 wr.close();
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+            return new HttpsResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
     }
 
-    public static HttpResponse putWithBasicAuth(String uri, String requestQuery,
-                                                String contentType, String userName,
-                                                String password)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse putWithBasicAuth(String uri, String requestQuery,
+                                                 String contentType, String userName,
+                                                 String password) throws IOException {
         if (uri.startsWith("https://")) {
-            setKeyStoreProperties();
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
@@ -258,20 +245,19 @@ public class HttpsURLConnectionClient {
                 wr.close();
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+            return new HttpsResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
     }
 
-    public static HttpResponse deleteWithBasicAuth(String uri, String contentType, String userName,
-                                                   String password)
-            throws IOException, XPathExpressionException {
+    public static HttpsResponse deleteWithBasicAuth(String uri, String contentType, String userName,
+                                                    String password) throws IOException {
         if (uri.startsWith("https://")) {
-            setKeyStoreProperties();
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
             String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             if (contentType != null) {
                 conn.setRequestProperty("Content-Type", contentType);
@@ -301,22 +287,8 @@ public class HttpsURLConnectionClient {
                 }
                 conn.disconnect();
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+            return new HttpsResponse(sb.toString(), conn.getResponseCode());
         }
         return null;
-    }
-
-    private static void setKeyStoreProperties() throws XPathExpressionException {
-        AutomationContext context = new AutomationContext();
-        System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-                + context.getConfigurationValue("//keystore/fileName/text()"));
-        System.setProperty("javax.net.ssl.trustStorePassword",
-                context.getConfigurationValue("//keystore/keyPassword/text()"));
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-        if (log.isDebugEnabled()) {
-            log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
-            log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));
-            log.debug("javax.net.ssl.trustStoreType :" + System.getProperty("javax.net.ssl.trustStoreType"));
-        }
     }
 }

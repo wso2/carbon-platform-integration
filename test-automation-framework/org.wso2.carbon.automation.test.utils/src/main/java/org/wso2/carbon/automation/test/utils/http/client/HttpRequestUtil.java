@@ -17,7 +17,7 @@
 */
 package org.wso2.carbon.automation.test.utils.http.client;
 
-import org.wso2.carbon.automation.test.utils.http.HttpResponse;
+import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
 
 import java.io.*;
 import java.net.HttpURLConnection;
