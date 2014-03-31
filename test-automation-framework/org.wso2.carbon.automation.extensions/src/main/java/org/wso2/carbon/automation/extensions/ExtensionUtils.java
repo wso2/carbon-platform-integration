@@ -19,11 +19,9 @@ package org.wso2.carbon.automation.extensions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.engine.frameworkutils.enums.OperatingSystems;
 
 import java.io.File;
-import java.rmi.RemoteException;
 
 public class ExtensionUtils {
     public static final String SYSTEM_ARTIFACT_RESOURCE_LOCATION = "framework.resource.location";
