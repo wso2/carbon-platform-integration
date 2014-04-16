@@ -163,16 +163,15 @@ public class UrlGenerationUtil {
         String httpPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTP);
         String tenantDomain = tenant.getDomain();
         String hostName = getWorkerHost(instance);
-        boolean portEnabled = instance.getPorts().isEmpty();
         if (!tenant.getDomain().equals(AutomationConfiguration.
                 getConfigurationValue(ContextXpathConstants.SUPER_TENANT_DOMAIN))) {
-            if (portEnabled && httpPort != null) {
+            if (httpPort != null) {
                 webAppURL = "http://" + hostName + ":" + httpPort + "/t/" + tenantDomain + "/webapps";
             } else {
                 webAppURL = "http://" + hostName + "/t/" + tenantDomain + "/webapps";
             }
         } else {
-            if (portEnabled && httpPort != null) {
+            if (httpPort != null) {
                 webAppURL = "http://" + hostName + ":" + httpPort;
             } else {
                 webAppURL = "http://" + hostName;
