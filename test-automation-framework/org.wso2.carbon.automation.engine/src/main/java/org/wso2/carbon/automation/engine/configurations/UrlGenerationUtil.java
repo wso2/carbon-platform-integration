@@ -17,7 +17,6 @@
 */
 package org.wso2.carbon.automation.engine.configurations;
 
-import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.context.InstanceType;
 import org.wso2.carbon.automation.engine.context.beans.Instance;
@@ -41,15 +40,11 @@ public class UrlGenerationUtil {
         String backendUrl;
         boolean webContextEnabled = instance.getProperties().containsKey(ContextXpathConstants.PRODUCT_GROUP_WEBCONTEXT);
         boolean portDisabled = instance.getPorts().isEmpty();
-
         String hostName = getManagerHost(instance);
-
         if (!portDisabled) {
             String webContextRoot = instance.getProperty(ContextXpathConstants.PRODUCT_GROUP_WEBCONTEXT);
-            String httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTPS);
-            if (httpsPort == null) {
-                httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_NHTTPS);
-            }
+            String httpsPort;
+            httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTPS);
             if (webContextRoot != null && httpsPort != null) {
                 backendUrl = "https://" + hostName + ":" + httpsPort + "/" + webContextRoot + "/" + "services/";
             } else if (webContextRoot == null && httpsPort != null) {
@@ -159,7 +154,7 @@ public class UrlGenerationUtil {
      * @return
      */
     public static String getWebAppURL(Tenant tenant, Instance instance) throws XPathExpressionException {
-        String webAppURL;
+        String webAppURL = null;
         String httpPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTP);
         String tenantDomain = tenant.getDomain();
         String hostName = getWorkerHost(instance);

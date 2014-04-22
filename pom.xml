@@ -162,11 +162,6 @@
                 <version>${testng.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.authenticator.stub</artifactId>
-                <version>${carbon.stub.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>emma</groupId>
                 <artifactId>emma</artifactId>
                 <version>${emma.version}</version>

@@ -20,9 +20,7 @@ package org.wso2.carbon.automation.engine.context;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
-import org.wso2.carbon.automation.engine.adminclients.AuthenticationAdminClient;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 import org.wso2.carbon.automation.engine.configurations.UrlGenerationUtil;
 import org.wso2.carbon.automation.engine.context.beans.*;
@@ -31,7 +29,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -442,17 +439,6 @@ public class AutomationContext {
         return contextUrls;
     }
 
-    //login to the carbon server
-    public String login() throws RemoteException,
-            LoginAuthenticationExceptionException, XPathExpressionException {
-        String sessionCookie;
-        AuthenticationAdminClient authenticationAdminClient
-                = new AuthenticationAdminClient(UrlGenerationUtil.getBackendURL(this.getInstance()));
-        sessionCookie = authenticationAdminClient.
-                login(tenantDomain, this.getUser().getUserName(), this.getUser().getPassword()
-                        , UrlGenerationUtil.getManagerHost(this.getInstance()));
-        return sessionCookie;
-    }
 
     private Map<String, ArrayList<Instance>> setInstanceMapByType(NodeList childProductGroupList)
             throws XPathExpressionException {
