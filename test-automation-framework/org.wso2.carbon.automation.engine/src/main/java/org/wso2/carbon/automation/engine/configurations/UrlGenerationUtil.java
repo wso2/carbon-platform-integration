@@ -166,9 +166,9 @@ public class UrlGenerationUtil {
         if (!tenant.getDomain().equals(AutomationConfiguration.
                 getConfigurationValue(ContextXpathConstants.SUPER_TENANT_DOMAIN))) {
             if (httpPort != null) {
-                webAppURL = "http://" + hostName + ":" + httpPort + "/t/" + tenantDomain + "/webapps";
+                webAppURL = "http://" + hostName + ":" + httpPort + "/t/" + tenantDomain;
             } else {
-                webAppURL = "http://" + hostName + "/t/" + tenantDomain + "/webapps";
+                webAppURL = "http://" + hostName + "/t/" + tenantDomain;
             }
         } else {
             if (httpPort != null) {
