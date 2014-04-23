@@ -396,7 +396,7 @@ public class AutomationContext {
                 USER_MANAGEMENT_TENANT_USER_NAME, superUserReplacement, tenantDomain, userKey));
         String password = this.getConfigurationValue(String.format(ContextXpathConstants.
                 USER_MANAGEMENT_TENANT_USER_PASSWORD, superUserReplacement, tenantDomain, userKey));
-        tenantUser.setUserName(userName);
+        tenantUser.setUserName(userName + "@" + tenantDomain);
         tenantUser.setPassword(password);
         tenantUser.setKey(tenantUserNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
         return tenantUser;
