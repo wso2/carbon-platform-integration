@@ -272,7 +272,7 @@ public class AutomationContext {
         for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
             Node currentNode = adminUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                tenant.setTenantAdmin(extractUser(currentNode));
+                tenant.setTenantAdmin(extractUser(currentNode,tenantDomain,true));
             }
         }
         Node userNode = this.getConfigurationNode(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_USERS);
@@ -280,24 +280,33 @@ public class AutomationContext {
         for (int nodeNo = 0; nodeNo <= childUserList.getLength() - 1; nodeNo++) {
             Node currentNode = childUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                User tenantUser = extractUser(currentNode);
+                User tenantUser = extractUser(currentNode,tenantDomain,isSuperTenant);
                 tenant.addTenantUsers(tenantUser);
             }
         }
+        tenant.setContextUser(this.getUser());
         return tenant;
     }
 
-    private User extractUser(Node currentNode) {
+    private User extractUser(Node currentNode,String tenantDomain, boolean isTenantSuper) {
         User tenantUser = new User();
+        String userName = null;
         NodeList userNodeList = currentNode.getChildNodes();
         tenantUser.setKey(currentNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
         for (int userItem = 0; userItem <= userNodeList.getLength() - 1; userItem++) {
             if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.USERNAME)) {
-                tenantUser.setUserName(userNodeList.item(userItem).getTextContent());
+                userName =userNodeList.item(userItem).getTextContent();
             } else if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.PASSWORD)) {
                 tenantUser.setPassword(userNodeList.item(userItem).getTextContent());
             }
         }
+        if (isTenantSuper) {
+            tenantUser.setUserName(userName);
+        } else {
+            tenantUser.setUserName(userName + "@" + tenantDomain);
+        }
+
+
         return tenantUser;
     }
 
@@ -307,17 +316,17 @@ public class AutomationContext {
      * @return Tenant
      * @throws XPathExpressionException
      */
-    public Tenant getTenant() throws XPathExpressionException {
+    public Tenant getContextTenant() throws XPathExpressionException {
         Tenant tenant;
         if (isSuperTenant) {
             tenant = getSuperTenant();
         } else {
-            tenant = getOtherTenant();
+            tenant = getNonSuperTenant();
         }
         return tenant;
     }
 
-    private Tenant getOtherTenant() throws XPathExpressionException {
+    private Tenant getNonSuperTenant() throws XPathExpressionException {
         Tenant tenant = new Tenant();
         tenant.setDomain(tenantDomain);
         Node adminUserNode = this.getConfigurationNode(String.
@@ -326,7 +335,7 @@ public class AutomationContext {
         for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
             Node currentNode = adminUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                tenant.setTenantAdmin(extractUser(currentNode));
+                tenant.setTenantAdmin(extractUser(currentNode,tenantDomain,true));
             }
         }
         Node userNode = this.getConfigurationNode(String.
@@ -335,10 +344,11 @@ public class AutomationContext {
         for (int nodeNo = 0; nodeNo <= childUserList.getLength() - 1; nodeNo++) {
             Node currentNode = childUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                User tenantUser = extractUser(currentNode);
+                User tenantUser = extractUser(currentNode,tenantDomain,isSuperTenant);
                 tenant.addTenantUsers(tenantUser);
             }
         }
+        tenant.setContextUser(this.getUser());
         return tenant;
     }
 
@@ -374,7 +384,7 @@ public class AutomationContext {
      * @return
      * @throws XPathExpressionException
      */
-    public User getUser() throws XPathExpressionException {
+    private User getUser() throws XPathExpressionException {
         User tenantUser;
         if (isAdminUser) {
             tenantUser = getAdminUser();
@@ -408,7 +418,7 @@ public class AutomationContext {
      * @return
      * @throws XPathExpressionException
      */
-    public User getAdminUser() throws XPathExpressionException {
+    private User getAdminUser() throws XPathExpressionException {
         String superUserReplacement = ContextXpathConstants.TENANTS;
         if (isSuperTenant) {
             superUserReplacement = ContextXpathConstants.SUPER_TENANT;
@@ -433,9 +443,9 @@ public class AutomationContext {
     public ContextUrls getContextUrls() throws XPathExpressionException {
         ContextUrls contextUrls = new ContextUrls();
         contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
-        contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getTenant(), this.getInstance(), false));
-        contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getTenant(), this.getInstance(), true));
-        contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getTenant(), this.getInstance()));
+        contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(), this.getInstance(), false));
+        contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(), this.getInstance(), true));
+        contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getContextTenant(), this.getInstance()));
         return contextUrls;
     }
 
