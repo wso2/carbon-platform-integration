@@ -22,6 +22,7 @@ import java.util.*;
 public class Tenant {
     private String domain;
     private User tenantAdmin;
+    private User currentContextUser;
     private Map<String, User> tenantUsers = new HashMap<String, User>();
 
     public void setDomain(String value) {
@@ -44,8 +45,12 @@ public class Tenant {
         return tenantAdmin;
     }
 
-    public Map<String, User> getTenantUserMap() {
-        return tenantUsers;
+    public void setContextUser(User contextUser) {
+        currentContextUser = contextUser;
+    }
+
+    public User getContextUser() {
+        return currentContextUser;
     }
 
     public List<User> getTenantUserList() {
