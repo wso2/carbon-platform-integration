@@ -25,9 +25,8 @@ import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.engine.frameworkutils.TestFrameworkUtils;
 
-import javax.xml.xpath.XPathExpressionException;
 
 public class TestExecutionListener implements IExecutionListener {
     private static final Log log = LogFactory.getLog(TestExecutionListener.class);
@@ -42,7 +41,7 @@ public class TestExecutionListener implements IExecutionListener {
             AutomationContext context = new AutomationContext();
             System.setProperty(FrameworkConstants.EXECUTION_MODE,
                     context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT));
-            setKeyStoreProperties(context);
+            TestFrameworkUtils.setKeyStoreProperties(context);
             TestNGExtensionExecutor testNGExtensionExecutor = new TestNGExtensionExecutor();
             testNGExtensionExecutor.initiate();
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.EXECUTION_LISTENER,
@@ -71,18 +70,5 @@ public class TestExecutionListener implements IExecutionListener {
         throw new RuntimeException(msg, e);
     }
 
-    public static void setKeyStoreProperties(AutomationContext context) throws XPathExpressionException {
 
-        System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-                + context.getConfigurationValue("//keystore/fileName/text()"));
-        System.setProperty("javax.net.ssl.trustStorePassword",
-                context.getConfigurationValue("//keystore/keyPassword/text()"));
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-
-        if (log.isDebugEnabled()) {
-            log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
-            log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));
-            log.debug("javax.net.ssl.trustStoreType :" + System.getProperty("javax.net.ssl.trustStoreType"));
-        }
-    }
 }
