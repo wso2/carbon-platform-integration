@@ -21,20 +21,20 @@ public class JMSBrokerConfigurationProvider {
     private static JMSBrokerConfiguration configuration = null;
     private static JMSBrokerConfigurationProvider instance = new JMSBrokerConfigurationProvider();
 
-    //
-//    private JMSBrokerConfigurationProvider() {
-//        configuration = getJMSBrokerConfiguration();
-//    }
-//
+
+    private JMSBrokerConfigurationProvider() {
+        configuration = getJMSBrokerConfiguration();
+    }
+
     public static JMSBrokerConfigurationProvider getInstance() {
         return instance;
     }
 
-    //
+
     public JMSBrokerConfiguration getBrokerConfiguration() {
         return configuration;
     }
-    //
+
 
     private JMSBrokerConfiguration getJMSBrokerConfiguration() {
         JMSBrokerConfiguration jmsBrokerConfiguration = new JMSBrokerConfiguration();
