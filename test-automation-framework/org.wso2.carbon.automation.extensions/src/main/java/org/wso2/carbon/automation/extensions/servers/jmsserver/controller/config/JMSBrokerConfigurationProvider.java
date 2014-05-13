@@ -43,6 +43,7 @@ public class JMSBrokerConfigurationProvider {
         jmsBrokerConfiguration.
                 setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         jmsBrokerConfiguration.setProviderURL("tcp://127.0.0.1:61616");
+
 //        } else {
 //            //setting wso2mb configuration
 //            ProductVariables mbServer = FrameworkFactory.getFrameworkProperties(FrameworkConstants.MB_SERVER_NAME)

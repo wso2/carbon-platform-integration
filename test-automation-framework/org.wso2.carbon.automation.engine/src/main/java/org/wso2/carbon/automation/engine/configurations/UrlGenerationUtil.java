@@ -176,6 +176,42 @@ public class UrlGenerationUtil {
     }
 
     /**
+     * Return remote registry URL - This URL is required to access remote registry API
+     * @param instance - default instance bound to the context, environment where test case is running
+     * @return - return remote registry URL.
+     */
+    public static String getRemoteRegistryURL(Instance instance) {
+
+        String remoteRegistry;
+        boolean webContextEnabled = instance.getProperties().containsKey(ContextXpathConstants.PRODUCT_GROUP_WEBCONTEXT);
+        boolean portDisabled = instance.getPorts().isEmpty();
+        String hostName = getManagerHost(instance);
+        if (!portDisabled) {
+            String webContextRoot = instance.getProperty(ContextXpathConstants.PRODUCT_GROUP_WEBCONTEXT);
+            String httpsPort;
+            httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTPS);
+            if (webContextRoot != null && httpsPort != null) {
+                remoteRegistry = "https://" + hostName + ":" + httpsPort + "/" + webContextRoot + "/"
+                        + "registry/";
+            } else if (webContextRoot == null && httpsPort != null) {
+                remoteRegistry = "https://" + hostName + ":" + httpsPort + "/" + "registry/";
+            } else if (webContextRoot == null) {
+                remoteRegistry = "https://" + hostName + "/" + "services/";
+            } else {
+                remoteRegistry = "https://" + hostName + "/" + webContextRoot + "/" + "registry/";
+            }
+        } else if (webContextEnabled) {
+            String webContextRoot = instance.getProperty(ContextXpathConstants.PRODUCT_GROUP_WEBCONTEXT);
+            remoteRegistry = "https://" + hostName + "/" + webContextRoot + "/" + "registry/";
+        } else {
+            String httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTPS);
+            remoteRegistry = "https://" + hostName + ":" + httpsPort + "/" + "registry/";
+        }
+        return remoteRegistry;
+    }
+
+
+    /**
      * This method gives the manager host of the given productGroup instance
      *
      * @param instance
