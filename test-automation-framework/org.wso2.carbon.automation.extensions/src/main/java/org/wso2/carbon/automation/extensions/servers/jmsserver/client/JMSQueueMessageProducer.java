@@ -111,4 +111,16 @@ public class JMSQueueMessageProducer {
         TextMessage message = session.createTextMessage(messageContent);
         producer.send(message);
     }
+
+    /*
+    * This Will send byte stream to the destination
+    * @param byte content
+    * @throws Exception
+     */
+
+    public void sendBytesMessage(byte[] payload) throws Exception {
+        BytesMessage bm = session.createBytesMessage();
+        bm.writeBytes(payload);
+        producer.send(bm);
+    }
 }
