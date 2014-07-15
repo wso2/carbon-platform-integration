@@ -121,7 +121,6 @@ public class JMSTopicMessagePublisher {
      */
 
     public void sendBytesMessage(byte[] payload) throws Exception {
-        System.out.println("sendBytesMessage called \n\n\n\n\n");
         BytesMessage bm = session.createBytesMessage();
         bm.writeBytes(payload);
         publisher.publish(bm);
