@@ -100,6 +100,7 @@ public final class CodeCoverageUtils {
             if (emmaJarName == null) {
                 return;
             }
+
             FileUtils.copyFileToDirectory(new File(emmaHome + emmaJarName),
                     new File(carbonHome + File.separator + "repository" +
                             File.separator + "components" + File.separator +
@@ -132,9 +133,11 @@ public final class CodeCoverageUtils {
                 rf.close();
             }
         }
+
+        ArrayList<String> direcArrayList = new ArrayList<String>();
+
         // Instrument the bundles which match the specified patterns in <code>filePatterns</code>
-        File plugins = new File(carbonHome + File.separator + "repository" + File.separator +
-                "components" + File.separator + "plugins");
+        File plugins = new File(searchDirectoryByName(carbonHome,direcArrayList,"plugins").get(0));
         //instrument the jars at plugins directory first (otherwise emma will complain about state versions of class files
         int instrumentedFileCount = 0;
         for (File file : plugins.listFiles()) {
@@ -156,10 +159,11 @@ public final class CodeCoverageUtils {
         log.info("Instrumented " + instrumentedFileCount + " file(s) in plugins directory");
 
 
+        direcArrayList.clear();
 
         //instrument the jar files in patches directory
-        File patchesDir = new File(carbonHome + File.separator + "repository" + File.separator +
-                "components" + File.separator + "patches" + File.separator);
+
+        File patchesDir = new File(searchDirectoryByName(carbonHome,direcArrayList,"patches").get(0) + File.separator);
         int instrumentedPatchFileCount = 0;
         File[] patchFiles = patchesDir.listFiles();
         Map<Integer, String> patchesDirTreeMap = new TreeMap<Integer, String>();
@@ -363,5 +367,25 @@ public final class CodeCoverageUtils {
         }
         return null;
     }
+
+     public static ArrayList<String> searchDirectoryByName(String baseDir, ArrayList<String> directoryLists, String dirName) {
+         File baseDirName = new File(baseDir);
+         File[] fileArray = baseDirName.listFiles();
+         if (fileArray != null) {
+             for (int i = 0; i < fileArray.length; i++) {
+                 File name = fileArray[i];
+                 if (name.isDirectory()) {
+                     if (name.toString().subSequence(name.toString().lastIndexOf("/")+1,
+                             name.toString().length()).equals(dirName)) {
+                         directoryLists.add(name.getAbsolutePath());
+                     }
+                     searchDirectoryByName(fileArray[i].getAbsolutePath(), directoryLists, dirName);
+                 } else if (fileArray.length == i) {
+                     return null;
+                 }
+             }
+         }
+         return directoryLists;
+     }
 }
 
