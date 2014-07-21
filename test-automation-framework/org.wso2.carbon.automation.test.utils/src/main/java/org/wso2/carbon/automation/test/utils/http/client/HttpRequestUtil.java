@@ -17,8 +17,6 @@
 */
 package org.wso2.carbon.automation.test.utils.http.client;
 
-import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -208,8 +206,12 @@ public class HttpRequestUtil {
             //setting headers
             if (headers != null && headers.size() > 0) {
                 Iterator<String> itr = headers.keySet().iterator();
-                String key = itr.next();
-                urlConnection.setRequestProperty(key, headers.get(key));
+                while (itr.hasNext()) {
+                    String key = itr.next();
+                    if (key != null) {
+                        urlConnection.setRequestProperty(key, headers.get(key));
+                    }
+                }
             }
             OutputStream out = urlConnection.getOutputStream();
             try {
@@ -267,8 +269,12 @@ public class HttpRequestUtil {
             //setting headers
             if (headers != null && headers.size() > 0) {
                 Iterator<String> itr = headers.keySet().iterator();
-                String key = itr.next();
-                conn.setRequestProperty(key, headers.get(key));
+                while (itr.hasNext()) {
+                    String key = itr.next();
+                    if (key != null) {
+                        conn.setRequestProperty(key, headers.get(key));
+                    }
+                }
             }
             conn.connect();
             // Get the response
