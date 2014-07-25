@@ -299,6 +299,11 @@ public class AutomationContext {
                 userName = userNodeList.item(userItem).getTextContent();
             } else if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.PASSWORD)) {
                 tenantUser.setPassword(userNodeList.item(userItem).getTextContent());
+            } else if(userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.ROLES)){
+	            NodeList roleList = userNodeList.item(userItem).getChildNodes();
+	            for (int i = 0; i < roleList.getLength(); i++) {
+		            tenantUser.addRole(roleList.item(i).getTextContent());
+	            }
             }
         }
         if (tenantDomain.equals(FrameworkConstants.SUPER_TENANT_DOMAIN_NAME)) {
@@ -408,6 +413,14 @@ public class AutomationContext {
         tenantUser.setUserName(userName + "@" + tenantDomain);
         tenantUser.setPassword(password);
         tenantUser.setKey(tenantUserNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
+
+	    NodeList roleList = this.getConfigurationNodeList(
+			    String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_USERS_ROLES,
+			                  superUserReplacement, tenantDomain, userKey));
+	    for (int i = 0; i < roleList.getLength(); i++) {
+		    tenantUser.addRole(roleList.item(i).getTextContent());
+	    }
+
         return tenantUser;
     }
 

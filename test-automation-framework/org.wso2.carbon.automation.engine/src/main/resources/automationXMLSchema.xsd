@@ -267,6 +267,17 @@
                                                                                         name="userName"/>
                                                                             <xs:element type="xs:string"
                                                                                         name="password"/>
+                                                                            <xs:element name="roles" minOccurs="0">
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element
+                                                                                                type="xs:string"
+                                                                                                name="role"
+                                                                                                maxOccurs="unbounded"
+                                                                                                minOccurs="0"/>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
                                                                         </xs:sequence>
                                                                         <xs:attribute type="xs:string" name="key"
                                                                                       use="optional"/>
@@ -318,6 +329,17 @@
                                                                                         name="userName"/>
                                                                             <xs:element type="xs:string"
                                                                                         name="password"/>
+                                                                            <xs:element name="roles" minOccurs="0">
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element
+                                                                                                type="xs:string"
+                                                                                                name="role"
+                                                                                                maxOccurs="unbounded"
+                                                                                                minOccurs="0"/>
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
                                                                         </xs:sequence>
                                                                         <xs:attribute type="xs:string" name="key"
                                                                                       use="optional"/>
@@ -329,6 +351,29 @@
                                                 </xs:sequence>
                                                 <xs:attribute type="xs:string" name="key" use="required"/>
                                                 <xs:attribute type="xs:string" name="domain" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="roles">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="role" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="permissions">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element type="xs:string"
+                                                                            name="permission"
+                                                                            maxOccurs="unbounded"
+                                                                            minOccurs="0"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                                <xs:attribute type="xs:string" name="name" use="required"/>
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
