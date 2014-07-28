@@ -427,7 +427,12 @@ public class AutomationContext {
                 USER_MANAGEMENT_TENANT_ADMIN_USERNAME, superUserReplacement, tenantDomain, userKey));
         String password = this.getConfigurationValue(String.format(ContextXpathConstants.
                 USER_MANAGEMENT_TENANT_ADMIN_PASSWORD, superUserReplacement, tenantDomain, userKey));
+        if(isSuperTenant){
         tenantUser.setUserName(userName);
+        }
+        else{
+        tenantUser.setUserName(userName + "@" + tenantDomain);
+        }
         tenantUser.setPassword(password);
         tenantUser.setKey(userKey);
         return tenantUser;
