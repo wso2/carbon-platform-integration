@@ -167,6 +167,21 @@
                 <version>${emma.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.axis2.wso2</groupId>
+                <artifactId>axis2</artifactId>
+                <version>${axis2.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.utils</artifactId>
                 <version>${carbon.platform.version}</version>
@@ -274,6 +289,10 @@
 
         <derby.version>10.8.2.2</derby.version>
         <rampart.version>1.6.1-wso2v13-SNAPSHOT</rampart.version>
+
+        <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
+        <commons.logging.version>1.1.1</commons.logging.version>
+        <commons.io.version>2.2</commons.io.version>
     </properties>
 
 </project>

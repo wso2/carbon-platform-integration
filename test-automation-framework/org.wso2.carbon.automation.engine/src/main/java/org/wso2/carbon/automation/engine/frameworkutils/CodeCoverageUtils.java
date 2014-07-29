@@ -24,8 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.frameworkutils.filters.CustomFileFilter;
 import org.wso2.carbon.automation.engine.frameworkutils.filters.SuffixFilter;
 import org.wso2.carbon.automation.engine.frameworkutils.filters.TypeFilter;
-import org.wso2.carbon.utils.ArchiveManipulator;
-import org.wso2.carbon.utils.FileManipulator;
 
 import java.io.*;
 import java.util.*;
@@ -260,7 +258,7 @@ public final class CodeCoverageUtils {
             }
         }
         archiveManipulator.archiveDir(jarFilePath, tempExtractedDir);
-        FileManipulator.deleteDir(tempExtractedDir);
+	    FileUtils.deleteDirectory(newManifest);
     }
 
     private static void doEmmaInstrumentation(File file) {
