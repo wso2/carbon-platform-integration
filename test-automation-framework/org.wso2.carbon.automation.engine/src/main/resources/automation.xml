@@ -284,6 +284,14 @@
         </productGroup>
     </platform>
 
+    <backendServices>
+        <backendService key="http://localhost:9000/services/" default="true">http://localhost:9000/services/</backendService>
+        <!--<backendService key="http://localhost:9000/services/">http://localhost:9763/services/</backendService>-->
+        <backendService key="endpoint1">http://localhost:9000/services</backendService>
+        <backendService key="endpoint2">http://localhost:9763/services</backendService>
+        <backendService key="endpoint3">http://localhost:9764/services</backendService>
+    </backendServices>
+
     <listenerExtensions>
 
         <platformExecutionManager>
