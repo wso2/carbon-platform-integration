@@ -366,12 +366,23 @@ public final class CodeCoverageUtils {
         log.info("Emma report generation completed");
     }
 
+
     private static File[] getCoverageDataFiles(String carbonHome) {
-        return new File(carbonHome).listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".ec");
-            }
-        });
+
+        List<File> files = (List<File>) FileUtils.listFiles(new File(carbonHome),
+                new String[]{"ec"}, true);
+
+        File[] coverageFiles = new File[files.size()];
+
+        Iterator<File> itFileList = files.iterator();
+        int count = 0;
+
+        while (itFileList.hasNext()) {
+            File filePath = itFileList.next();
+            coverageFiles[count] = filePath;
+            count++;
+        }
+        return coverageFiles;
     }
 
     public static boolean renameCoverageDataFile(String carbonHome) {
