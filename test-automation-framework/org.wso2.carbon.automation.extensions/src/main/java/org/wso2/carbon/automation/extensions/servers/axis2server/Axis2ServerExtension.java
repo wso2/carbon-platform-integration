@@ -19,9 +19,9 @@ package org.wso2.carbon.automation.extensions.servers.axis2server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.automation.engine.extensions.interfaces.ExecutionListenerExtension;
+import org.wso2.carbon.automation.engine.extensions.ExecutionListenerExtension;
 
-public class Axis2ServerExtension implements ExecutionListenerExtension {
+public class Axis2ServerExtension extends ExecutionListenerExtension {
     private Axis2ServerManager axis2ServerManager;
     public static final String SIMPLE_STOCK_QUOTE_SERVICE = "SimpleStockQuoteService";
     public static final String SECURE_STOCK_QUOTE_SERVICE = "SecureStockQuoteService";
