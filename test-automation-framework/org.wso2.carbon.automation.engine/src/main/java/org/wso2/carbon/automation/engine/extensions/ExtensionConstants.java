@@ -36,6 +36,6 @@ public class ExtensionConstants {
     public static final String TEST_LISTENER_ON_FINISH = "onFinish";
     public static final String TRANSFORM_LISTENER = "PlatformAnnotationTransferManager";
     public static final String TRANSFORM_LISTENER_TRANSFORM = "transform";
-    public static final String CLASS_NAME = "className";
+    public static final String CLASS_NAME = "name";
     public static final String LISTENER_EXTENSION = "//listenerExtensions";
 }

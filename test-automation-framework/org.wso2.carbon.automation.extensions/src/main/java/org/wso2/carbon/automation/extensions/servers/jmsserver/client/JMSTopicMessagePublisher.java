@@ -113,4 +113,16 @@ public class JMSTopicMessagePublisher {
         TextMessage message = session.createTextMessage(messageContent);
         publisher.publish(message);
     }
+
+    /*
+    * This Will send byte stream to the destination
+    * @param byte content
+    * @throws Exception
+     */
+
+    public void sendBytesMessage(byte[] payload) throws Exception {
+        BytesMessage bm = session.createBytesMessage();
+        bm.writeBytes(payload);
+        publisher.publish(bm);
+    }
 }
