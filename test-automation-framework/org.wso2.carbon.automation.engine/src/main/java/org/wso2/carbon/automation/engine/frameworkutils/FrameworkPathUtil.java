@@ -99,7 +99,6 @@ public class FrameworkPathUtil {
                carbonHome = System.getenv(CarbonConstants.CARBON_HOME_ENV);
                System.setProperty(ServerConstants.CARBON_HOME, carbonHome);
         }
-
         return carbonHome;
     }
 }
