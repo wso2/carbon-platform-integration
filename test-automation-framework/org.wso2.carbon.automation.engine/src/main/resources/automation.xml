@@ -271,7 +271,7 @@
                     <!--<parameter name="cmdArg" value="debug 5005" />-->
                 </class>
                 <class>
-                    <name>org.wso2.carbon.automation.extensions.usermgt.UserPopulateExtension</name>
+                    <name>org.wso2.carbon.integration.common.extensions.usermgt.UserPopulateExtension</name>
                 </class>
             </extentionClasses>
         </platformExecutionManager>
