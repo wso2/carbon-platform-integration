@@ -64,7 +64,7 @@ public class ListenerExtension {
         }
     }
 
-    protected Map<String, String> getParameterMap() {
+    protected Map<String, String> getParameters() {
         return parameterMap;
     }
 
