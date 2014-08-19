@@ -561,4 +561,18 @@ public class AutomationContext {
         XPath xPath = XPathFactory.newInstance().newXPath();
         return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
     }
+
+	/**
+	 * Replace value in document object
+	 *
+	 * @param expression xpath to locate the value
+	 * @param replaceBy value to replace
+	 * @throws XPathExpressionException
+	 */
+	public void replaceDocumentValue(String expression, String replaceBy) throws XPathExpressionException {
+		Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		Node node = (Node) xpath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+		node.setTextContent(replaceBy);
+	}
 }
