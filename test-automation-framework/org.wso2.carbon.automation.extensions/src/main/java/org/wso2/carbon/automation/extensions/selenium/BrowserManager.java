@@ -18,6 +18,7 @@
 package org.wso2.carbon.automation.extensions.selenium;
 
 import com.opera.core.systems.OperaDriver;
+import com.saucelabs.selenium.client.factory.SeleniumFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.WebDriver;
@@ -47,16 +48,37 @@ public class BrowserManager {
                 String.format(XPathConstants.SELENIUM_BROWSER_TYPE)).item(0).
                 getFirstChild().getNodeValue();
         if (automationContext.getConfigurationNode(String.format(XPathConstants.SELENIUM_REMOTE_WEB_DRIVER_URL))
-                .getAttributes().item(0).getNodeValue().equals("true")) {
-            log.info("Test runs on remote browser");
-            getRemoteWebDriver();
-            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-            return driver;
+                .getAttributes().item(0).getNodeValue().equals("false")) {
+
+            if (System.getenv().containsKey("JOB_URL")) {
+                log.info("Test runs on Sauce Labs environment...");
+                log.info("Operating System : " + System.getenv().get("SELENIUM_PLATFORM") +
+                        " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version "+
+                        System.getenv().get("SELENIUM_VERSION"));
+                driver = SeleniumFactory.createWebDriver();
+                driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                return driver;
+            } else {
+                log.info("Test runs on " + driverSelection + " browser...");
+                getDriver(driverSelection);
+                driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                return driver;
+            }
         } else {
-            log.info("Test runs on " + driverSelection + " browser...");
-            getDriver(driverSelection);
-            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-            return driver;
+            log.info("Test runs on remote browser");
+            if (System.getenv().containsKey("JOB_URL")) {
+                log.info("Test runs on Sauce Labs environment...");
+                log.info("Operating System : " + System.getenv().get("SELENIUM_PLATFORM") +
+                        " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version "+
+                        System.getenv().get("SELENIUM_VERSION"));
+                driver = SeleniumFactory.createWebDriver();
+                driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                return driver;
+            } else {
+                getRemoteWebDriver();
+                driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                return driver;
+            }
         }
     }
 

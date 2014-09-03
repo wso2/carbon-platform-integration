@@ -73,5 +73,13 @@
             <groupId>org.wso2.carbon.automation</groupId>
             <artifactId>org.wso2.carbon.automation.engine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.saucelabs.selenium</groupId>
+            <artifactId>sauce-ondemand-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.saucelabs.selenium</groupId>
+            <artifactId>selenium-client-factory</artifactId>
+        </dependency>
     </dependencies>
 </project>

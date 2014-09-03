@@ -137,6 +137,16 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>saucelabs-repository</id>
+            <url>https://repository-saucelabs.forge.cloudbees.com/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
 
@@ -253,6 +263,16 @@
                 <artifactId>rampart-core</artifactId>
                 <version>${rampart.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.saucelabs.selenium</groupId>
+                <artifactId>sauce-ondemand-driver</artifactId>
+                <version>${saucelabs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.saucelabs.selenium</groupId>
+                <artifactId>selenium-client-factory</artifactId>
+                <version>${saucelabs.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -274,6 +294,7 @@
 
         <derby.version>10.8.2.2</derby.version>
         <rampart.version>1.6.1-wso2v13-SNAPSHOT</rampart.version>
+        <saucelabs.version>2.6</saucelabs.version>
     </properties>
 
 </project>
