@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="APPServer-features-test-suite">
+    <parameter name="useDefaultListeners" value="false"/>
+
+    <test name="as-integration-pox-security-tests" preserve-order="true" parallel="false">
+
+        <classes>
+            <class name="org.wso2.carbon.automation.engine.test.context.AutomationContextTestCase"/>
+            <!--<class name="org.wso2.appserver.integration.tests.rest.test.poxsecurity.POXSecurityVerifyPostMethod"/>-->
+        </classes>
+    </test>
+</suite>
