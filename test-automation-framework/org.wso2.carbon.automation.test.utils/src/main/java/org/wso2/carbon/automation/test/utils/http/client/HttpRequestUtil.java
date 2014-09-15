@@ -207,9 +207,9 @@ public class HttpRequestUtil {
             urlConnection.setAllowUserInteraction(false);
             //setting headers
             if (headers != null && headers.size() > 0) {
-                Iterator<String> itr = headers.keySet().iterator();
-                String key = itr.next();
-                urlConnection.setRequestProperty(key, headers.get(key));
+	            for(String key: headers.keySet()){
+		            urlConnection.setRequestProperty(key, headers.get(key));
+	            }
             }
             OutputStream out = urlConnection.getOutputStream();
             try {
@@ -266,9 +266,9 @@ public class HttpRequestUtil {
             conn.setReadTimeout(30000);
             //setting headers
             if (headers != null && headers.size() > 0) {
-                Iterator<String> itr = headers.keySet().iterator();
-                String key = itr.next();
-                conn.setRequestProperty(key, headers.get(key));
+	            for(String key: headers.keySet()){
+		            conn.setRequestProperty(key, headers.get(key));
+	            }
             }
             conn.connect();
             // Get the response
