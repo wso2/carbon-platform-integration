@@ -385,7 +385,7 @@ public class AutomationContext {
     /**
      * Applicable tenant USer
      *
-     * @return
+     * @return User
      * @throws XPathExpressionException
      */
     private User getUser() throws XPathExpressionException {
@@ -427,7 +427,7 @@ public class AutomationContext {
     /**
      * Applicable tenant admin User
      *
-     * @return
+     * @return User
      * @throws XPathExpressionException
      */
     private User getAdminUser() throws XPathExpressionException {
@@ -449,7 +449,7 @@ public class AutomationContext {
     /**
      * Returns all URLS needed for the test built upon the configuration
      *
-     * @return
+     * @return ContextUrls
      * @throws XPathExpressionException
      */
     public ContextUrls getContextUrls() throws XPathExpressionException {
@@ -527,7 +527,7 @@ public class AutomationContext {
      * Provides configuration value
      *
      * @param expression xpath for expected element
-     * @return
+     * @return String
      * @throws XPathExpressionException
      */
     public String getConfigurationValue(String expression) throws XPathExpressionException {
@@ -540,7 +540,7 @@ public class AutomationContext {
      * Provides DOM Node
      *
      * @param expression xpath for expected element
-     * @return
+     * @return Node
      * @throws XPathExpressionException
      */
     public Node getConfigurationNode(String expression) throws XPathExpressionException {
@@ -553,7 +553,7 @@ public class AutomationContext {
      * Provides DOM NodeList
      *
      * @param expression xpath for expected element
-     * @return
+     * @return Node List
      * @throws XPathExpressionException
      */
     public NodeList getConfigurationNodeList(String expression) throws XPathExpressionException {
