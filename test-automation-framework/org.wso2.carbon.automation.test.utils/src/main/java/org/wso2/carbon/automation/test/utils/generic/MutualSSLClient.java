@@ -23,6 +23,7 @@ import java.io.*;
 import java.net.URL;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Map;
 
 public class MutualSSLClient {
 
@@ -37,16 +38,12 @@ public class MutualSSLClient {
 
     private String backendURL;
     private String method;
-    private String contentType;
-    private String soapAction;
     private HttpsURLConnection httpsURLConnection;
     private SSLSocketFactory sslSocketFactory;
 
-    public MutualSSLClient ( String backendURL, String method, String contentType, String soapAction) {
+    public MutualSSLClient ( String backendURL, String method) {
         this.backendURL = backendURL;
         this.method = method;
-        this.contentType = contentType;
-        this.soapAction = soapAction;
     }
 
     public void loadKeyStore ( String keyStorePath, String keyStorePassowrd)
@@ -83,7 +80,7 @@ public class MutualSSLClient {
 
     }
 
-    public String sendReceive(String message) throws IOException {
+    public String sendReceive(String message, Map<String, String> requestProps) throws IOException {
 
         URL url = new URL(backendURL);
 
@@ -92,8 +89,10 @@ public class MutualSSLClient {
         httpsURLConnection.setDoOutput(true);
         httpsURLConnection.setDoInput(true);
         httpsURLConnection.setRequestMethod(method);
-        httpsURLConnection.setRequestProperty("Content-type", contentType);
-        httpsURLConnection.setRequestProperty("SOAPAction", soapAction);
+
+        for (Map.Entry<String, String> entry : requestProps.entrySet()) {
+            httpsURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+        }
 
         OutputStream reqStream = getHttpsURLConnection().getOutputStream();
         reqStream.write(message.getBytes());
