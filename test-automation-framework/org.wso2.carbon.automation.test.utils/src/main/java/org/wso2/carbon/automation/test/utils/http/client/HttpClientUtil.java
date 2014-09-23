@@ -210,6 +210,35 @@ public class HttpClientUtil {
         Assert.assertEquals(responseCode, 202, "Response Code not 202");
     }
 
+    public void patch(String endpoint, String params) throws Exception {
+        log.info("Endpoint : " + endpoint);
+        HttpURLConnection httpCon = null;
+        int responseCode = -1;
+        try {
+            URL url = new URL(endpoint);
+            httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setConnectTimeout(connectionTimeOut);
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("PUT");
+            httpCon.setRequestProperty("Content-Length", String.valueOf(params.length()));
+            httpCon.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+            httpCon.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            out.write(params);
+            out.close();
+            responseCode = httpCon.getResponseCode();
+            httpCon.getInputStream().close();
+        } catch (Exception e) {
+            log.error("Failed to get the response " + e);
+            throw new Exception("Failed to get the response :" + e);
+        } finally {
+            if (httpCon != null) {
+                httpCon.disconnect();
+            }
+        }
+        Assert.assertEquals(responseCode, 202, "Response Code not 202");
+    }
+
     private static String getStringFromInputStream(InputStream in) throws Exception {
         InputStreamReader reader = new InputStreamReader(in);
         char[] buff = new char[1024];

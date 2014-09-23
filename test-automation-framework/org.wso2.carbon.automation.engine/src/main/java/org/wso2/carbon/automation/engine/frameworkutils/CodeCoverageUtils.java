@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  */
 public final class CodeCoverageUtils {
     private static final Log log = LogFactory.getLog(CodeCoverageUtils.class);
+    private static ArrayList<String> direcArrayList = new ArrayList<String>();
 
     private CodeCoverageUtils() {
     }
@@ -101,10 +102,17 @@ public final class CodeCoverageUtils {
                 return;
             }
 
-            FileUtils.copyFileToDirectory(new File(emmaHome + emmaJarName),
-                    new File(carbonHome + File.separator + "repository" +
-                            File.separator + "components" + File.separator +
-                            "lib" + File.separator));
+
+            direcArrayList.clear();
+            searchDirectoryByName(carbonHome, direcArrayList, "lib");
+
+            for (String aDirecArrayList : direcArrayList) {
+                if (aDirecArrayList.contains("repository" + File.separator + "components" + File.separator + "lib")) {
+                    FileUtils.copyFileToDirectory(new File(emmaHome + emmaJarName),
+                            new File(aDirecArrayList));
+                }
+            }
+
             // Load the file patterns of the bundles to be instrumented
             instrumentSelectedFiles(carbonHome);
         } catch (IOException e) {
@@ -134,10 +142,19 @@ public final class CodeCoverageUtils {
             }
         }
 
-        ArrayList<String> direcArrayList = new ArrayList<String>();
 
         // Instrument the bundles which match the specified patterns in <code>filePatterns</code>
-        File plugins = new File(searchDirectoryByName(carbonHome,direcArrayList,"plugins").get(0));
+        File plugins = null;
+
+        direcArrayList.clear();
+        searchDirectoryByName(carbonHome, direcArrayList, "plugins");
+
+        for (String aDirecArrayList : direcArrayList) {
+            if (aDirecArrayList.contains("repository" + File.separator + "components" + File.separator + "plugins")) {
+                plugins = new File(aDirecArrayList);
+            }
+        }
+
         //instrument the jars at plugins directory first (otherwise emma will complain about state versions of class files
         int instrumentedFileCount = 0;
         for (File file : plugins.listFiles()) {
@@ -163,7 +180,16 @@ public final class CodeCoverageUtils {
 
         //instrument the jar files in patches directory
 
-        File patchesDir = new File(searchDirectoryByName(carbonHome,direcArrayList,"patches").get(0) + File.separator);
+        File patchesDir = null;
+
+        searchDirectoryByName(carbonHome, direcArrayList, "patches");
+
+        for (String aDirecArrayList : direcArrayList) {
+            if (aDirecArrayList.contains("repository" + File.separator + "components" + File.separator + "patches")) {
+                patchesDir = new File(aDirecArrayList);
+            }
+        }
+
         int instrumentedPatchFileCount = 0;
         File[] patchFiles = patchesDir.listFiles();
         Map<Integer, String> patchesDirTreeMap = new TreeMap<Integer, String>();
@@ -340,12 +366,23 @@ public final class CodeCoverageUtils {
         log.info("Emma report generation completed");
     }
 
+
     private static File[] getCoverageDataFiles(String carbonHome) {
-        return new File(carbonHome).listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".ec");
-            }
-        });
+
+        List<File> files = (List<File>) FileUtils.listFiles(new File(carbonHome),
+                new String[]{"ec"}, true);
+
+        File[] coverageFiles = new File[files.size()];
+
+        Iterator<File> itFileList = files.iterator();
+        int count = 0;
+
+        while (itFileList.hasNext()) {
+            File filePath = itFileList.next();
+            coverageFiles[count] = filePath;
+            count++;
+        }
+        return coverageFiles;
     }
 
     public static boolean renameCoverageDataFile(String carbonHome) {
@@ -368,24 +405,24 @@ public final class CodeCoverageUtils {
         return null;
     }
 
-     public static ArrayList<String> searchDirectoryByName(String baseDir, ArrayList<String> directoryLists, String dirName) {
-         File baseDirName = new File(baseDir);
-         File[] fileArray = baseDirName.listFiles();
-         if (fileArray != null) {
-             for (int i = 0; i < fileArray.length; i++) {
-                 File name = fileArray[i];
-                 if (name.isDirectory()) {
-                     if (name.toString().subSequence(name.toString().lastIndexOf("/")+1,
-                             name.toString().length()).equals(dirName)) {
-                         directoryLists.add(name.getAbsolutePath());
-                     }
-                     searchDirectoryByName(fileArray[i].getAbsolutePath(), directoryLists, dirName);
-                 } else if (fileArray.length == i) {
-                     return null;
-                 }
-             }
-         }
-         return directoryLists;
-     }
+    public static ArrayList<String> searchDirectoryByName(String baseDir, ArrayList<String> directoryLists, String dirName) {
+        File baseDirName = new File(baseDir);
+        File[] fileArray = baseDirName.listFiles();
+        if (fileArray != null) {
+            for (int i = 0; i < fileArray.length; i++) {
+                File name = fileArray[i];
+                if (name.isDirectory()) {
+                    if (name.toString().subSequence(name.toString().lastIndexOf("/") + 1,
+                            name.toString().length()).equals(dirName)) {
+                        directoryLists.add(name.getAbsolutePath());
+                    }
+                    searchDirectoryByName(fileArray[i].getAbsolutePath(), directoryLists, dirName);
+                } else if (fileArray.length == i) {
+                    return null;
+                }
+            }
+        }
+        return directoryLists;
+    }
 }
 

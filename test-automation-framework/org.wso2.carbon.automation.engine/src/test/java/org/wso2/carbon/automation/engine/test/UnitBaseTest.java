@@ -15,12 +15,11 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-package org.wso2.carbon.automation.engine.extensions.interfaces;
+package org.wso2.carbon.automation.engine.test;
 
-public interface ExecutionListenerExtension {
-    public void initiate() throws Exception;
+public class UnitBaseTest {
+           public void initBase()
+           {
 
-    public void onExecutionStart() throws Exception;
-
-    public void onExecutionFinish() throws Exception;
+           }
 }

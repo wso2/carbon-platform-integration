@@ -13,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TestNGExtensionExecutor {
-    static HashMap<String, List<ExtensibleClass>> extensionClassObjectMap = new HashMap<String, List<ExtensibleClass>>();
+    private static HashMap<String, List<ExtensibleClass>> extensionClassObjectMap = new HashMap<String, List<ExtensibleClass>>();
 
-    public static void executeExtensible(String LISTENER, String LISTENERMethod, boolean reverseOrder) throws InvocationTargetException,
-            IllegalAccessException, NoSuchMethodException {
+    public static void executeExtensible(String LISTENER, String LISTENERMethod,
+                                         boolean reverseOrder) throws InvocationTargetException,
+                                                                      IllegalAccessException,
+                                                                      NoSuchMethodException {
         List<ExtensibleClass> extensionObjList = extensionClassObjectMap.get(LISTENER);
         List<ExtensibleClass> orderedObjList = new ArrayList<ExtensibleClass>();
         if (reverseOrder) {
@@ -75,7 +77,8 @@ public class TestNGExtensionExecutor {
     }
 
     public void initiate() throws XPathExpressionException, ClassNotFoundException,
-            InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+                                  InvocationTargetException, IllegalAccessException,
+                                  NoSuchMethodException, InstantiationException {
         NodeList extensionNodeList = AutomationConfiguration
                 .getConfigurationNodeList(ExtensionConstants.LISTENER_EXTENSION).item(0).getChildNodes();
         for (int nodeNo = 0; nodeNo < extensionNodeList.getLength(); nodeNo++) {
@@ -84,21 +87,24 @@ public class TestNGExtensionExecutor {
             String LISTENERName = extensionNode.getNodeName();
             NodeList extensionsList = extensionNode.getChildNodes().item(0).getChildNodes();
             for (int extNo = 0; extNo < extensionsList.getLength(); extNo++) {
-                String className;
-                if (extensionsList.item(extNo).getNodeName().equals(ExtensionConstants.CLASS_NAME)) {
-                    className = extensionsList.item(extNo).getChildNodes().item(0).getNodeValue().trim();
-                    if (!className.isEmpty()) {
-                        Class cls = Class.forName(className);
-                        Object object = cls.newInstance();
-                        Method initMethod = cls.getDeclaredMethod(FrameworkConstants.LISTENER_INIT_METHOD);
-                        initMethod.invoke(object);
-                        ExtensibleClass extension = new ExtensibleClass();
-                        extension.setClassInstance(object);
-                        extension.setInitiated(true);
-                        extension.setClazz(cls);
-                        extension.setListener(LISTENERName);
-                        extension.setClassName(className);
-                        extensionObjList.add(extension);
+                NodeList classList = extensionsList.item(extNo).getChildNodes();
+                for (int classNo = 0; classNo < classList.getLength(); classNo++) {
+                    String className;
+                    if (classList.item(classNo).getNodeName().equals(ExtensionConstants.CLASS_NAME)) {
+                        className = classList.item(classNo).getChildNodes().item(0).getNodeValue().trim();
+                        if (!className.isEmpty()) {
+                            Class cls = Class.forName(className);
+                            Object object = cls.newInstance();
+                            Method initMethod = cls.getDeclaredMethod(FrameworkConstants.LISTENER_INIT_METHOD);
+                            initMethod.invoke(object);
+                            ExtensibleClass extension = new ExtensibleClass();
+                            extension.setClassInstance(object);
+                            extension.setInitiated(true);
+                            extension.setClazz(cls);
+                            extension.setListener(LISTENERName);
+                            extension.setClassName(className);
+                            extensionObjList.add(extension);
+                        }
                     }
                 }
             }

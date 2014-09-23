@@ -15,10 +15,8 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-package org.wso2.carbon.automation.engine.extensions.interfaces;
+package org.wso2.carbon.automation.engine.test.context;
 
-public interface ReportListenerExtension {
-    public void initiate();
+public class UrlValidationTestCase {
 
-    public void generateReport();
 }
