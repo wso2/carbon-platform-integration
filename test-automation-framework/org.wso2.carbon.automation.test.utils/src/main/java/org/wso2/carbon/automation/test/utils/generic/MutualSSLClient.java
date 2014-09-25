@@ -37,13 +37,11 @@ public class MutualSSLClient {
     private String PROTOCOL  = "SSLv3";
 
     private String backendURL;
-    private String method;
     private HttpsURLConnection httpsURLConnection;
     private SSLSocketFactory sslSocketFactory;
 
-    public MutualSSLClient ( String backendURL, String method) {
+    public MutualSSLClient ( String backendURL) {
         this.backendURL = backendURL;
-        this.method = method;
     }
 
     public void loadKeyStore ( String keyStorePath, String keyStorePassowrd)
@@ -80,7 +78,7 @@ public class MutualSSLClient {
 
     }
 
-    public String sendReceive(String message, Map<String, String> requestProps) throws IOException {
+    public String sendReceive(String message, String method, Map<String, String> requestProps) throws IOException {
 
         URL url = new URL(backendURL);
 
@@ -96,12 +94,12 @@ public class MutualSSLClient {
             }
         }
 
-        OutputStream reqStream = getHttpsURLConnection().getOutputStream();
-        reqStream.write(message.getBytes());
+        OutputStream outputStream = httpsURLConnection.getOutputStream();
+        outputStream.write(message.getBytes());
 
-        InputStream resStream = getHttpsURLConnection().getInputStream();
+        InputStream inputStream = httpsURLConnection.getInputStream();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resStream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder out = new StringBuilder();
 
         String line;
@@ -110,7 +108,8 @@ public class MutualSSLClient {
         }
 
         reader.close();
-        resStream.close();
+        inputStream.close();
+        outputStream.close();
 
         return out.toString();
     }
