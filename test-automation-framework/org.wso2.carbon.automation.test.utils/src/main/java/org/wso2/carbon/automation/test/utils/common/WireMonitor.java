@@ -29,7 +29,6 @@ import java.net.Socket;
 
 class WireMonitor extends Thread {
     private Log log = LogFactory.getLog(WireMonitor.class);
-    private static final int TIMEOUT_VALUE = 30000;
     private int port;
     private ServerSocket providerSocket;
     private Socket connection = null;
@@ -67,12 +66,12 @@ class WireMonitor extends Thread {
                     }
                 }
 
-                //braking loop since whole message is red
+                //braking loop since whole message is read
                 if (buffer.toString().length() == contentLength) {
                     break;
                 }
                 // In this case no need of reading more than timeout value
-                if (System.currentTimeMillis() > (time + TIMEOUT_VALUE) || buffer.toString().contains("</soapenv:Envelope>")) {
+                if ( (System.currentTimeMillis() > (time + trigger.READ_TIME_OUT) ) || buffer.toString().contains("</soapenv:Envelope>")) {
                     break;
                 }
             }

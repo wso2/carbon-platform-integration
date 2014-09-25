@@ -90,8 +90,10 @@ public class MutualSSLClient {
         httpsURLConnection.setDoInput(true);
         httpsURLConnection.setRequestMethod(method);
 
-        for (Map.Entry<String, String> entry : requestProps.entrySet()) {
-            httpsURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+        if (requestProps != null && requestProps.size() > 0) {
+            for (Map.Entry<String, String> entry : requestProps.entrySet()) {
+                httpsURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
         }
 
         OutputStream reqStream = getHttpsURLConnection().getOutputStream();
