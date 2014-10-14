@@ -205,7 +205,6 @@ public class HttpRequestUtil {
             urlConnection.setAllowUserInteraction(false);
             //setting headers
             if (headers != null && headers.size() > 0) {
-<<<<<<< HEAD
                 Iterator<String> itr = headers.keySet().iterator();
                 while (itr.hasNext()) {
                     String key = itr.next();
@@ -213,11 +212,10 @@ public class HttpRequestUtil {
                         urlConnection.setRequestProperty(key, headers.get(key));
                     }
                 }
-=======
 	            for(String key: headers.keySet()){
 		            urlConnection.setRequestProperty(key, headers.get(key));
 	            }
->>>>>>> d2bf79e679704b15a9fbb058a2c7588609c55612
+
             }
             OutputStream out = urlConnection.getOutputStream();
             try {
@@ -274,7 +272,6 @@ public class HttpRequestUtil {
             conn.setReadTimeout(30000);
             //setting headers
             if (headers != null && headers.size() > 0) {
-<<<<<<< HEAD
                 Iterator<String> itr = headers.keySet().iterator();
                 while (itr.hasNext()) {
                     String key = itr.next();
@@ -282,11 +279,9 @@ public class HttpRequestUtil {
                         conn.setRequestProperty(key, headers.get(key));
                     }
                 }
-=======
 	            for(String key: headers.keySet()){
 		            conn.setRequestProperty(key, headers.get(key));
 	            }
->>>>>>> d2bf79e679704b15a9fbb058a2c7588609c55612
             }
             conn.connect();
             // Get the response
