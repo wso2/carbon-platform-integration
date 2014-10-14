@@ -24,73 +24,41 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-import org.xml.sax.SAXException;
-import sun.net.www.content.audio.x_aiff;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URISyntaxException;
 
 public class AutomationConfigurationReader {
     private static final Log log = LogFactory.getLog(AutomationConfigurationReader.class);
     private static AutomationConfigurationReader configurationReaderInstance;
-    static Document document;
+    private static Document document;
 
-    public AutomationConfigurationReader readAutomationConfigurations()
-            throws Exception {
-        synchronized (AutomationConfigurationReader.class) {
-            if (configurationReaderInstance == null) {
-                configurationReaderInstance = new AutomationConfigurationReader();
-                document = readConfigurationXmlDocument();
-            }
-        }
-        return configurationReaderInstance;
-    }
+	private AutomationConfigurationReader() {
 
-    /**
-     * This method remove the given node type recursively
-     *
-     * @param docObj   Automation node from the automation,xml
-     * @param nodeType comment node type
-     */
-    private static void removeNodes(Node docObj, short nodeType) {
-        if (docObj.getNodeType() == nodeType)
-            docObj.getParentNode().removeChild(docObj);
+	}
 
-        // check the children recursively
-        NodeList list = docObj.getChildNodes();
-        for (int i = 0; i < list.getLength(); i++) {
-            removeNodes(list.item(i), nodeType);
-        }
-    }
+	public static AutomationConfigurationReader getInstance()
+			throws Exception {
+		synchronized (AutomationConfigurationReader.class) {
+			if (configurationReaderInstance == null) {
+				configurationReaderInstance = new AutomationConfigurationReader();
+				document = readConfigurationXmlDocument();
+				document = getConfigurationXmlDocument();
+			}
+		}
+		return configurationReaderInstance;
+	}
 
-    //this method is used to print the processed xml doc
-    public static void printBuiltXML(Document xml) throws Exception {
-        Transformer tf = TransformerFactory.newInstance().newTransformer();
-        tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        tf.setOutputProperty(OutputKeys.INDENT, "yes");
-        Writer out = new StringWriter();
-        tf.transform(new DOMSource(xml), new StreamResult(out));
+	public Document getConfigurationDocument() {
+		return document;
+	}
 
-        System.out.println(out.toString().trim());
-    }
-
-    private Document readConfigurationXmlDocument() throws Exception {
+    private static Document readConfigurationXmlDocument() throws Exception {
         File fXmlFile = new File(FrameworkPathUtil.
                 getSystemResourceLocation() + FrameworkConstants.CONFIGURATION_FILE_NAME);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -123,17 +91,7 @@ public class AutomationConfigurationReader {
         }
     }
 
-    private void removeOtherNodes(String nodeName) throws Exception {
-
-        for (int i = 0; i < document.getChildNodes().getLength(); i++) {
-            if (document.getChildNodes().item(i).getNodeName().equals(nodeName)) {
-                document.removeChild(document.getChildNodes().item(i));
-
-            }
-        }
-    }
-
-    public Document getConfigurationXmlDocument() throws ConfigurationMismatchException, XPathExpressionException {
+    private static Document getConfigurationXmlDocument() throws ConfigurationMismatchException, XPathExpressionException {
         //check for semantics errors in configuration file
         ConfigurationErrorChecker.checkPlatformErrors(document);
         return document;
