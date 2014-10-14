@@ -17,10 +17,14 @@
 */
 package org.wso2.carbon.automation.engine.context.beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private String key;
     private String userName;
     private String password;
+	private List<String> roles;
 
     public void setKey(String key) {
         this.key = key;
@@ -45,4 +49,20 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public String getUserNameWithoutDomain() {
+		String[] result = userName.split("@");
+		return result[0];
+	}
+
+	public List<String> getRoles() {
+		if (roles == null) {
+			roles = new ArrayList<String>(0);
+		}
+		return roles;
+	}
+
+	public void addRole(String role) {
+		getRoles().add(role);
+	}
 }

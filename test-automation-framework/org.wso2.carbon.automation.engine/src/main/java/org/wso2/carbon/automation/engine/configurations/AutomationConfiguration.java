@@ -15,19 +15,13 @@ public class AutomationConfiguration {
     static final Log log = LogFactory.getLog(AutomationConfiguration.class);
     private static Document configurationDocument;
 
-    static {
-        AutomationConfigurationReader configurationReader = new AutomationConfigurationReader();
-        try {
-            configurationReader.readAutomationConfigurations();
-            configurationDocument = configurationReader.getConfigurationXmlDocument();
-        } catch (Exception e) {
-            log.error(e);
-        }
-    }
-
     public static Document getConfigurationDocument() {
         return configurationDocument;
     }
+
+	public static void setConfigurationDocument(Document configurationDocument) {
+		AutomationConfiguration.configurationDocument = configurationDocument;
+	}
 
     public static String getConfigurationValue(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();

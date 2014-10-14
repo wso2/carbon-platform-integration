@@ -299,6 +299,11 @@ public class AutomationContext {
                 userName = userNodeList.item(userItem).getTextContent();
             } else if (userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.PASSWORD)) {
                 tenantUser.setPassword(userNodeList.item(userItem).getTextContent());
+            } else if(userNodeList.item(userItem).getNodeName().equals(ContextXpathConstants.ROLES)){
+	            NodeList roleList = userNodeList.item(userItem).getChildNodes();
+	            for (int i = 0; i < roleList.getLength(); i++) {
+		            tenantUser.addRole(roleList.item(i).getTextContent());
+	            }
             }
         }
         if (tenantDomain.equals(FrameworkConstants.SUPER_TENANT_DOMAIN_NAME)) {
@@ -380,7 +385,7 @@ public class AutomationContext {
     /**
      * Applicable tenant USer
      *
-     * @return
+     * @return User
      * @throws XPathExpressionException
      */
     private User getUser() throws XPathExpressionException {
@@ -408,13 +413,21 @@ public class AutomationContext {
         tenantUser.setUserName(userName + "@" + tenantDomain);
         tenantUser.setPassword(password);
         tenantUser.setKey(tenantUserNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
+
+	    NodeList roleList = this.getConfigurationNodeList(
+			    String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_USERS_ROLES,
+			                  superUserReplacement, tenantDomain, userKey));
+	    for (int i = 0; i < roleList.getLength(); i++) {
+		    tenantUser.addRole(roleList.item(i).getTextContent());
+	    }
+
         return tenantUser;
     }
 
     /**
      * Applicable tenant admin User
      *
-     * @return
+     * @return User
      * @throws XPathExpressionException
      */
     private User getAdminUser() throws XPathExpressionException {
@@ -440,7 +453,7 @@ public class AutomationContext {
     /**
      * Returns all URLS needed for the test built upon the configuration
      *
-     * @return
+     * @return ContextUrls
      * @throws XPathExpressionException
      */
     public ContextUrls getContextUrls() throws XPathExpressionException {
@@ -518,7 +531,7 @@ public class AutomationContext {
      * Provides configuration value
      *
      * @param expression xpath for expected element
-     * @return
+     * @return String
      * @throws XPathExpressionException
      */
     public String getConfigurationValue(String expression) throws XPathExpressionException {
@@ -531,7 +544,7 @@ public class AutomationContext {
      * Provides DOM Node
      *
      * @param expression xpath for expected element
-     * @return
+     * @return Node
      * @throws XPathExpressionException
      */
     public Node getConfigurationNode(String expression) throws XPathExpressionException {
@@ -544,7 +557,7 @@ public class AutomationContext {
      * Provides DOM NodeList
      *
      * @param expression xpath for expected element
-     * @return
+     * @return Node List
      * @throws XPathExpressionException
      */
     public NodeList getConfigurationNodeList(String expression) throws XPathExpressionException {
@@ -552,4 +565,18 @@ public class AutomationContext {
         XPath xPath = XPathFactory.newInstance().newXPath();
         return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
     }
+
+	/**
+	 * Replace value in document object
+	 *
+	 * @param expression xpath to locate the value
+	 * @param replaceBy value to replace
+	 * @throws XPathExpressionException
+	 */
+	public void replaceDocumentValue(String expression, String replaceBy) throws XPathExpressionException {
+		Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		Node node = (Node) xpath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+		node.setTextContent(replaceBy);
+	}
 }

@@ -27,8 +27,8 @@ import org.apache.axis2.engine.ListenerManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.extensions.ExtensionUtils;
-import org.wso2.carbon.utils.ServerConstants;
 
 import java.io.*;
 
@@ -41,12 +41,12 @@ public class Axis2ServerManager implements BackendServer {
 
     public Axis2ServerManager() {
         this("test_axis2_server_9000.xml");
-        repositoryPath = System.getProperty(ServerConstants.CARBON_HOME) + File.separator +
+        repositoryPath = System.getProperty(FrameworkConstants.CARBON_HOME) + File.separator +
                 "samples" + File.separator + "axis2Server" + File.separator + "repository";
     }
 
     public Axis2ServerManager(String axis2xmlFile) {
-        repositoryPath = System.getProperty(ServerConstants.CARBON_HOME) + File.separator +
+        repositoryPath = System.getProperty(FrameworkConstants.CARBON_HOME) + File.separator +
                 "samples" + File.separator + "axis2Server" + File.separator + "repository";
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());

@@ -177,6 +177,21 @@
                 <version>${emma.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.axis2.wso2</groupId>
+                <artifactId>axis2</artifactId>
+                <version>${axis2.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.utils</artifactId>
                 <version>${carbon.platform.version}</version>
@@ -254,6 +269,76 @@
                 <version>${jmeter.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_components</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_functions</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_http</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_java</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_report</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_tcp</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_ftp</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_jdbc</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_jms</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_ldap</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_mail</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_junit</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_monitors</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_config</artifactId>
+                <version>${jmeter.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derbynet</artifactId>
                 <version>${derby.version}</version>
@@ -294,7 +379,14 @@
 
         <derby.version>10.8.2.2</derby.version>
         <rampart.version>1.6.1-wso2v13-SNAPSHOT</rampart.version>
+<<<<<<< HEAD
         <saucelabs.version>2.6</saucelabs.version>
+=======
+
+        <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
+        <commons.logging.version>1.1.1</commons.logging.version>
+        <commons.io.version>2.2</commons.io.version>
+>>>>>>> d2bf79e679704b15a9fbb058a2c7588609c55612
     </properties>
 
 </project>

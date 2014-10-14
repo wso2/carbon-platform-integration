@@ -90,4 +90,8 @@ public class ContextXpathConstants {
     public static final String TENANT_ADMIN = "TENANT_ADMIN";
     public static final String TENANT_USER = "TENANT_USER";
     public static final String EXECUTION_ENVIRONMENT = "//executionEnvironment/text()";
+
+	public static final String ROLES = "roles";
+	public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
+			"//%s/tenant[@domain='%s']/users/user[@key='%s']/roles/role";
 }
