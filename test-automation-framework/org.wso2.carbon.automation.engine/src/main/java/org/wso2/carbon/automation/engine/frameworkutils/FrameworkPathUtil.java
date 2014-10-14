@@ -19,10 +19,8 @@ package org.wso2.carbon.automation.engine.frameworkutils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.frameworkutils.enums.OperatingSystems;
-import org.wso2.carbon.utils.ServerConstants;
 
 import java.io.File;
 
@@ -93,12 +91,11 @@ public class FrameworkPathUtil {
     }
 
     public static String getCarbonHome() {
-
-        String carbonHome = System.getProperty(ServerConstants.CARBON_HOME);
-        if (carbonHome == null) {
-               carbonHome = System.getenv(CarbonConstants.CARBON_HOME_ENV);
-               System.setProperty(ServerConstants.CARBON_HOME, carbonHome);
+        if (System.getProperty("user.dir") != null) {
+            return System.getProperty("user.dir");
+        } else {
+            log.error("Cannot read carbon.home property ");
+            return null;
         }
-        return carbonHome;
     }
 }
