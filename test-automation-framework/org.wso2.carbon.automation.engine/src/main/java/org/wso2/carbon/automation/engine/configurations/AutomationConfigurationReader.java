@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.exceptions.ConfigurationMismatchException;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,24 +36,20 @@ import java.io.File;
 
 public class AutomationConfigurationReader {
     private static final Log log = LogFactory.getLog(AutomationConfigurationReader.class);
-    private static AutomationConfigurationReader configurationReaderInstance;
+    private static AutomationConfigurationReader sessionAutomationConfiguration;
     private static Document document;
 
-	private AutomationConfigurationReader() {
 
-	}
-
-	public static AutomationConfigurationReader getInstance()
-			throws Exception {
-		synchronized (AutomationConfigurationReader.class) {
-			if (configurationReaderInstance == null) {
-				configurationReaderInstance = new AutomationConfigurationReader();
-				document = readConfigurationXmlDocument();
-				document = getConfigurationXmlDocument();
-			}
-		}
-		return configurationReaderInstance;
-	}
+    public AutomationConfigurationReader readAutomationConfigurations()
+            throws Exception {
+        synchronized (AutomationConfigurationReader.class) {
+            if (sessionAutomationConfiguration == null) {
+                sessionAutomationConfiguration = new AutomationConfigurationReader();
+                document = readConfigurationXmlDocument();
+            }
+        }
+        return sessionAutomationConfiguration;
+    }
 
 	public Document getConfigurationDocument() {
 		return document;
@@ -91,7 +88,8 @@ public class AutomationConfigurationReader {
         }
     }
 
-    private static Document getConfigurationXmlDocument() throws ConfigurationMismatchException, XPathExpressionException {
+    protected static Document getConfigurationXmlDocument() throws ConfigurationMismatchException,
+                                                                   XPathExpressionException {
         //check for semantics errors in configuration file
         ConfigurationErrorChecker.checkPlatformErrors(document);
         return document;

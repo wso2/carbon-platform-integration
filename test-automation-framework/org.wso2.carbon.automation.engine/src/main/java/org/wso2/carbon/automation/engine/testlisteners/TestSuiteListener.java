@@ -49,6 +49,7 @@ public class TestSuiteListener implements ISuiteListener {
     }
 
     private void handleException(String msg, Exception e) {
+        log.error("Execution error occurred in TestSuiteListener:-" + e.getStackTrace());
         throw new RuntimeException(msg, e);
     }
 }

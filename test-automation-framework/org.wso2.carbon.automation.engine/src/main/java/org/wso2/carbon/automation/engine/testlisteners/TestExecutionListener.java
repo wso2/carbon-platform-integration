@@ -21,8 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.IExecutionListener;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
-import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
-import org.wso2.carbon.automation.engine.configurations.AutomationConfigurationReader;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
@@ -40,11 +38,7 @@ public class TestExecutionListener implements IExecutionListener {
     public void onExecutionStart() {
         //read and build the automation context
         try {
-
-	        AutomationConfiguration.setConfigurationDocument(
-			        AutomationConfigurationReader.getInstance().getConfigurationDocument());
-
-	        AutomationContext context = new AutomationContext();
+            AutomationContext context = new AutomationContext();
             System.setProperty(FrameworkConstants.EXECUTION_MODE,
                     context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT));
             TestFrameworkUtils.setKeyStoreProperties(context);
@@ -73,6 +67,7 @@ public class TestExecutionListener implements IExecutionListener {
     }
 
     private void handleException(String msg, Exception e) {
+        log.error("Execution error occurred in TestExecutionListener:-" + e.getStackTrace());
         throw new RuntimeException(msg, e);
     }
 

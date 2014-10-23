@@ -30,10 +30,10 @@ public class TestManagerListener implements ITestListener {
 
     public void onTestStart(ITestResult iTestResult) {
         log.info("Running the test method --- " + iTestResult.getTestClass().getName() + "."
-                + iTestResult.getMethod().getMethodName() + " ----");
+                 + iTestResult.getMethod().getMethodName() + " ----");
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_TEST_START, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_TEST_START, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -43,7 +43,7 @@ public class TestManagerListener implements ITestListener {
         log.info("On test success...");
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_SUCCESS, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_SUCCESS, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -53,7 +53,7 @@ public class TestManagerListener implements ITestListener {
         log.info("On test failure...");
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_FAILURE, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_FAILURE, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -63,7 +63,7 @@ public class TestManagerListener implements ITestListener {
         log.info("On test skipped...");
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_SKIPPED, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_SKIPPED, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -73,7 +73,7 @@ public class TestManagerListener implements ITestListener {
         log.info("On test failed but within success percentage...");
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -82,7 +82,7 @@ public class TestManagerListener implements ITestListener {
     public void onStart(ITestContext iTestContext) {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_START, false);
+                                                      ExtensionConstants.TEST_LISTENER_ON_START, false);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
@@ -91,13 +91,14 @@ public class TestManagerListener implements ITestListener {
     public void onFinish(ITestContext iTestContext) {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
-                    ExtensionConstants.TEST_LISTENER_ON_FINISH, true);
+                                                      ExtensionConstants.TEST_LISTENER_ON_FINISH, true);
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
     }
 
     private void handleException(String msg, Exception e) {
+        log.error("Execution error occurred in TestManagerListener:-" + e.getStackTrace());
         throw new RuntimeException(msg, e);
     }
 }

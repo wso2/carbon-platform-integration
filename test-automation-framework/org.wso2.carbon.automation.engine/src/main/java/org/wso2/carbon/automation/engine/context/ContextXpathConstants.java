@@ -20,6 +20,9 @@ package org.wso2.carbon.automation.engine.context;
 public class ContextXpathConstants {
     //constants for product group element
     public static final String PRODUCT_GROUP_NAME = "//productGroup[@name='%s']";
+    public static final String PRODUCT_GROUP_PARENT="//platform/productGroup";
+    public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE="//platform/productGroup/instance[@type='standalone']";
+    
     public static final String PRODUCT_GROUP_STANDALONE_INSTANCE =
             "//productGroup[@default='true']/instance[@type='standalone']";
     public static final String PRODUCT_GROUP_CLUSTERING_ENABLED = "//productGroup[@name='%s']/@clusteringEnabled";
@@ -90,6 +93,7 @@ public class ContextXpathConstants {
     public static final String TENANT_ADMIN = "TENANT_ADMIN";
     public static final String TENANT_USER = "TENANT_USER";
     public static final String EXECUTION_ENVIRONMENT = "//executionEnvironment/text()";
+
 
 	public static final String ROLES = "roles";
 	public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
