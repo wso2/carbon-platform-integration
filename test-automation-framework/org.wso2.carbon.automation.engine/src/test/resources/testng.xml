@@ -7,7 +7,7 @@
 
         <classes>
             <class name="org.wso2.carbon.automation.engine.test.context.AutomationContextTestCase"/>
-            <!--<class name="org.wso2.carbon.automation.engine.test.configuration.ConfigurationXSDValidatorTest"/>-->
+            <class name="org.wso2.carbon.automation.engine.test.configuration.ConfigurationXSDValidatorTest"/>
         </classes>
     </test>
 </suite>
