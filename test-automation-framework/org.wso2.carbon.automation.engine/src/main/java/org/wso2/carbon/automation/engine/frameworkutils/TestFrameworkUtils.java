@@ -37,25 +37,20 @@ public class TestFrameworkUtils {
      * @throws XPathExpressionException - Throws if xpath cannot be read
      */
     public static void setKeyStoreProperties(AutomationContext context)
-		    throws XPathExpressionException {
+            throws XPathExpressionException {
 
-	    System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-	                                                   + context.getConfigurationValue(
-			    "//truststore/fileName/text()"));
-	    System.setProperty("javax.net.ssl.trustStorePassword",
-	                       context.getConfigurationValue("//truststore/password/text()"));
-	    System.setProperty("javax.net.ssl.trustStoreType",
-	                       context.getConfigurationValue("//truststore/type/text()"));
+        System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
+                                                       + context.getConfigurationValue("//keystore/fileName/text()"));
 
-	    if (log.isDebugEnabled()) {
-		    log.debug(
-				    "javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
-		    log.debug("javax.net.ssl.trustStorePassword :" +
-		              System.getProperty("javax.net.ssl.trustStorePassword"));
-		    log.debug("javax.net.ssl.trustStoreType :" +
-		              System.getProperty("javax.net.ssl.trustStoreType"));
-	    }
+        System.setProperty("javax.net.ssl.trustStorePassword",
+                           context.getConfigurationValue("//keystore/keyPassword/text()"));
+
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+
+        if (log.isDebugEnabled()) {
+            log.debug("javax.net.ssl.trustStore :" + System.getProperty("javax.net.ssl.trustStore"));
+            log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));
+            log.debug("javax.net.ssl.trustStoreType :" + System.getProperty("javax.net.ssl.trustStoreType"));
+        }
     }
-
-
 }
