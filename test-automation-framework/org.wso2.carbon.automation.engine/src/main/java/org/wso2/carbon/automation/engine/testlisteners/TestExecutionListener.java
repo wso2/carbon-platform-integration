@@ -67,6 +67,7 @@ public class TestExecutionListener implements IExecutionListener {
     }
 
     private void handleException(String msg, Exception e) {
+        log.error("Execution error occurred in TestExecutionListener:-" + e.getStackTrace());
         throw new RuntimeException(msg, e);
     }
 

@@ -73,7 +73,7 @@ public class EmailSender {
         message.setSubject(subject);
         // Set time
         message.setSentDate(new Date());
-        // Set content// In this example multipart of// part1 is email body
+        // Set content
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setText(body);
 

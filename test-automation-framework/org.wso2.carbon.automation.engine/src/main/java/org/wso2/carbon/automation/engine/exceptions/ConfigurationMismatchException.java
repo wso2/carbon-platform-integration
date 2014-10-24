@@ -15,9 +15,9 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-package org.wso2.carbon.automation.engine.configurations;
+package org.wso2.carbon.automation.engine.exceptions;
 
-public class ConfigurationMismatchException extends Exception {
+public class ConfigurationMismatchException extends AutomationFrameworkException {
     public ConfigurationMismatchException() {
         super();
     }

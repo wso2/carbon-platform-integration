@@ -212,6 +212,10 @@ public class HttpRequestUtil {
                         urlConnection.setRequestProperty(key, headers.get(key));
                     }
                 }
+	            for(String key: headers.keySet()){
+		            urlConnection.setRequestProperty(key, headers.get(key));
+	            }
+
             }
             OutputStream out = urlConnection.getOutputStream();
             try {
@@ -275,6 +279,9 @@ public class HttpRequestUtil {
                         conn.setRequestProperty(key, headers.get(key));
                     }
                 }
+	            for(String key: headers.keySet()){
+		            conn.setRequestProperty(key, headers.get(key));
+	            }
             }
             conn.connect();
             // Get the response

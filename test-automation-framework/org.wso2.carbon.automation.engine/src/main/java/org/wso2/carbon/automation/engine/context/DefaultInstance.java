@@ -42,7 +42,7 @@ public class DefaultInstance extends AutomationConfiguration {
                 tenantDomain = getConfigurationValue(ContextXpathConstants.TENANT_DOMAIN);
             }
         } catch (XPathExpressionException e) {
-            log.error("Error while reading the super Tenant:" + e.getMessage());
+            log.error("Error while reading the super Tenant:" + e.getStackTrace());
         }
         return tenantDomain;
     }

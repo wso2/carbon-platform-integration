@@ -34,13 +34,14 @@ public class TestReportListener implements IReporter {
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> iSuites, String s) {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.REPORT_LISTENER,
-                    ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT, false);
+                                                      ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT, false);
         } catch (Exception e) {
             handleException("Error when generating testNG custom reports..", e);
         }
     }
 
     private void handleException(String msg, Exception e) {
+        log.error("Execution error occurred in TestReportListener:-" + e.getStackTrace());
         throw new RuntimeException(msg, e);
     }
 }

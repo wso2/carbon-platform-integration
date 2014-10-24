@@ -21,8 +21,8 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config.JMSBrokerConfiguration;
-import org.wso2.carbon.utils.ServerConstants;
 
 import java.io.File;
 import java.net.URI;
@@ -62,7 +62,7 @@ public class JMSBrokerController {
             connector.setUri(new URI(configuration.getProviderURL()));
             broker.setBrokerName("testBroker");
             log.info(broker.getBrokerDataDirectory());
-            broker.setDataDirectory(System.getProperty(ServerConstants.CARBON_HOME) +
+            broker.setDataDirectory(System.getProperty(FrameworkConstants.CARBON_HOME) +
                     File.separator + broker.getBrokerDataDirectory());
             broker.addConnector(connector);
             broker.start();

@@ -129,6 +129,10 @@
                     <user key="user1">
                         <userName>testuser11</userName>
                         <password>testuser11</password>
+                        <roles>
+                            <role>role1</role>
+                            <role>role2</role>
+                        </roles>
                     </user>
                     <user key="user2">
                         <userName>testuser21</userName>
@@ -149,6 +153,9 @@
                     <user key="user1">
                         <userName>testuser11</userName>
                         <password>testuser11</password>
+                        <roles>
+                            <role>role1</role>
+                        </roles>
                     </user>
                     <user key="user2">
                         <userName>testuser21</userName>
@@ -193,6 +200,22 @@
                 </users>
             </tenant>
         </tenants>
+        <roles>
+            <role name="role1">
+                <permissions>
+                    <permission>/permission/admin/configure</permission>
+                    <permission>/permission/admin/login</permission>
+                    <permission>/permission/admin/manage</permission>
+                    <permission>/permission/admin/monitor</permission>
+                </permissions>
+            </role>
+            <role name="role2">
+                <permissions>
+                    <permission>/permission/admin/configure</permission>
+                    <permission>/permission/admin/login</permission>
+                </permissions>
+            </role>
+        </roles>
     </userManagement>
     <!--
    This section will initiate the initial deployment of the platform required by
@@ -261,13 +284,21 @@
         </productGroup>
     </platform>
 
+    <backendServices>
+        <backendService key="http://localhost:9000/services/" default="true">http://localhost:9000/services/</backendService>
+        <!--<backendService key="http://localhost:9000/services/">http://localhost:9763/services/</backendService>-->
+        <backendService key="endpoint1">http://localhost:9000/services</backendService>
+        <backendService key="endpoint2">http://localhost:9763/services</backendService>
+        <backendService key="endpoint3">http://localhost:9764/services</backendService>
+    </backendServices>
+
     <listenerExtensions>
 
         <platformExecutionManager>
             <extentionClasses>
                 <class>
                     <name>org.wso2.carbon.integration.common.extensions.carbonserver.CarbonServerExtension</name>
-                    <!--<parameter name="-DportOffset" value="0" />-->
+                    <parameter name="-DportOffset" value="0" />
                     <!--<parameter name="cmdArg" value="debug 5005" />-->
                 </class>
                 <class>
