@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.wso2.carbon.automation</groupId>
         <artifactId>test-automation-framework</artifactId>
-        <version>4.3.1-SNAPSHOT</version>
+        <version>4.3.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -31,27 +31,21 @@
             <artifactId>derbynet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.rampart</groupId>
-            <artifactId>rampart-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-nop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.wso2.carbon.automation</groupId>
+            <artifactId>org.wso2.carbon.automation.engine</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.automation</groupId>
-            <artifactId>org.wso2.carbon.automation.extensions</artifactId>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+            <artifactId>axiom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
 
+    </dependencies>
 </project>

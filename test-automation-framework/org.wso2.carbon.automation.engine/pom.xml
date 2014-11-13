@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.wso2.carbon.automation</groupId>
         <artifactId>test-automation-framework</artifactId>
-        <version>4.3.1-SNAPSHOT</version>
+        <version>4.3.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.automation.engine</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.3.1</version>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>1.5</maven.compiler.source>
@@ -38,28 +38,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!--   <execution>
-                           <id>default-check</id>
-                           <goals>
-                               <goal>check</goal>
-                           </goals>
-                           <configuration>
-                               <rules>
-                                   &lt;!&ndash; implmentation is needed only for Maven 2 &ndash;&gt;
-                                   <rule implementation="org.jacoco.maven.RuleConfiguration">
-                                       <element>BUNDLE</element>
-                                       <limits>
-                                           &lt;!&ndash; implmentation is needed only for Maven 2 &ndash;&gt;
-                                           <limit implementation="org.jacoco.report.check.Limit">
-                                               <counter>COMPLEXITY</counter>
-                                               <value>COVEREDRATIO</value>
-                                               <minimum>0.60</minimum>
-                                           </limit>
-                                       </limits>
-                                   </rule>
-                               </rules>
-                           </configuration>
-                       </execution>-->
                 </executions>
             </plugin>
             <plugin>
@@ -78,7 +56,9 @@
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
-                    <argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m</argLine>
+                    <argLine>
+                        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/0.7.1.201405082137/org.jacoco.agent-0.7.1.201405082137-runtime.jar=destfile=${project.build.directory}/jacoco.exec
+                    </argLine>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
@@ -124,10 +104,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2.wso2</groupId>
-            <artifactId>axis2</artifactId>
         </dependency>
     </dependencies>
 </project>
