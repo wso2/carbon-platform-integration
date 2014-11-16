@@ -1,10 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~WSO2 Inc. licenses this file to you under the Apache License,
+ ~Version 2.0 (the "License"); you may not use this file except
+ ~in compliance with the License.
+ ~You may obtain a copy of the License at
+ ~
+ ~http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~Unless required by applicable law or agreed to in writing,
+ ~software distributed under the License is distributed on an
+ ~"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~KIND, either express or implied.  See the License for the
+ ~specific language governing permissions and limitations
+ ~under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.automation</groupId>
     <artifactId>test-automation-framework</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.3.1</version>
     <packaging>pom</packaging>
 
     <name>WSO2 Carbon Automation - Parent core project</name>
@@ -14,7 +32,10 @@
         <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
     </modules>
-
+    <scm>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <build>
         <extensions>
             <extension>
@@ -24,6 +45,22 @@
             </extension>
         </extensions>
         <plugins>
+           <!--Plugins for release deployment-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean install</preparationGoals>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+            <!--...................................-->
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
                 <artifactId>incremental-build-plugin</artifactId>
@@ -152,16 +189,10 @@
 
     <distributionManagement>
         <repository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <id>nexus-releases</id>
+            <name>WSO2 Release Distribution Repository</name>
+            <url>http://maven.wso2.org/nexus/service/local/staging/deploy/maven2/</url>
         </repository>
-
-        <snapshotRepository>
-            <id>wso2.snapshots</id>
-            <name>WSO2 Snapshot Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <dependencyManagement>
@@ -192,18 +223,8 @@
                 <version>${commons.io.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.utils</artifactId>
-                <version>${carbon.platform.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.automation</groupId>
                 <artifactId>org.wso2.carbon.automation.engine</artifactId>
-                <version>${test.framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.automation</groupId>
-                <artifactId>org.wso2.carbon.automation.extensions</artifactId>
                 <version>${test.framework.version}</version>
             </dependency>
             <dependency>
@@ -344,11 +365,6 @@
                 <version>${derby.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.rampart</groupId>
-                <artifactId>rampart-core</artifactId>
-                <version>${rampart.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.saucelabs.selenium</groupId>
                 <artifactId>sauce-ondemand-driver</artifactId>
                 <version>${saucelabs.version}</version>
@@ -358,16 +374,23 @@
                 <artifactId>selenium-client-factory</artifactId>
                 <version>${saucelabs.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+                <artifactId>axiom</artifactId>
+                <version>${axiom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commens.hhtpclient.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
-
     <properties>
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
-        <test.framework.version>4.3.1-SNAPSHOT</test.framework.version>
-        <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
-        <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
-
+        <test.framework.version>4.3.1</test.framework.version>
         <operadriver.version>0.8.1</operadriver.version>
         <selenium.version>2.40.0</selenium.version>
         <jmeter.version>2.6</jmeter.version>
@@ -376,15 +399,13 @@
         <org.apache.tomcat>7.0.34</org.apache.tomcat>
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <spring.framework.version>3.1.0.wso2v1</spring.framework.version>
-
         <derby.version>10.8.2.2</derby.version>
-        <rampart.version>1.6.1-wso2v13-SNAPSHOT</rampart.version>
-
         <saucelabs.version>2.6</saucelabs.version>
-
         <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
+        <axiom.version>1.2.11.wso2v5-SNAPSHOT</axiom.version>
+        <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
     </properties>
-
 </project>
+

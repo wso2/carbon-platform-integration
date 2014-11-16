@@ -18,7 +18,7 @@
 package org.wso2.carbon.automation.test.utils.common;
 
 import org.wso2.carbon.automation.engine.context.AutomationContext;
-import org.wso2.carbon.automation.extensions.XPathConstants;
+import org.wso2.carbon.automation.test.utils.AutomationContextXPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -31,10 +31,10 @@ public class HomePageGenerator {
         boolean webContextEnabled = false;
         boolean portEnabled = false;
         if (automationContext.getConfigurationNodeList
-                (String.format(XPathConstants.WEB_CONTEXT_ENABLED)).equals("true")) {
+                (String.format(AutomationContextXPathConstants.WEB_CONTEXT_ENABLED)).equals("true")) {
             webContextEnabled = true;
             webContextRoot = automationContext.getConfigurationNodeList
-                    (String.format(XPathConstants.WEB_CONTEXT_ROOT)).toString();
+                    (String.format(AutomationContextXPathConstants.WEB_CONTEXT_ROOT)).toString();
         }
         if (automationContext.getInstance().getPorts().size() != 0) {
             portEnabled = true;
