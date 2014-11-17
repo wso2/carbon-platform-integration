@@ -32,10 +32,10 @@
         <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
     </modules>
-    <scm>
-        <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+    <!--<scm>-->
+        <!--<developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>-->
+        <!--<tag>HEAD</tag>-->
+    <!--</scm>-->
     <build>
         <extensions>
             <extension>
@@ -46,20 +46,20 @@
         </extensions>
         <plugins>
            <!--Plugins for release deployment-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <preparationGoals>clean install</preparationGoals>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-release-plugin</artifactId>-->
+                <!--<version>2.5.1</version>-->
+                <!--<configuration>-->
+                    <!--<autoVersionSubmodules>true</autoVersionSubmodules>-->
+                    <!--<preparationGoals>clean install</preparationGoals>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-deploy-plugin</artifactId>-->
+                <!--<version>2.8.2</version>-->
+            <!--</plugin>-->
             <!--...................................-->
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
@@ -187,13 +187,13 @@
     </repositories>
 
 
-    <distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>WSO2 Release Distribution Repository</name>
-            <url>http://maven.wso2.org/nexus/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>nexus-releases</id>-->
+            <!--<name>WSO2 Release Distribution Repository</name>-->
+            <!--<url>http://maven.wso2.org/nexus/service/local/staging/deploy/maven2/</url>-->
+        <!--</repository>-->
+    <!--</distributionManagement>-->
 
     <dependencyManagement>
         <dependencies>
