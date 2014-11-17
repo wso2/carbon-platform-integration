@@ -11,7 +11,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-        <artifactId>org.wso2.carbon.automation.extensions</artifactId>
+    <artifactId>org.wso2.carbon.automation.extensions</artifactId>
     <version>4.3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>WSO2 Carbon Automation - Test Framework Extensions</name>
@@ -136,6 +136,18 @@
         <dependency>
             <groupId>com.saucelabs.selenium</groupId>
             <artifactId>selenium-client-factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+            <artifactId>axiom</artifactId>
         </dependency>
     </dependencies>
 </project>

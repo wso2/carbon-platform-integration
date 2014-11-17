@@ -17,13 +17,13 @@
 */
 package org.wso2.carbon.automation.extensions.servers.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ServerLogReader implements Runnable {
     private String streamType;
