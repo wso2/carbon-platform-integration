@@ -18,9 +18,6 @@
 package org.wso2.carbon.automation.engine.exceptions;
 
 public class ConfigurationMismatchException extends AutomationFrameworkException {
-    public ConfigurationMismatchException() {
-        super();
-    }
 
     public ConfigurationMismatchException(String contextModule, String message) {
         super(contextModule.concat(message));

@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.automation</groupId>
     <artifactId>test-automation-framework</artifactId>
-    <version>4.3.1</version>
+    <version>4.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WSO2 Carbon Automation - Parent core project</name>
@@ -377,7 +377,7 @@
             <dependency>
                 <groupId>net.lingala.zip4j</groupId>
                 <artifactId>zip4j</artifactId>
-                <version>${zip4j.version}</version>
+                <version>${lingala.zip4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom.wso2</groupId>
@@ -394,6 +394,7 @@
     <properties>
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
+        <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
         <test.framework.version>4.3.1</test.framework.version>
         <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
         <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
@@ -412,7 +413,6 @@
         <commons.io.version>2.2</commons.io.version>
         <axiom.version>1.2.11.wso2v5</axiom.version>
         <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
-        <zip4j.version>1.2.3</zip4j.version>
     </properties>
 </project>
 
