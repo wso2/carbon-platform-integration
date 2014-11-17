@@ -32,10 +32,10 @@
         <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
     </modules>
-    <scm>
-        <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+    <!--<scm>-->
+        <!--<developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>-->
+        <!--<tag>HEAD</tag>-->
+    <!--</scm>-->
     <build>
         <extensions>
             <extension>
