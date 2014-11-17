@@ -55,14 +55,14 @@ public class User {
 		return result[0];
 	}
 
-	public List<String> getRoles() {
-		if (roles == null) {
-			roles = new ArrayList<String>(0);
-		}
-		return roles;
-	}
+    public List<String> getRoles() {
+        if (roles == null) {
+            roles = new ArrayList<String>(0);
+        }
+        return roles;
+    }
 
-	public void addRole(String role) {
-		getRoles().add(role);
-	}
+    public void addRole(String role) {
+        getRoles().add(role);
+    }
 }
