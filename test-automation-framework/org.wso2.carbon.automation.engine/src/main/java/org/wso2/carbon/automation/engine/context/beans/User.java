@@ -50,10 +50,10 @@ public class User {
         this.password = password;
     }
 
-	public String getUserNameWithoutDomain() {
-		String[] result = userName.split("@");
-		return result[0];
-	}
+    public String getUserNameWithoutDomain() {
+        String[] result = userName.split("@");
+        return result[0];
+    }
 
     public List<String> getRoles() {
         if (roles == null) {
