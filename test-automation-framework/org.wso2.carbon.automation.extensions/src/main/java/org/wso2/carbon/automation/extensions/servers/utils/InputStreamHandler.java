@@ -58,7 +58,7 @@ public class InputStreamHandler implements Runnable {
         InputStreamReader inputStreamReader = null;
         try {
 
-            inputStreamReader = new InputStreamReader(inputStream);
+            inputStreamReader = new InputStreamReader(inputStream, "ISO-8859-1");
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
             while (true) {
