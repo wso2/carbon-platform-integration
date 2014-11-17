@@ -358,6 +358,16 @@
                 <artifactId>selenium-client-factory</artifactId>
                 <version>${saucelabs.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+                <artifactId>axiom</artifactId>
+                <version>${axiom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commens.hhtpclient.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -385,6 +395,8 @@
         <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
+        <axiom.version>1.2.11.wso2v5</axiom.version>
+        <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
     </properties>
 
 </project>
