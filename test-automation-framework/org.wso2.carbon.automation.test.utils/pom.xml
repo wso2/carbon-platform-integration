@@ -13,7 +13,7 @@
     <artifactId>org.wso2.carbon.automation.test.utils</artifactId>
     <packaging>jar</packaging>
 
-    <name>WSO2 Carbon Automation - Test Utils</name>
+    <name>WSO2 Carbon Automation - Test Framework Utils</name>
 
     <dependencies>
         <dependency>
