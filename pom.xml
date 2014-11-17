@@ -344,11 +344,6 @@
                 <version>${derby.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.rampart</groupId>
-                <artifactId>rampart-core</artifactId>
-                <version>${rampart.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.saucelabs.selenium</groupId>
                 <artifactId>sauce-ondemand-driver</artifactId>
                 <version>${saucelabs.version}</version>
@@ -368,6 +363,11 @@
                 <artifactId>axiom</artifactId>
                 <version>${axiom.version}</version>
             </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons.httpclient.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -378,7 +378,6 @@
         <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
         <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
         <axiom.version>1.2.11.wso2v5-SNAPSHOT</axiom.version>
-
         <operadriver.version>0.8.1</operadriver.version>
         <selenium.version>2.40.0</selenium.version>
         <jmeter.version>2.6</jmeter.version>
@@ -387,16 +386,14 @@
         <org.apache.tomcat>7.0.34</org.apache.tomcat>
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <spring.framework.version>3.1.0.wso2v1</spring.framework.version>
-
         <derby.version>10.8.2.2</derby.version>
-        <rampart.version>1.6.1-wso2v13-SNAPSHOT</rampart.version>
-
         <saucelabs.version>2.6</saucelabs.version>
-
         <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
         <zip4j.version>1.2.3</zip4j.version>
+        <axiom.version>1.2.11.wso2v5</axiom.version>
+        <commons.httpclient.version>3.1</commons.httpclient.version>
     </properties>
 
 </project>
