@@ -32,239 +32,246 @@ import java.util.zip.ZipOutputStream;
  */
 public class ArchiveManipulator {
 
-	private static final int BUFFER_SIZE = 40960;
+    private static final int BUFFER_SIZE = 40960;
 
-	private static Log log = LogFactory.getLog(ArchiveManipulator.class);
+    private static Log log = LogFactory.getLog(ArchiveManipulator.class);
 
-	private String archiveSourceDir;
+    private String archiveSourceDir;
 
-	/**
-	 * Archive a directory
-	 *
-	 * @param archiveDestination archive destination
-	 * @param sourceDir source directory
-	 * @throws IOException
-	 */
-	public void archiveDir(String archiveDestination, String sourceDir) throws IOException {
-		File zipDir = new File(sourceDir);
-		if (!zipDir.isDirectory()) {
-			throw new RuntimeException(sourceDir + " is not a directory");
-		}
+    /**
+     * Archive a directory
+     *
+     * @param archiveDestination archive destination
+     * @param sourceDir          source directory
+     * @throws IOException
+     */
+    public void archiveDir(String archiveDestination, String sourceDir) throws IOException {
+        File zipDir = new File(sourceDir);
+        if (!zipDir.isDirectory()) {
+            throw new RuntimeException(sourceDir + " is not a directory");
+        }
 
-		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveDestination));
-		this.archiveSourceDir = sourceDir;
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveDestination));
+        this.archiveSourceDir = sourceDir;
 
-		try {
-			zipDir(zipDir, zos);
-		} finally {
-			try {
-				zos.close();
-			} catch (IOException e) {
-				log.warn("Unable to close the ZipOutputStream " + e.getMessage(), e);
-			}
-		}
-	}
+        try {
+            zipDir(zipDir, zos);
+        } finally {
+            try {
+                zos.close();
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Unable to close the ZipOutputStream ", e);
+            }
+        }
+    }
 
-	/**
-	 * Archive a file
-	 *
-	 * @param from from file path
-	 * @param to to file path
-	 * @throws IOException
-	 */
-	public void archiveFile(String from, String to) throws IOException {
-		ZipOutputStream out = null;
-		FileInputStream in = new FileInputStream(from);
-		try {
-			out = new ZipOutputStream(new FileOutputStream(to));
-			byte[] buffer = new byte[BUFFER_SIZE];
-			int bytesRead;
-			while ((bytesRead = in.read(buffer)) != -1) {
-				out.write(buffer, 0, bytesRead);
-			}
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				log.warn("Unable to close the InputStream " + e.getMessage(), e);
-			}
+    /**
+     * Archive a file
+     *
+     * @param from from file path
+     * @param to   to file path
+     * @throws IOException
+     */
+    public void archiveFile(String from, String to) throws IOException {
+        ZipOutputStream out = null;
+        FileInputStream in = new FileInputStream(from);
+        try {
+            out = new ZipOutputStream(new FileOutputStream(to));
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Unable to close the InputStream ", e);
+            }
 
-			try {
-				if (out != null) {
-					out.close();
-				}
-			} catch (IOException e) {
-				log.warn("Unable to close the OutputStream " + e.getMessage(), e);
-			}
-		}
-	}
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Unable to close the OutputStream ", e);
+            }
+        }
+    }
 
-	/**
-	 * List the contents of an archive
-	 *
-	 * @param archive archive file
-	 * @return List of Zip Entries
-	 * @throws IOException
-	 */
-	public String[] check(String archive) throws IOException {
-		ZipInputStream zin = null;
-		InputStream in = null;
-		Collection<String> entries = new ArrayList<String>(0);
-		try {
-			in = new FileInputStream(archive);
-			zin = new ZipInputStream(in);
-			ZipEntry entry;
-			while ((entry = zin.getNextEntry()) != null) {
-				entries.add(entry.getName());
-			}
-			return entries.toArray(new String[entries.size()]);
-		} finally {
-			try {
-				if (zin != null) {
-					zin.close();
-				}
-				if (in != null) {
-					in.close();
-				}
-			} catch (IOException e) {
-				log.error("Could not close InputStream ", e);
-			}
-		}
-	}
+    /**
+     * List the contents of an archive
+     *
+     * @param archive archive file
+     * @return List of Zip Entries
+     * @throws IOException
+     */
+    public String[] check(String archive) throws IOException {
+        ZipInputStream zin = null;
+        InputStream in = null;
+        Collection<String> entries = new ArrayList<String>(0);
+        try {
+            in = new FileInputStream(archive);
+            zin = new ZipInputStream(in);
+            ZipEntry entry;
+            while ((entry = zin.getNextEntry()) != null) {
+                entries.add(entry.getName());
+            }
+            return entries.toArray(new String[entries.size()]);
+        } finally {
+            try {
+                if (zin != null) {
+                    zin.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Could not close InputStream ", e);
+            }
+        }
+    }
 
-	public void extract(String archive, String extractDir) throws IOException {
-		FileInputStream inputStream = new FileInputStream(archive);
-		try {
-			extractFromStream(inputStream, extractDir);
-		} finally {
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				log.error("Could not close InputStream ", e);
-			}
-		}
-	}
+    public void extract(String archive, String extractDir) throws IOException {
+        FileInputStream inputStream = new FileInputStream(archive);
+        try {
+            extractFromStream(inputStream, extractDir);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Could not close InputStream ", e);
+            }
+        }
+    }
 
-	public void extractFromStream(InputStream inputStream, String extractDir) throws IOException {
-		ZipInputStream zin = null;
-		OutputStream out = null;
+    public void extractFromStream(InputStream inputStream, String extractDir) throws IOException {
+        ZipInputStream zin = null;
+        OutputStream out = null;
 
-		try {
-			File unzipped = new File(extractDir);
-			if (!unzipped.exists() && !unzipped.mkdirs()) {
-				throw new IOException(
-						"Fail to create the directory: " + unzipped.getAbsolutePath());
-			}
+        try {
+            File unzipped = new File(extractDir);
+            if (!unzipped.exists() && !unzipped.mkdirs()) {
+                throw new IOException(
+                    "Fail to create the directory: " + unzipped.getAbsolutePath());
+            }
 
-			// Open the ZIP file
-			zin = new ZipInputStream(inputStream);
-			ZipEntry entry;
-			while ((entry = zin.getNextEntry()) != null) {
-				String entryName = entry.getName();
-				File f = new File(extractDir + File.separator + entryName);
+            // Open the ZIP file
+            zin = new ZipInputStream(inputStream);
+            ZipEntry entry;
+            while ((entry = zin.getNextEntry()) != null) {
+                String entryName = entry.getName();
+                File f = new File(extractDir + File.separator + entryName);
 
-				if (entryName.endsWith("/") && !f.exists()) { // this is a
-					// directory
-					if (!f.mkdirs()) {
-						throw new IOException(
-								"Fail to create the directory: " + f.getAbsolutePath());
-					}
-					continue;
-				}
+                if (entryName.endsWith("/") && !f.exists()) { // this is a
+                    // directory
+                    if (!f.mkdirs()) {
+                        throw new IOException(
+                            "Fail to create the directory: " + f.getAbsolutePath());
+                    }
+                    continue;
+                }
 
-				// This is a file. Carry out File processing
-				int lastIndexOfSlash = entryName.lastIndexOf('/');
-				String dirPath = "";
-				if (lastIndexOfSlash != -1) {
-					dirPath = entryName.substring(0, lastIndexOfSlash);
-					File dir = new File(extractDir + File.separator + dirPath);
-					if (!dir.exists() && !dir.mkdirs()) {
-						throw new IOException(
-								"Fail to create the directory: " + dir.getAbsolutePath());
-					}
-				}
+                // This is a file. Carry out File processing
+                int lastIndexOfSlash = entryName.lastIndexOf('/');
+                String dirPath = "";
+                if (lastIndexOfSlash != -1) {
+                    dirPath = entryName.substring(0, lastIndexOfSlash);
+                    File dir = new File(extractDir + File.separator + dirPath);
+                    if (!dir.exists() && !dir.mkdirs()) {
+                        throw new IOException(
+                            "Fail to create the directory: " + dir.getAbsolutePath());
+                    }
+                }
 
-				if (!f.isDirectory()) {
-					out = new FileOutputStream(f);
-					byte[] buf = new byte[BUFFER_SIZE];
+                if (!f.isDirectory()) {
+                    out = new FileOutputStream(f);
+                    byte[] buf = new byte[BUFFER_SIZE];
 
-					// Transfer bytes from the ZIP file to the output file
-					int len;
-					while ((len = zin.read(buf)) > 0) {
-						out.write(buf, 0, len);
-					}
-				}
-			}
-		} catch (IOException e) {
-			String msg = "Cannot unzip archive. It is probably corrupted";
-			log.error(msg, e);
-			throw e;
+                    // Transfer bytes from the ZIP file to the output file
+                    int len;
+                    while ((len = zin.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            String msg = "Cannot unzip archive. It is probably corrupted";
+            log.error(msg, e);
+            throw new RuntimeException(msg, e);
+        } finally {
+            try {
+                if (zin != null) {
+                    zin.close();
+                }
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Unable to close the InputStream ", e);
+            }
 
-		} finally {
-			try {
-				if (zin != null) {
-					zin.close();
-				}
-			} catch (IOException e) {
-				log.warn("Unable to close the InputStream " + e.getMessage(), e);
-			}
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Unable to close the OutputStream ", e);
+            }
+        }
+    }
 
-			try {
-				if (out != null) {
-					out.close();
-				}
-			} catch (IOException e) {
-				log.warn("Unable to close the OutputStream " + e.getMessage(), e);
-			}
-		}
-	}
+    protected void zipDir(File zipDir, ZipOutputStream zos) throws IOException {
+        //get a listing of the directory content
+        String[] dirList = zipDir.list();
+        byte[] readBuffer = new byte[BUFFER_SIZE];
+        int bytesIn = 0;
+        //loop through dirList, and zip the files
+        for (String dir : dirList) {
+            File f = new File(zipDir, dir);
+            //place the zip entry in the ZipOutputStream object
+            zos.putNextEntry(new ZipEntry(getZipEntryPath(f)));
+            if (f.isDirectory()) {
+                //if the File object is a directory, call this
+                //function again to add its content recursively
+                zipDir(f, zos);
+                //loop again
+                continue;
+            }
+            //if we reached here, the File object f was not a directory
+            //create a FileInputStream on top of f
+            FileInputStream fis = new FileInputStream(f);
 
-	protected void zipDir(File zipDir, ZipOutputStream zos) throws IOException {
-		//get a listing of the directory content
-		String[] dirList = zipDir.list();
-		byte[] readBuffer = new byte[BUFFER_SIZE];
-		int bytesIn = 0;
-		//loop through dirList, and zip the files
-		for(String dir: dirList) {
-			File f = new File(zipDir, dir);
-			//place the zip entry in the ZipOutputStream object
-			zos.putNextEntry(new ZipEntry(getZipEntryPath(f)));
-			if (f.isDirectory()) {
-				//if the File object is a directory, call this
-				//function again to add its content recursively
-				zipDir(f, zos);
-				//loop again
-				continue;
-			}
-			//if we reached here, the File object f was not a directory
-			//create a FileInputStream on top of f
-			FileInputStream fis = new FileInputStream(f);
+            try {
+                //now write the content of the file to the ZipOutputStream
+                while ((bytesIn = fis.read(readBuffer)) != -1) {
+                    zos.write(readBuffer, 0, bytesIn);
+                }
+            } finally {
+                try {
+                    //close the Stream
+                    fis.close();
+                } catch (IOException e) {
+                    // No need to throw an exception, since this will not interrupt the process
+                    log.warn("Unable to close the FileInputStream ", e);
+                }
+            }
+        }
+    }
 
-			try {
-				//now write the content of the file to the ZipOutputStream
-				while ((bytesIn = fis.read(readBuffer)) != -1) {
-					zos.write(readBuffer, 0, bytesIn);
-				}
-			} finally {
-				try {
-					//close the Stream
-					fis.close();
-				} catch (IOException e) {
-					log.warn("Unable to close the FileInputStream " + e.getMessage(), e);
-				}
-			}
-		}
-	}
-
-	protected String getZipEntryPath(File f) {
-		String entryPath = f.getPath();
-		entryPath = entryPath.substring(archiveSourceDir.length() + 1);
-		if (File.separatorChar == '\\') {
-			entryPath = entryPath.replace(File.separatorChar, '/');
-		}
-		if (f.isDirectory()) {
-			entryPath += "/";
-		}
-		return entryPath;
-	}
+    protected String getZipEntryPath(File f) {
+        String entryPath = f.getPath();
+        entryPath = entryPath.substring(archiveSourceDir.length() + 1);
+        if (File.separatorChar == '\\') {
+            entryPath = entryPath.replace(File.separatorChar, '/');
+        }
+        if (f.isDirectory()) {
+            entryPath += "/";
+        }
+        return entryPath;
+    }
 }
