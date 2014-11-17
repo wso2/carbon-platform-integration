@@ -19,6 +19,7 @@ package org.wso2.carbon.automation.extensions;
 
 public class ExtensionConstants {
     public static final String SYSTEM_PROPERTY_SETTINGS_LOCATION = "automation.settings.location";
+    public static final String SYSTEM_ARTIFACT_RESOURCE_LOCATION = "framework.resource.location";
     public static final String SYSTEM_PROPERTY_BASEDIR_LOCATION = "basedir";
     public static final String SYSTEM_PROPERTY_OS_NAME = "os.name";
     public static final String SYSTEM_PROPERTY_CARBON_ZIP_LOCATION = "carbon.zip";
@@ -49,4 +50,5 @@ public class ExtensionConstants {
     public static final String IE_BROWSER = "ie";
     public static final String HTML_UNIT_DRIVER = "htmlUnit";
     public static final String OPERA_BROWSER = "opera";
+    public static final String CARBON_HOME = "carbon.home";
 }
