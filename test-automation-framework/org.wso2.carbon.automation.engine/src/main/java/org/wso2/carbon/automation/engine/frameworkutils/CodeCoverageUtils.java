@@ -288,7 +288,7 @@ public final class CodeCoverageUtils {
             }
         }
         archiveManipulator.archiveDir(jarFilePath, tempExtractedDir);
-	    FileUtils.forceDelete(newManifest);
+        FileUtils.forceDelete(newManifest);
     }
 
     private static void doEmmaInstrumentation(File file) {
