@@ -31,6 +31,7 @@
     <artifactId>org.wso2.carbon.automation.engine</artifactId>
     <version>4.3.1</version>
     <packaging>jar</packaging>
+    <name>WSO2 Carbon Automation - Test Framework Engine</name>
     <properties>
         <maven.compiler.source>1.5</maven.compiler.source>
         <maven.compiler.target>1.5</maven.compiler.target>

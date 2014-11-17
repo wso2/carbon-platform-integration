@@ -51,23 +51,24 @@ public final class CodeCoverageUtils {
         }
         try {
             if (System.getProperty("emma.properties") == null) {
-                for (File file : new File(emmaHome).listFiles())
+                for (File file : new File(emmaHome).listFiles()) {
                     if (file.getName().startsWith("org.wso2.carbon.automation.engine")) {
                         ArchiveExtractorUtil.extractFile(file.getAbsolutePath(), emmaHome);
                     }
+                }
                 System.setProperty("emma.properties",
-                        new File(FrameworkPathUtil.getSystemResourceLocation()).getAbsolutePath()
-                                + File.separator + "emma.properties");
+                                   new File(FrameworkPathUtil.getSystemResourceLocation()).getAbsolutePath()
+                                   + File.separator + "emma.properties");
             }
             if (System.getProperty("emma.report.html.out.file") == null) {
                 System.setProperty("emma.report.html.out.file",
-                        new File(emmaHome).getAbsolutePath() + File.separator + "coverage" +
-                                File.separator + "index.html");
+                                   new File(emmaHome).getAbsolutePath() + File.separator + "coverage" +
+                                   File.separator + "index.html");
             }
             if (System.getProperty("emma.report.xml.out.file") == null) {
                 System.setProperty("emma.report.xml.out.file",
-                        new File(emmaHome).getAbsolutePath() + File.separator + "coverage" +
-                                File.separator + "coverage.xml");
+                                   new File(emmaHome).getAbsolutePath() + File.separator + "coverage" +
+                                   File.separator + "coverage.xml");
             }
             if (System.getProperty("emma.rt.control.port") == null) {
                 System.setProperty("emma.rt.control.port", "44444");
@@ -107,7 +108,7 @@ public final class CodeCoverageUtils {
             for (String aDirecArrayList : direcArrayList) {
                 if (aDirecArrayList.contains("repository" + File.separator + "components" + File.separator + "lib")) {
                     FileUtils.copyFileToDirectory(new File(emmaHome + emmaJarName),
-                            new File(aDirecArrayList));
+                                                  new File(aDirecArrayList));
                 }
             }
 
@@ -123,10 +124,10 @@ public final class CodeCoverageUtils {
     private static void instrumentSelectedFiles(String carbonHome) throws IOException {
         log.info("Instrumentation of jar files in progress ...");
         File instrumentationTxt = System.getProperty("instr.file") != null ?
-                new File(System.getProperty("instr.file")) :
-                new File(System.getProperty("basedir") + File.separator + "src" +
-                        File.separator + "test" + File.separator +
-                        "resources" + File.separator + "instrumentation.txt");
+                                  new File(System.getProperty("instr.file")) :
+                                  new File(System.getProperty("basedir") + File.separator + "src" +
+                                           File.separator + "test" + File.separator +
+                                           "resources" + File.separator + "instrumentation.txt");
         List<String> filePatterns = new ArrayList<String>();
         if (instrumentationTxt.exists()) {
             RandomAccessFile rf = new RandomAccessFile(instrumentationTxt, "r");
@@ -227,7 +228,7 @@ public final class CodeCoverageUtils {
     private static void printMap(Map<Integer, String> map) {
         for (Map.Entry entry : map.entrySet()) {
             System.out.println("Key : " + entry.getKey() + " Value : "
-                    + entry.getValue());
+                               + entry.getValue());
         }
     }
 
@@ -243,7 +244,7 @@ public final class CodeCoverageUtils {
             throws IOException {
         if (!jarFilePath.endsWith(".jar")) {
             throw new IllegalArgumentException("Jar file should have the extension .jar. " +
-                    jarFilePath + " is invalid");
+                                               jarFilePath + " is invalid");
         }
         JarFile jarFile = new JarFile(jarFilePath);
         Manifest manifest = jarFile.getManifest();
@@ -260,7 +261,7 @@ public final class CodeCoverageUtils {
         try {
             archiveManipulator = new ArchiveManipulator();
             tempExtractedDir = System.getProperty("basedir") + File.separator + "target" +
-                    File.separator + jarFileName.substring(0, jarFileName.lastIndexOf('.'));
+                               File.separator + jarFileName.substring(0, jarFileName.lastIndexOf('.'));
             ArchiveExtractorUtil.extractFile(jarFilePath, tempExtractedDir);
         } catch (Exception e) {
             log.error("Could not extract the file", e);
@@ -270,12 +271,12 @@ public final class CodeCoverageUtils {
         String dynamicImports = manifest.getMainAttributes().getValue("DynamicImport-Package");
         if (dynamicImports != null) {
             manifest.getMainAttributes().putValue("DynamicImport-Package",
-                    dynamicImports + ",com.vladium.*");
+                                                  dynamicImports + ",com.vladium.*");
         } else {
             manifest.getMainAttributes().putValue("DynamicImport-Package", "com.vladium.*");
         }
         File newManifest = new File(tempExtractedDir + File.separator + "META-INF" +
-                File.separator + "MANIFEST.MF");
+                                    File.separator + "MANIFEST.MF");
         FileOutputStream manifestOut = null;
         try {
             manifestOut = new FileOutputStream(newManifest);
@@ -288,15 +289,15 @@ public final class CodeCoverageUtils {
             }
         }
         archiveManipulator.archiveDir(jarFilePath, tempExtractedDir);
-	    FileUtils.forceDelete(newManifest);
+        FileUtils.forceDelete(newManifest);
     }
 
     private static void doEmmaInstrumentation(File file) {
         String emmaFilters = System.getProperty("filters.file");
         if (emmaFilters == null) {
             emmaFilters = System.getProperty("basedir") + File.separator + "src" +
-                    File.separator + "test" + File.separator +
-                    "resources" + File.separator + "filters.txt";
+                          File.separator + "test" + File.separator +
+                          "resources" + File.separator + "filters.txt";
         } else {
             if (!new File(emmaFilters).exists()) {
                 log.warn("Emma filters file " + emmaFilters + " does not exist");
@@ -304,13 +305,13 @@ public final class CodeCoverageUtils {
         }
         File emmaFiltersFile = new File(emmaFilters);
         Command cmd = emmaFiltersFile.exists() ?
-                Command.create("instr", "emmarun",
-                        new String[]{"-m", "overwrite",
-                                "-ip", file.getAbsolutePath(),
-                                "-ix", "@" + emmaFiltersFile.getAbsolutePath()}) :
-                Command.create("instr", "emmarun",
-                        new String[]{"-m", "overwrite",
-                                "-ip", file.getAbsolutePath()});
+                      Command.create("instr", "emmarun",
+                                     new String[]{"-m", "overwrite",
+                                                  "-ip", file.getAbsolutePath(),
+                                                  "-ix", "@" + emmaFiltersFile.getAbsolutePath()}) :
+                      Command.create("instr", "emmarun",
+                                     new String[]{"-m", "overwrite",
+                                                  "-ip", file.getAbsolutePath()});
         cmd.run();
     }
 
@@ -358,8 +359,8 @@ public final class CodeCoverageUtils {
             }
         }
         Command cmd = Command.create("report", "emmarun",
-                new String[]{"-r", "xml,html", "-in",
-                        emFilesString + "," + ecFilesString});
+                                     new String[]{"-r", "xml,html", "-in",
+                                                  emFilesString + "," + ecFilesString});
         cmd.run();
         log.info("Emma report generation completed");
     }
@@ -368,7 +369,7 @@ public final class CodeCoverageUtils {
     private static File[] getCoverageDataFiles(String carbonHome) {
 
         List<File> files = (List<File>) FileUtils.listFiles(new File(carbonHome),
-                new String[]{"ec"}, true);
+                                                            new String[]{"ec"}, true);
 
         File[] coverageFiles = new File[files.size()];
 
@@ -389,7 +390,7 @@ public final class CodeCoverageUtils {
         for (File coverageDatafile : coverageDataFiles) {
             if (coverageDatafile.getName().equals("coverage.ec")) {
                 return coverageDatafile.renameTo(new File(carbonHome + File.separator + "coverage" +
-                        System.currentTimeMillis() + ".ec"));
+                                                          System.currentTimeMillis() + ".ec"));
             }
         }
         return false;
@@ -398,12 +399,14 @@ public final class CodeCoverageUtils {
     public static List<File> getAllCoverageEmFiles(File directory) {
         if (directory.exists()) {
             return CustomFileFilter.getFilesRecursive(directory,
-                    new SuffixFilter(TypeFilter.FILE, ".em"));
+                                                      new SuffixFilter(TypeFilter.FILE, ".em"));
         }
         return null;
     }
 
-    public static ArrayList<String> searchDirectoryByName(String baseDir, ArrayList<String> directoryLists, String dirName) {
+    public static ArrayList<String> searchDirectoryByName(String baseDir,
+                                                          ArrayList<String> directoryLists,
+                                                          String dirName) {
         File baseDirName = new File(baseDir);
         File[] fileArray = baseDirName.listFiles();
         if (fileArray != null) {
@@ -411,7 +414,7 @@ public final class CodeCoverageUtils {
                 File name = fileArray[i];
                 if (name.isDirectory()) {
                     if (name.toString().subSequence(name.toString().lastIndexOf("/") + 1,
-                            name.toString().length()).equals(dirName)) {
+                                                    name.toString().length()).equals(dirName)) {
                         directoryLists.add(name.getAbsolutePath());
                     }
                     searchDirectoryByName(fileArray[i].getAbsolutePath(), directoryLists, dirName);
