@@ -20,7 +20,7 @@ package org.wso2.carbon.automation.test.utils.dbutils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
-import org.wso2.carbon.automation.extensions.XPathConstants;
+import org.wso2.carbon.automation.test.utils.AutomationContextXPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.sql.SQLException;
@@ -33,10 +33,10 @@ public class DatabaseFactory {
     private static String DB_PASSWORD;
 
     private static void init() throws XPathExpressionException {
-        JDBC_URL = AutomationConfiguration.getConfigurationValue(XPathConstants.DATA_SOURCE_URL);
-        JDBC_DRIVER = AutomationConfiguration.getConfigurationValue(XPathConstants.DATA_SOURCE_DRIVER_CLASS_NAME);
-        DB_USER = AutomationConfiguration.getConfigurationValue(XPathConstants.DATA_SOURCE_DB_USER_NAME);
-        DB_PASSWORD = AutomationConfiguration.getConfigurationValue(XPathConstants.DATA_SOURCE_DB_PASSWORD);
+        JDBC_URL = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_URL);
+        JDBC_DRIVER = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DRIVER_CLASS_NAME);
+        DB_USER = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DB_USER_NAME);
+        DB_PASSWORD = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DB_PASSWORD);
     }
 
     public static DatabaseManager getDatabaseConnector(String databaseDriver, String jdbcUrl,
