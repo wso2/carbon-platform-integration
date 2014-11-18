@@ -32,7 +32,8 @@ import javax.xml.xpath.XPathFactory;
 public class DefaultInstance extends AutomationConfiguration {
     private static final Log log = LogFactory.getLog(DefaultInstance.class);
 
-    public String getTenantDomain(boolean isTenantAdmin, boolean isClustered) {
+    public String getTenantDomain(boolean isTenantAdmin, boolean isClustered)
+            throws XPathExpressionException {
         String tenantDomain = null;
 
         try {
@@ -43,12 +44,16 @@ public class DefaultInstance extends AutomationConfiguration {
             }
         } catch (XPathExpressionException e) {
             log.error("Error while reading the super Tenant:" + e.getStackTrace());
+            throw new XPathExpressionException("Error While Reading default Tenant Domain:- " +
+                                               e.getStackTrace().toString());
+
         }
         return tenantDomain;
     }
 
 
-    public String getUserKey(String tenantDomain, boolean isAdminUser) {
+    public String getUserKey(String tenantDomain, boolean isAdminUser)
+            throws XPathExpressionException {
         String tenantKey = null;
         String adminUserReplacement = ContextXpathConstants.ADMIN;
         try {
@@ -66,11 +71,13 @@ public class DefaultInstance extends AutomationConfiguration {
             }
         } catch (XPathExpressionException e) {
             log.error("Error while reading the Tenant:" + e.getMessage());
+            throw new XPathExpressionException("Error While Reading default User Key:- " +
+                                               e.getStackTrace().toString());
         }
         return tenantKey;
     }
 
-    public String getDefaultManager(String productGroup) {
+    public String getDefaultManager(String productGroup) throws XPathExpressionException {
         String managerNode = null;
         try {
             boolean isClustered = Boolean.parseBoolean(getConfigurationValue(
@@ -106,11 +113,13 @@ public class DefaultInstance extends AutomationConfiguration {
 
         } catch (XPathExpressionException e) {
             log.error("Error while reading the default Manager:" + e.getMessage());
+            throw new XPathExpressionException("Error While Reading default Tenant Domain:- " +
+                                               e.getStackTrace().toString());
         }
         return managerNode;
     }
 
-    public String getDefaultWorker(String productGroup) {
+    public String getDefaultWorker(String productGroup) throws XPathExpressionException {
         String workerNode = null;
         try {
             boolean isClustered = Boolean.parseBoolean(getConfigurationValue(
@@ -145,6 +154,8 @@ public class DefaultInstance extends AutomationConfiguration {
             }
         } catch (XPathExpressionException e) {
             log.error("Error while reading the default worker:" + e.getMessage());
+            throw new XPathExpressionException("Error While Reading default Tenant Domain:- " +
+                                               e.getStackTrace().toString());
         }
         return workerNode;
     }

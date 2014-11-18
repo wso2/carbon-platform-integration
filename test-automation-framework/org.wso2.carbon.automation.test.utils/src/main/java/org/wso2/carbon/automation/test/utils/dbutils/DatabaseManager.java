@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public interface DatabaseManager {
+public interface  DatabaseManager {
     public void executeUpdate(String sql) throws SQLException;
 
     public void executeUpdate(File sqlFile) throws SQLException, IOException;

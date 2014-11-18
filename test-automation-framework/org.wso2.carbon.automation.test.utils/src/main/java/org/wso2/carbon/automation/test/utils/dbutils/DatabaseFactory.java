@@ -33,10 +33,16 @@ public class DatabaseFactory {
     private static String DB_PASSWORD;
 
     private static void init() throws XPathExpressionException {
-        JDBC_URL = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_URL);
-        JDBC_DRIVER = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DRIVER_CLASS_NAME);
-        DB_USER = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DB_USER_NAME);
-        DB_PASSWORD = AutomationConfiguration.getConfigurationValue(AutomationContextXPathConstants.DATA_SOURCE_DB_PASSWORD);
+
+        JDBC_URL = AutomationConfiguration.getConfigurationValue
+                (AutomationContextXPathConstants.DATA_SOURCE_URL);
+        JDBC_DRIVER = AutomationConfiguration.getConfigurationValue
+                (AutomationContextXPathConstants.DATA_SOURCE_DRIVER_CLASS_NAME);
+        DB_USER = AutomationConfiguration.getConfigurationValue
+                (AutomationContextXPathConstants.DATA_SOURCE_DB_USER_NAME);
+        DB_PASSWORD = AutomationConfiguration.getConfigurationValue
+                (AutomationContextXPathConstants.DATA_SOURCE_DB_PASSWORD);
+
     }
 
     public static DatabaseManager getDatabaseConnector(String databaseDriver, String jdbcUrl,

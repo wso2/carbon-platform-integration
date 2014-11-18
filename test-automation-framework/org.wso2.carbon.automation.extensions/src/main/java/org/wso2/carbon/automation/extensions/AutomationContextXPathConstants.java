@@ -15,15 +15,13 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-package org.wso2.carbon.automation.engine.exceptions;
+package org.wso2.carbon.automation.extensions;
 
-public class ConfigurationMismatchException extends AutomationFrameworkException {
-
-    public ConfigurationMismatchException(String contextModule, String message) {
-        super(contextModule.concat(message));
-    }
-
-    public ConfigurationMismatchException(String message) {
-        super(message);
-    }
+/**
+ * This class contain xpath expression to retrieve configurations in automation.xml
+ */
+public class AutomationContextXPathConstants {
+    public static final String SELENIUM_BROWSER_TYPE = "//tools/selenium/browser/browserType";
+    public static final String SELENIUM_REMOTE_WEB_DRIVER_URL = "//tools/selenium/remoteDriverUrl";
+    public static final String CHROME_WEB_DRIVER_URL = "//tools/selenium/browser/webdriverPath";
 }
