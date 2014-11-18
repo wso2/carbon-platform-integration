@@ -2,9 +2,10 @@ package org.wso2.carbon.automation.engine.exceptions;
 
 public class AutomationFrameworkException extends Exception {
     public AutomationFrameworkException(String concat) {
+        super();
     }
 
-    public AutomationFrameworkException() {
-
+    public AutomationFrameworkException(StackTraceElement[] message) {
+        super(message.toString());
     }
 }
