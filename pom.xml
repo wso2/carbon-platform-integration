@@ -68,9 +68,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-
-
-
             <!--...................................-->
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
@@ -246,7 +243,7 @@
             <dependency>
                 <groupId>org.wso2.carbon.automation</groupId>
                 <artifactId>org.wso2.carbon.automation.engine</artifactId>
-                <version>${test.framework.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ftpserver</groupId>
@@ -416,7 +413,6 @@
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
-        <test.framework.version>4.3.1</test.framework.version>
         <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
         <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
         <operadriver.version>0.8.1</operadriver.version>
