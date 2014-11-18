@@ -29,7 +29,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.automation.engine</artifactId>
-    <version>4.3.1</version>
+    <version>4.3.1--SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>WSO2 Carbon Automation - Test Framework Engine</name>
     <properties>
