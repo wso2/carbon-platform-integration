@@ -48,6 +48,7 @@
             </extension>
         </extensions>
         <plugins>
+            <!--.................Release Plugin..................-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -68,7 +69,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!--...................................-->
+            <!--................................................-->
             <plugin>
                 <groupId>org.jvnet.maven.incrementalbuild</groupId>
                 <artifactId>incremental-build-plugin</artifactId>
@@ -123,9 +124,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </pluginRepository>
-
-
-
         <pluginRepository>
             <id>wso2.snapshots</id>
             <name>WSO2 Snapshot Repository</name>
@@ -195,6 +193,7 @@
             </snapshots>
         </repository>
     </repositories>
+
     <distributionManagement>
         <!--repository>
           <id>wso2.releases</id>
@@ -413,8 +412,6 @@
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
-        <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
-        <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
         <axiom.version>1.2.11.wso2v5</axiom.version>
         <operadriver.version>0.8.1</operadriver.version>
         <selenium.version>2.40.0</selenium.version>
@@ -426,13 +423,13 @@
         <spring.framework.version>3.1.0.wso2v1</spring.framework.version>
         <derby.version>10.8.2.2</derby.version>
         <saucelabs.version>2.6</saucelabs.version>
-        <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
+        <axis2.wso2.version>1.6.1.wso2v11</axis2.wso2.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
         <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
         <zip4j.version>1.2.3</zip4j.version>
-        <axiom.version>1.2.11.wso2v5</axiom.version>
         <commons.httpclient.version>3.1</commons.httpclient.version>
+        <project.scm.id>scm-server</project.scm.id>
     </properties>
 </project>
 
