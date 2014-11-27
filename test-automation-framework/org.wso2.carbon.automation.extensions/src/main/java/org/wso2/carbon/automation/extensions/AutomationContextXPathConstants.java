@@ -15,7 +15,13 @@
 *specific language governing permissions and limitations
 *under the License.
 */
-package org.wso2.carbon.automation.extensions.servers.utils;
+package org.wso2.carbon.automation.extensions;
 
-public class ServerUtils {
+/**
+ * This class contain xpath expression to retrieve configurations in automation.xml
+ */
+public class AutomationContextXPathConstants {
+    public static final String SELENIUM_BROWSER_TYPE = "//tools/selenium/browser/browserType";
+    public static final String SELENIUM_REMOTE_WEB_DRIVER_URL = "//tools/selenium/remoteDriverUrl";
+    public static final String CHROME_WEB_DRIVER_URL = "//tools/selenium/browser/webdriverPath";
 }
