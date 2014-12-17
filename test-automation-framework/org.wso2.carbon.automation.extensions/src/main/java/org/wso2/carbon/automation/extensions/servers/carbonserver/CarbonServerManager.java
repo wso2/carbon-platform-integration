@@ -51,6 +51,7 @@ public class CarbonServerManager {
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
     private int defaultHttpsPort = 9443;
+    private int defaultHttpPort = 9763;
     private static final String CMD_ARG = "cmdArg";
 
     public CarbonServerManager(AutomationContext context) {
@@ -70,8 +71,8 @@ public class CarbonServerManager {
                 CodeCoverageUtils.init();
                 CodeCoverageUtils.instrument(carbonHome);
             }
-            defaultHttpsPort = Integer.parseInt(automationContext.getInstance().getPorts().get("https"));
-            int defaultHttpPort = Integer.parseInt(automationContext.getInstance().getPorts().get("http"));
+            //defaultHttpsPort = Integer.parseInt(automationContext.getInstance().getPorts().get("https"));
+            //int defaultHttpPort = Integer.parseInt(automationContext.getInstance().getPorts().get("http"));
             //set carbon home only if port offset is default.
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
