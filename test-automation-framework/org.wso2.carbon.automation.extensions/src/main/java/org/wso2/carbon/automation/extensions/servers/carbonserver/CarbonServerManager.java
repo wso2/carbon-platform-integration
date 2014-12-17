@@ -45,7 +45,6 @@ public class CarbonServerManager {
     private String carbonHome;
     private AutomationContext automationContext;
     private ServerLogReader inputStreamHandler;
-    private String backendURL;
     private boolean isCoverageEnable = false;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
@@ -224,7 +223,7 @@ public class CarbonServerManager {
     public synchronized void restartGracefully() throws Exception {
 
         ClientConnectionUtil.sendGraceFullRestartRequest(
-                backendURL,
+                automationContext.getContextUrls().getSecureServiceUrl(),
                 automationContext.getSuperTenant().getContextUser().getUserName(),
                 automationContext.getSuperTenant().getContextUser().getPassword());
 
@@ -268,7 +267,9 @@ public class CarbonServerManager {
             parameterArray[arrayIndex++] = parameter;
         }
         //setting cmdArg again
-        commandMap.put(CMD_ARG, cmdArg);
+        if(cmdArg != null) {
+            commandMap.put(CMD_ARG, cmdArg);
+        }
         if (cmdParaArray == null || cmdParaArray.length == 0) {
             return parameterArray;
         } else {

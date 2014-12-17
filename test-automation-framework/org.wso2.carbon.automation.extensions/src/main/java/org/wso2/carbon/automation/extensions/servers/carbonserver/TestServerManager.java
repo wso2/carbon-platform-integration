@@ -94,17 +94,31 @@ public class TestServerManager {
      *                             Carbon server
      */
     public String startServer() throws Exception {
-        if (carbonZip == null) {
-            carbonZip = System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_CARBON_ZIP_LOCATION);
+        if(carbonHome == null) {
+            if (carbonZip == null) {
+                carbonZip = System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_CARBON_ZIP_LOCATION);
+            }
+            if (carbonZip == null) {
+                throw new IllegalArgumentException("carbon zip file cannot find in the given location");
+            }
+            carbonHome = carbonServer.setUpCarbonHome(carbonZip);
+
+            configureServer();
         }
-        if (carbonZip == null) {
-            throw new IllegalArgumentException("carbon zip file cannot find in the given location");
-        }
-        carbonHome = carbonServer.setUpCarbonHome(carbonZip);
         log.info("Carbon Home - " + carbonHome);
-        configureServer();
         carbonServer.startServerUsingCarbonHome(carbonHome, commandMap);
         return carbonHome;
+    }
+
+    /**
+     * Restarting server already started by the method startServer
+     * @throws Exception
+     */
+    public void restartGracefully() throws Exception {
+        if(carbonHome == null) {
+            throw new Exception("No Running Server found to restart. Please make sure whether server is started");
+        }
+        carbonServer.restartGracefully();
     }
 
     /**

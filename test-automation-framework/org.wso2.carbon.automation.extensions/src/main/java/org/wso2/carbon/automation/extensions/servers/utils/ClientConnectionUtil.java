@@ -252,7 +252,7 @@ public class ClientConnectionUtil {
             ServiceClient serviceClient = new ServiceClient();
             Options opts = new Options();
             opts.setManageSession(true);
-            opts.setTo(new EndpointReference(backendURL + "ServerAdmin"));
+            opts.setTo(new EndpointReference(backendURL + "/ServerAdmin"));
             opts.setAction("urn:restart");
             HttpTransportProperties.Authenticator auth = new HttpTransportProperties.Authenticator();
             auth.setUsername(userName);
@@ -263,8 +263,8 @@ public class ClientConnectionUtil {
             serviceClient.sendReceive(ClientConnectionUtil.createPayLoadRestartServerGracefully());
 
         } catch (AxisFault e) {
-            log.error("Unable to restart carbon server forcefully..", e);
-            throw new Exception("Unable to restart carbon server forcefully..", e);
+            log.error("Unable to restart carbon server gracefully..", e);
+            throw new Exception("Unable to restart carbon server gracefully..", e);
         }
     }
 
