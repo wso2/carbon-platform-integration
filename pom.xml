@@ -16,13 +16,17 @@
  ~specific language governing permissions and limitations
  ~under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.wso2</groupId>
+        <artifactId>wso2</artifactId>
+        <version>1</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.automation</groupId>
     <artifactId>test-automation-framework</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WSO2 Carbon Automation - Parent core project</name>
@@ -37,153 +41,9 @@
         <connection>scm:git:https://github.com/wso2/carbon-platform-integration.git</connection>
         <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>
         <url>https://github.com/wso2/carbon-platform-integration.git</url>
-        <tag>HEAD</tag>
+        <tag>test-automation-framework-4.3.1</tag>
     </scm>
-    <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>2.1</version>
-            </extension>
-        </extensions>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                </configuration>
-                <version>2.5.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <!--...................................-->
-            <plugin>
-                <groupId>org.jvnet.maven.incrementalbuild</groupId>
-                <artifactId>incremental-build-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>incremental-build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.1.2</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </pluginRepository>
-
-
-
-        <pluginRepository>
-            <id>wso2.snapshots</id>
-            <name>WSO2 Snapshot Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-        <pluginRepository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
     <repositories>
-
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>wso2.snapshots</id>
-            <name>WSO2 Snapshot Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
         <repository>
             <id>saucelabs-repository</id>
             <url>https://repository-saucelabs.forge.cloudbees.com/release</url>
@@ -195,23 +55,6 @@
             </snapshots>
         </repository>
     </repositories>
-    <distributionManagement>
-        <!--repository>
-          <id>wso2.releases</id>
-          <name>WSO2 Release Distribution Repository</name>
-          <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
-        </repository-->
-        <repository>
-            <id>nexus-releases</id>
-            <name>WSO2 Nexus Release Repository</name>
-            <url>http://maven.wso2.org/nexus/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>wso2.snapshots</id>
-            <name>Internal Releases</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -413,8 +256,6 @@
         <testng.version>6.1.1</testng.version>
         <emma.version>2.1.5320</emma.version>
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
-        <carbon.stub.version>4.3.0-SNAPSHOT</carbon.stub.version>
-        <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
         <axiom.version>1.2.11.wso2v5</axiom.version>
         <operadriver.version>0.8.1</operadriver.version>
         <selenium.version>2.40.0</selenium.version>
@@ -426,13 +267,13 @@
         <spring.framework.version>3.1.0.wso2v1</spring.framework.version>
         <derby.version>10.8.2.2</derby.version>
         <saucelabs.version>2.6</saucelabs.version>
-        <axis2.wso2.version>1.6.1.wso2v10</axis2.wso2.version>
+        <axis2.wso2.version>1.6.1.wso2v11</axis2.wso2.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
         <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
         <zip4j.version>1.2.3</zip4j.version>
-        <axiom.version>1.2.11.wso2v5</axiom.version>
         <commons.httpclient.version>3.1</commons.httpclient.version>
+        <project.scm.id>scm-server</project.scm.id>
     </properties>
 </project>
 
