@@ -138,6 +138,13 @@ public class ClientConnectionUtil {
         }
     }
 
+    /**
+     * @deprecated  deprecated from #checkAuthenticationAdminService()
+     * @param payload
+     * @param endpointURL
+     * @return return false if the login is success
+     * @throws Exception
+     */
     @Deprecated
     public static boolean sendAdminServiceRequest(OMElement payload, String endpointURL)
             throws Exception {
