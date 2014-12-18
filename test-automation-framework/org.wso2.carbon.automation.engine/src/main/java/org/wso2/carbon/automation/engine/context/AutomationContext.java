@@ -50,6 +50,7 @@ public class AutomationContext {
     private String tenantDomain;
     private String userKey;
     private Tenant superTenant ;
+    private Tenant contextTenant ;
 
     /**
      * The context constructor for where to use with exact instance
@@ -343,15 +344,18 @@ public class AutomationContext {
     }
 
     private Tenant getNonSuperTenant() throws XPathExpressionException {
-        Tenant tenant = new Tenant();
-        tenant.setDomain(tenantDomain);
+        if(contextTenant != null) {
+            return contextTenant;
+        }
+        contextTenant = new Tenant();
+        contextTenant.setDomain(tenantDomain);
         Node adminUserNode = this.getConfigurationNode(String.
                 format(ContextXpathConstants.USER_MANAGEMENT_TENANT_ADMIN, tenantDomain));
         NodeList adminUserList = adminUserNode.getChildNodes();
         for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
             Node currentNode = adminUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                tenant.setTenantAdmin(extractUser(currentNode, tenantDomain, true));
+                contextTenant.setTenantAdmin(extractUser(currentNode, tenantDomain, true));
             }
         }
         Node userNode = this.getConfigurationNode(String.
@@ -361,11 +365,11 @@ public class AutomationContext {
             Node currentNode = childUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
                 User tenantUser = extractUser(currentNode, tenantDomain, isSuperTenant);
-                tenant.addTenantUsers(tenantUser);
+                contextTenant.addTenantUsers(tenantUser);
             }
         }
-        tenant.setContextUser(this.getUser());
-        return tenant;
+        contextTenant.setContextUser(this.getUser());
+        return contextTenant;
     }
 
     /**
