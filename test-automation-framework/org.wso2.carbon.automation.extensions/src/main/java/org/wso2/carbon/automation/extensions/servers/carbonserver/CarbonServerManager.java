@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
@@ -63,6 +64,17 @@ public class CarbonServerManager {
         if (process != null) { // An instance of the server is running
             return;
         }
+        final int portOffset = getPortOffsetFromCommandMap(commandMap);
+        //check whether http port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpPort + portOffset) + " : Port already in use");
+        }
+        //check whether https port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpsPort + portOffset) + " : Port already in use");
+        }
         Process tempProcess;
         isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
         try {
@@ -83,7 +95,6 @@ public class CarbonServerManager {
 
             log.info("Starting server............. ");
             String scriptName = getStartupScriptFileName();
-            final int portOffset = getPortOffsetFromCommandMap(commandMap);
             String[] parameters = expandServerStartupCommandList(commandMap);
 
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
