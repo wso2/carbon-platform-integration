@@ -27,15 +27,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.wso2.carbon.automation.engine.context.beans.User;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 public class ClientConnectionUtil {
     private static final Log log = LogFactory.getLog(ClientConnectionUtil.class);
@@ -44,44 +46,99 @@ public class ClientConnectionUtil {
     /**
      * Wait for sometime until it is possible to login to the Carbon server
      */
-    public static void waitForLogin(AutomationContext context)
-            throws Exception {
+    public static void waitForLogin(AutomationContext context) throws Exception {
+
+        waitForLogin(context.getContextUrls().getSecureServiceUrl(), context.getSuperTenant().getTenantAdmin());
+//        long startTime = System.currentTimeMillis();
+//        boolean loginSuccess = false;
+//        String superAdminName;
+//
+//        try {
+//
+//            superAdminName = context.getSuperTenant().getTenantAdmin().getUserName();
+//            String superAdminPassword = context.getSuperTenant().getTenantAdmin().getPassword();
+//            String hostName = context.getDefaultInstance().getHosts().get("default");
+//            String endpointURL = context.getContextUrls().getSecureServiceUrl();
+//
+//            while (((System.currentTimeMillis() - startTime) < TIMEOUT) && !loginSuccess) {
+//                log.info("Waiting for user login...");
+//                try {
+//                    loginSuccess =
+//                            checkAuthenticationAdminService(createPayLoad(superAdminName, superAdminPassword, hostName),
+//                                                            endpointURL);
+//                    if (!loginSuccess) {
+//                        Thread.sleep(1000);
+//                    }
+//                } catch (Exception e) {
+//                    if (log.isDebugEnabled()) {
+//                        log.debug("Login failed after server startup ", e);
+//                    }
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException ignored) {
+//                        //ignored because of login attempts which could happen before proper carbon
+//                        //server startup
+//                    }
+//                }
+//            }
+//        } catch (XPathExpressionException e) {
+//            log.error("unable to get admin information from automation context ", e);
+//            throw new Exception("unable to get admin information from automation context ", e);
+//        }
+//        if (!loginSuccess) {
+//            throw new AutomationFrameworkException("Login failed for user " + superAdminName + " while verifying server startup" +
+//                                                   ". Please make sure that server is up and running or user is a valid user");
+//        }
+    }
+
+    /**
+     * Wait for sometime until it is possible to login to the Carbon server
+     */
+    public static void waitForLogin(String backendUrl, User userInfo) throws Exception {
 
         long startTime = System.currentTimeMillis();
+        boolean loginSuccess = false;
+        String superAdminName = userInfo.getUserName();
+        String superAdminPassword = userInfo.getPassword();
+        String hostName;
 
+        //try to get the current machine IP address to send with authentication request as parameter
         try {
+            hostName = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            log.warn("Can not retrieve machine IP address. Setting it to 127.0.0.1");
+            hostName = "127.0.0.1";
+        }
 
-            String superAdminName = context.getSuperTenant().getTenantAdmin().getUserName();
-            String superAdminPassword = context.getSuperTenant().getTenantAdmin().getPassword();
-            String hostName = context.getDefaultInstance().getHosts().get("default");
-            String endpointURL = context.getContextUrls().getSecureServiceUrl();
-
-            boolean loginFailed = true;
-
-            while (((System.currentTimeMillis() - startTime) < TIMEOUT) && loginFailed) {
-                log.info("Waiting for user login...");
+        while (((System.currentTimeMillis() - startTime) < TIMEOUT) && !loginSuccess) {
+            log.info("Waiting for user login...");
+            try {
+                loginSuccess =
+                        checkAuthenticationAdminService(createPayLoad(superAdminName, superAdminPassword, hostName),
+                                                        backendUrl);
+                if (!loginSuccess) {
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Login failed after server startup ", e);
+                }
                 try {
-                    loginFailed =
-                            sendAdminServiceRequest(createPayLoad(superAdminName, superAdminPassword, hostName),
-                                                    endpointURL);
-                } catch (Exception e) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Login failed after server startup ", e);
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException ignored) {
-                        //ignored because of login attempts which could happen before proper carbon
-                        //server startup
-                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignored) {
+                    //ignored because of login attempts which could happen before proper carbon
+                    //server startup
                 }
             }
-        } catch (XPathExpressionException e) {
-            log.error("unable to get admin information from automation context ", e);
-            throw new Exception("unable to get admin information from automation context ", e);
+        }
+
+        if (!loginSuccess) {
+            throw new AutomationFrameworkException("Login failed for user " + superAdminName + " while verifying server startup" +
+                                                   ". Please make sure that server is up and running or user is a valid user");
         }
     }
 
+    @Deprecated
     public static boolean sendAdminServiceRequest(OMElement payload, String endpointURL)
             throws Exception {
 
@@ -89,7 +146,7 @@ public class ClientConnectionUtil {
             ServiceClient serviceClient = new ServiceClient();
             Options opts = new Options();
             opts.setTo(new EndpointReference(endpointURL + "/AuthenticationAdmin"));
-            System.out.println(endpointURL);
+            log.info(endpointURL);
             opts.setAction("urn:login");
             serviceClient.setOptions(opts);
             OMElement result = serviceClient.sendReceive(payload);
@@ -97,7 +154,7 @@ public class ClientConnectionUtil {
             if (result.toString().contains("<ns:return>true</ns:return>")) {
                 log.info("Login was successful..");
                 String sessionCookie = (String) serviceClient.getServiceContext().getProperty(HTTPConstants.COOKIE_STRING);
-                System.out.println(sessionCookie);
+                log.info(sessionCookie);
                 return false;
             }
 
@@ -105,6 +162,39 @@ public class ClientConnectionUtil {
             log.error("Unable to login as user..");
         }
         return true;
+    }
+
+    /**
+     * sending authentication request and return true if the user login is successful
+     *
+     * @param payload
+     * @param endpointURL
+     * @return
+     * @throws Exception
+     */
+    public static boolean checkAuthenticationAdminService(OMElement payload, String endpointURL)
+            throws Exception {
+
+        try {
+            ServiceClient serviceClient = new ServiceClient();
+            Options opts = new Options();
+            opts.setTo(new EndpointReference(endpointURL + "/AuthenticationAdmin"));
+            log.info(endpointURL);
+            opts.setAction("urn:login");
+            serviceClient.setOptions(opts);
+            OMElement result = serviceClient.sendReceive(payload);
+
+            if (result.toString().contains("<ns:return>true</ns:return>")) {
+                log.info("Login was successful..");
+                String sessionCookie = (String) serviceClient.getServiceContext().getProperty(HTTPConstants.COOKIE_STRING);
+                log.info(sessionCookie);
+                return true;
+            }
+
+        } catch (AxisFault e) {
+            log.error("Unable to login as user..");
+        }
+        return false;
     }
 
     /**
