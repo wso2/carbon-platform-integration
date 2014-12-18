@@ -49,6 +49,7 @@ public class AutomationContext {
     private boolean isAdminUser;
     private String tenantDomain;
     private String userKey;
+    private Tenant superTenant ;
 
     /**
      * The context constructor for where to use with exact instance
@@ -272,15 +273,19 @@ public class AutomationContext {
      * @throws XPathExpressionException
      */
     public Tenant getSuperTenant() throws XPathExpressionException {
-        Tenant tenant = new Tenant();
+        //if tenant already set , return current value
+        if(superTenant != null) {
+            return superTenant;
+        }
+        superTenant = new Tenant();
         String superDomain = this.getConfigurationValue(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_DOMAIN);
-        tenant.setDomain(superDomain);
+        superTenant.setDomain(superDomain);
         Node adminUserNode = this.getConfigurationNode(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_ADMIN);
         NodeList adminUserList = adminUserNode.getChildNodes();
         for (int nodeNo = 0; nodeNo <= adminUserList.getLength() - 1; nodeNo++) {
             Node currentNode = adminUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
-                tenant.setTenantAdmin(extractUser(currentNode, superDomain, true));
+                superTenant.setTenantAdmin(extractUser(currentNode, superDomain, true));
             }
         }
         Node userNode = this.getConfigurationNode(ContextXpathConstants.USER_MANAGEMENT_SUPER_TENANT_USERS);
@@ -289,11 +294,11 @@ public class AutomationContext {
             Node currentNode = childUserList.item(nodeNo);
             if (currentNode.getNodeName().equals(ContextXpathConstants.USER)) {
                 User tenantUser = extractUser(currentNode, superDomain, true);
-                tenant.addTenantUsers(tenantUser);
+                superTenant.addTenantUsers(tenantUser);
             }
         }
-        tenant.setContextUser(this.getUser());
-        return tenant;
+        superTenant.setContextUser(this.getUser());
+        return superTenant;
     }
 
     private User extractUser(Node currentNode, String tenantDomain, boolean isTenantSuper) {
@@ -438,6 +443,7 @@ public class AutomationContext {
      * @throws XPathExpressionException
      */
     private User getAdminUser() throws XPathExpressionException {
+
         String superUserReplacement = ContextXpathConstants.TENANTS;
         if (isSuperTenant) {
             superUserReplacement = ContextXpathConstants.SUPER_TENANT;
