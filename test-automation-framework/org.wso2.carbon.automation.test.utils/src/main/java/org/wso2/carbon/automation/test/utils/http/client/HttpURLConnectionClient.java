@@ -17,12 +17,11 @@
 */
 package org.wso2.carbon.automation.test.utils.http.client;
 
-import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * A utility for handling HTTP requests
@@ -55,7 +54,7 @@ public class HttpURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -101,7 +100,7 @@ public class HttpURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -156,7 +155,7 @@ public class HttpURLConnectionClient {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
@@ -217,7 +216,7 @@ public class HttpURLConnectionClient {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
@@ -278,7 +277,7 @@ public class HttpURLConnectionClient {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
@@ -380,7 +379,7 @@ public class HttpURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -423,7 +422,7 @@ public class HttpURLConnectionClient {
         StringBuilder sb = new StringBuilder();
         String line;
         try {
-            br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }

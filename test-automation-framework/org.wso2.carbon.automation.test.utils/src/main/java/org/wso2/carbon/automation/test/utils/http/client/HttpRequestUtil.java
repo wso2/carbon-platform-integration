@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class HttpRequestUtil {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -111,7 +112,7 @@ public class HttpRequestUtil {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, "UTF-8");
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
@@ -160,7 +161,7 @@ public class HttpRequestUtil {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -204,19 +205,11 @@ public class HttpRequestUtil {
             urlConnection.setUseCaches(false);
             urlConnection.setAllowUserInteraction(false);
             //setting headers
-            if (headers != null && headers.size() > 0) {
-                Iterator<String> itr = headers.keySet().iterator();
-                while (itr.hasNext()) {
-                    String key = itr.next();
-                    if (key != null) {
-                        urlConnection.setRequestProperty(key, headers.get(key));
-                    }
-                }
-	            for(String key: headers.keySet()){
-		            urlConnection.setRequestProperty(key, headers.get(key));
-	            }
 
+            for (Map.Entry<String, String> e : headers.entrySet()) {
+                urlConnection.setRequestProperty(e.getKey(), e.getValue());
             }
+
             OutputStream out = urlConnection.getOutputStream();
             try {
                 Writer writer = new OutputStreamWriter(out, "UTF-8");
@@ -233,7 +226,7 @@ public class HttpRequestUtil {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -271,24 +264,16 @@ public class HttpRequestUtil {
             conn.setDoOutput(true);
             conn.setReadTimeout(30000);
             //setting headers
-            if (headers != null && headers.size() > 0) {
-                Iterator<String> itr = headers.keySet().iterator();
-                while (itr.hasNext()) {
-                    String key = itr.next();
-                    if (key != null) {
-                        conn.setRequestProperty(key, headers.get(key));
-                    }
-                }
-	            for(String key: headers.keySet()){
-		            conn.setRequestProperty(key, headers.get(key));
-	            }
+            for (Map.Entry<String,String> e : headers.entrySet()) {
+                conn.setRequestProperty(e.getKey(), e.getValue());
             }
+
             conn.connect();
-            // Get the response
+
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -296,7 +281,7 @@ public class HttpRequestUtil {
                 httpResponse = new HttpResponse(sb.toString(), conn.getResponseCode());
                 httpResponse.setResponseMessage(conn.getResponseMessage());
             } catch (IOException ignored) {
-                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -355,7 +340,7 @@ public class HttpRequestUtil {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
@@ -416,7 +401,7 @@ public class HttpRequestUtil {
             }
             InputStream in = urlConnection.getInputStream();
             try {
-                Reader reader = new InputStreamReader(in);
+                Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
