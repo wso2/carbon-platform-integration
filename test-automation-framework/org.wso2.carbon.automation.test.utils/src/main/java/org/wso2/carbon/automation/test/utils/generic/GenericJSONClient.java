@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 
 public class GenericJSONClient {
     public static final Log log = LogFactory.getLog(GenericJSONClient.class);
@@ -60,7 +61,7 @@ public class GenericJSONClient {
                 byte[] data = new byte[1024];
                 int len;
                 while ((len = is.read(data)) != -1) {
-                    source.append(new String(data, 0, len));
+                    source.append(new String(data, 0, len, Charset.defaultCharset()));
                 }
                 out = source.toString();
             }

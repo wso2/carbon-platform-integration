@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -164,7 +165,7 @@ class SocketRR extends Thread {
 				if ((connectionData != null) && (reqSaved < 50)) {
 					String old = connectionData.get(index).getRequest();
 
-					old = old + new String(buffer, saved, len);
+					old = old + new String(buffer, saved, len, Charset.defaultCharset());
 					if (old.length() > 50) {
 						old = old.substring(0, 50);
 					}
@@ -228,14 +229,14 @@ class SocketRR extends Thread {
 							tmpbuffer[i2++] = buffer[i1];
 						}
 					}
-					message.append(new String(tmpbuffer, 0, i2));
+					message.append(new String(tmpbuffer, 0, i2, Charset.defaultCharset()));
 
 					// Shift saved bytes to the beginning
 					for (i = 0; i < saved; i++) {
 						buffer[i] = buffer[bufferLen - saved + i];
 					}
 				} else {
-					message.append(new String(buffer, 0, len));
+					message.append(new String(buffer, 0, len, Charset.defaultCharset()));
 				}
 			}
 

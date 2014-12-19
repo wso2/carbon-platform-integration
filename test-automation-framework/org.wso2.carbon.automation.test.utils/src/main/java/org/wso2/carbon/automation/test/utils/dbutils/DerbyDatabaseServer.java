@@ -27,8 +27,8 @@ import org.apache.derby.drda.NetworkServerControl;
  */
 public class DerbyDatabaseServer {
     private static final Log log = LogFactory.getLog(DerbyDatabaseServer.class);
-    private static NetworkServerControl networkServerControl = null;
-    private static boolean isServerStarted = false;
+    private NetworkServerControl networkServerControl = null;
+    private boolean isServerStarted = false;
 
     /**
      * Method will start derby server
@@ -57,11 +57,11 @@ public class DerbyDatabaseServer {
         }
     }
 
-    public static boolean isServerRunning() {
+    public boolean isServerRunning() {
         return isServerStarted;
     }
 
-    public static String getJdbcUrl() {
+    public String getJdbcUrl() {
         String jdbc = null;
         if (isServerRunning()) {
             try {

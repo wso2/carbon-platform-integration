@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public class HttpClientUtil {
     private static final Log log = LogFactory.getLog(HttpClientUtil.class);
@@ -54,16 +55,16 @@ public class HttpClientUtil {
             }
         }
         Assert.assertEquals(responseCode, 200, "Response code not 200");
-        if (xmlContent != null) {
+        /*if (xmlContent != null) {*/
             try {
                 return AXIOMUtil.stringToOM(xmlContent);
             } catch (XMLStreamException e) {
                 log.error("Error while processing response to OMElement" + e);
                 throw new XMLStreamException("Error while processing response to OMElement" + e);
             }
-        } else {
+        /*} else {
             return null;
-        }
+        }*/
     }
 
     public OMElement getWithContentType(String endpoint, String params, String contentType)
@@ -79,7 +80,7 @@ public class HttpClientUtil {
             httpCon.setRequestProperty("Content-type", contentType);
             httpCon.setRequestMethod("GET");
             httpCon.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream(), Charset.defaultCharset());
             out.write(params);
             out.close();
             InputStream in = httpCon.getInputStream();
@@ -95,16 +96,17 @@ public class HttpClientUtil {
             }
         }
         Assert.assertEquals(responseCode, 200, "Response code not 200");
-        if (xmlContent != null) {
+        // idea warning fixed
+        /*if (xmlContent != null) {*/
             try {
                 return AXIOMUtil.stringToOM(xmlContent);
             } catch (XMLStreamException e) {
                 log.error("Error while processing response to OMElement" + e);
                 throw new XMLStreamException("Error while processing response to OMElement" + e);
             }
-        } else {
+        /*} else {
             return null;
-        }
+        }*/
     }
 
     public void delete(String endpoint, String params) throws Exception {
@@ -138,7 +140,7 @@ public class HttpClientUtil {
             httpCon.setConnectTimeout(connectionTimeOut);
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream(), Charset.defaultCharset());
             out.write(params);
             out.close();
             responseCode = httpCon.getResponseCode();
@@ -166,7 +168,7 @@ public class HttpClientUtil {
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Content-type", contentType);
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream(), Charset.defaultCharset());
             out.write(params);
             out.close();
             responseCode = httpCon.getResponseCode();
@@ -194,7 +196,7 @@ public class HttpClientUtil {
             httpCon.setRequestMethod("PUT");
             httpCon.setRequestProperty("Content-Length", String.valueOf(params.length()));
             httpCon.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream(), Charset.defaultCharset());
             out.write(params);
             out.close();
             responseCode = httpCon.getResponseCode();
@@ -223,7 +225,7 @@ public class HttpClientUtil {
             httpCon.setRequestProperty("Content-Length", String.valueOf(params.length()));
             httpCon.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
             httpCon.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream(), Charset.defaultCharset());
             out.write(params);
             out.close();
             responseCode = httpCon.getResponseCode();
@@ -240,7 +242,7 @@ public class HttpClientUtil {
     }
 
     private static String getStringFromInputStream(InputStream in) throws Exception {
-        InputStreamReader reader = new InputStreamReader(in);
+        InputStreamReader reader = new InputStreamReader(in, Charset.defaultCharset());
         char[] buff = new char[1024];
         int i;
         StringBuffer retValue = new StringBuffer();

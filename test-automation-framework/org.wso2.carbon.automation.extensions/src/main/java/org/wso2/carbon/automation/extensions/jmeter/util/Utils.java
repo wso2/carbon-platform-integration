@@ -19,16 +19,18 @@ package org.wso2.carbon.automation.extensions.jmeter.util;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 
 public class Utils {
     public static void copyFromClassPath(String fileName, File destination) throws IOException {
-        FileWriter out = null;
+
+        BufferedWriter out = null;
         try {
 
-            out = new FileWriter(destination);
+             out = new BufferedWriter
+                    (new OutputStreamWriter(new FileOutputStream(destination), Charset.defaultCharset()));
+
             IOUtils.copy(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName), out);
 
 

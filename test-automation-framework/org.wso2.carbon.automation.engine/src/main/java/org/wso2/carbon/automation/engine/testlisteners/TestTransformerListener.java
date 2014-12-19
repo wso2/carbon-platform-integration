@@ -136,7 +136,7 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
     }
 
     private void handleException(String msg, Exception e) {
-        log.error("Execution error occurred in TestTransformerListener:-" + e.getStackTrace());
+        log.error("Execution error occurred in TestTransformerListener:-" , e);
         throw new RuntimeException(msg, e);
     }
 

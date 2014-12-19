@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.testng.Assert.assertFalse;
@@ -86,7 +87,7 @@ public class AxisServiceClientUtils {
         BufferedReader in = null;
         if (wsdlIS != null) {
             try {
-                in = new BufferedReader(new InputStreamReader(wsdlIS));
+                in = new BufferedReader(new InputStreamReader(wsdlIS, Charset.forName("UTF-8")));
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     if (inputLine.contains("definitions")) {

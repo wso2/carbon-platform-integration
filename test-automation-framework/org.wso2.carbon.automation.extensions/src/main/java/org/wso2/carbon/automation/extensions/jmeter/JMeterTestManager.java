@@ -33,6 +33,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -114,7 +115,9 @@ public class JMeterTestManager {
 
     private void checkForErrors() throws Exception {
         try {
-            BufferedReader in = new BufferedReader(new FileReader(jmeterLogFile));
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(jmeterLogFile), Charset.defaultCharset()));
+
             String line;
             while ((line = in.readLine()) != null) {
                 if (PAT_ERROR.matcher(line).find()) {
@@ -183,7 +186,9 @@ public class JMeterTestManager {
 
                 jmeterInstance.start(args.toArray(new String[]{}));
 
-                BufferedReader in = new BufferedReader(new FileReader(jmeterLogFile));
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(jmeterLogFile), Charset.defaultCharset()));
+
                 while (!checkForEndOfTest(in)) {
                     try {
                         Thread.sleep(1000);

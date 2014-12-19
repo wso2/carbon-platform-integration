@@ -288,7 +288,10 @@ public final class CodeCoverageUtils {
                 manifestOut.close();
             }
         }
-        archiveManipulator.archiveDir(jarFilePath, tempExtractedDir);
+
+        if (tempExtractedDir != null)
+            archiveManipulator.archiveDir(jarFilePath, tempExtractedDir);
+
         FileUtils.forceDelete(newManifest);
     }
 

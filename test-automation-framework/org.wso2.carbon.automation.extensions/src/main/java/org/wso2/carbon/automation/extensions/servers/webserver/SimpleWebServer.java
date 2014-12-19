@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 public class SimpleWebServer extends Thread {
     private volatile boolean running = true;
@@ -58,7 +59,7 @@ public class SimpleWebServer extends Thread {
                         InetAddress client = connectionSocket.getInetAddress();
                         log.info(client.getHostName() + " connected to server.\n");
                         input = new BufferedReader(new InputStreamReader(connectionSocket.
-                                getInputStream()));
+                                getInputStream(), Charset.defaultCharset()));
                         if (input.ready()) {
                             DataOutputStream output =
                                     new DataOutputStream(connectionSocket.getOutputStream());
@@ -100,7 +101,7 @@ public class SimpleWebServer extends Thread {
                     "   <message>" + tmp.toUpperCase() + "Success</message>\n" +
                     " </testResponse>";
             output.writeBytes(constructHttpHeader(expectedResponseCode, contentType));
-            output.write(sampleReturnResponse.getBytes());
+            output.write(sampleReturnResponse.getBytes(Charset.defaultCharset()));
         } catch (Exception e) {
             log.error("error" + e.getMessage());
         } finally {

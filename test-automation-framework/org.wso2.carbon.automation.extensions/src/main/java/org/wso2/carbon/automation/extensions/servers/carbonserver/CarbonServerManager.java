@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
@@ -45,12 +46,12 @@ public class CarbonServerManager {
     private String carbonHome;
     private AutomationContext automationContext;
     private ServerLogReader inputStreamHandler;
-    private String backendURL;
     private boolean isCoverageEnable = false;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
     private int defaultHttpsPort = 9443;
+    private int defaultHttpPort = 9763;
     private static final String CMD_ARG = "cmdArg";
 
     public CarbonServerManager(AutomationContext context) {
@@ -63,6 +64,17 @@ public class CarbonServerManager {
         if (process != null) { // An instance of the server is running
             return;
         }
+        final int portOffset = getPortOffsetFromCommandMap(commandMap);
+        //check whether http port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpPort + portOffset) + " : Port already in use");
+        }
+        //check whether https port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpsPort + portOffset) + " : Port already in use");
+        }
         Process tempProcess;
         isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
         try {
@@ -70,8 +82,8 @@ public class CarbonServerManager {
                 CodeCoverageUtils.init();
                 CodeCoverageUtils.instrument(carbonHome);
             }
-            defaultHttpsPort = Integer.parseInt(automationContext.getInstance().getPorts().get("https"));
-            int defaultHttpPort = Integer.parseInt(automationContext.getInstance().getPorts().get("http"));
+            //defaultHttpsPort = Integer.parseInt(automationContext.getInstance().getPorts().get("https"));
+            //int defaultHttpPort = Integer.parseInt(automationContext.getInstance().getPorts().get("http"));
             //set carbon home only if port offset is default.
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
@@ -83,7 +95,6 @@ public class CarbonServerManager {
 
             log.info("Starting server............. ");
             String scriptName = getStartupScriptFileName();
-            final int portOffset = getPortOffsetFromCommandMap(commandMap);
             String[] parameters = expandServerStartupCommandList(commandMap);
 
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
@@ -223,7 +234,7 @@ public class CarbonServerManager {
     public synchronized void restartGracefully() throws Exception {
 
         ClientConnectionUtil.sendGraceFullRestartRequest(
-                backendURL,
+                automationContext.getContextUrls().getSecureServiceUrl(),
                 automationContext.getSuperTenant().getContextUser().getUserName(),
                 automationContext.getSuperTenant().getContextUser().getPassword());
 
@@ -267,7 +278,9 @@ public class CarbonServerManager {
             parameterArray[arrayIndex++] = parameter;
         }
         //setting cmdArg again
-        commandMap.put(CMD_ARG, cmdArg);
+        if(cmdArg != null) {
+            commandMap.put(CMD_ARG, cmdArg);
+        }
         if (cmdParaArray == null || cmdParaArray.length == 0) {
             return parameterArray;
         } else {

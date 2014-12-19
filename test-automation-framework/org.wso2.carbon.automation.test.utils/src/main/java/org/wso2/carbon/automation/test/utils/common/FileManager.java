@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -36,8 +37,9 @@ public class FileManager {
         StringBuilder stringBuilder;
         String line;
         String ls;
-        log.debug("Path to file : " + filePath);
-        reader = new BufferedReader(new FileReader(filePath));
+        //log.debug("Path to file : " + filePath);
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), Charset.defaultCharset()));
+        //reader = new BufferedReader(new FileReader(filePath));
         stringBuilder = new StringBuilder();
         ls = System.getProperty("line.separator");
         while ((line = reader.readLine()) != null) {
@@ -53,7 +55,8 @@ public class FileManager {
         StringBuilder stringBuilder;
         String line;
         String ls;
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
+        //reader = new BufferedReader(new FileReader(file));
         stringBuilder = new StringBuilder();
         ls = System.getProperty("line.separator");
         while ((line = reader.readLine()) != null) {
@@ -65,7 +68,10 @@ public class FileManager {
     }
 
     public static void writeToFile(String filePath, String content) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
+
+        BufferedWriter writer = new BufferedWriter
+                (new OutputStreamWriter(new FileOutputStream(filePath, true),Charset.defaultCharset()));
+
         try {
             writer.write(content);
             writer.newLine();
@@ -81,8 +87,11 @@ public class FileManager {
 
     public static void copyFile(File sourceFile, String destinationPath) throws IOException {
         File destinationFile = new File(destinationPath);
-        FileReader in = new FileReader(sourceFile);
-        FileWriter out = new FileWriter(destinationFile);
+
+        InputStreamReader in = new InputStreamReader(new FileInputStream(sourceFile), Charset.defaultCharset());
+
+        BufferedWriter out = new BufferedWriter
+                (new OutputStreamWriter(new FileOutputStream(destinationFile),Charset.defaultCharset()));
         int c;
         try {
             while ((c = in.read()) != -1) {
