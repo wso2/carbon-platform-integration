@@ -98,7 +98,7 @@ public class TestManagerListener implements ITestListener {
     }
 
     private void handleException(String msg, Exception e) {
-        log.error("Execution error occurred in TestManagerListener:-" + e.getStackTrace());
+        log.error("Execution error occurred in TestManagerListener:-" , e);
         throw new RuntimeException(msg, e);
     }
 }

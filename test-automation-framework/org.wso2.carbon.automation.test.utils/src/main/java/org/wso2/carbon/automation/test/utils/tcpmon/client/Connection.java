@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -156,7 +157,7 @@ class Connection extends Thread {
 					if (len == -1) {
 						break;
 					}
-					s = new String(b);
+					s = new String(b, Charset.defaultCharset());
 					buf.append(s);
 					if (b[0] != '\n') {
 						continue;
@@ -219,7 +220,7 @@ class Connection extends Thread {
 					if (len == -1) {
 						break;
 					}
-					s1 = new String(b1);
+					s1 = new String(b1, Charset.defaultCharset() );
 					buf.append(s1);
 					if (b1[0] != '\n') {
 						continue;
@@ -279,7 +280,7 @@ class Connection extends Thread {
 			tmpIn2 = outSocket.getInputStream();
 			tmpOut2 = outSocket.getOutputStream();
 			if (bufferedData != null) {
-				byte[] b = bufferedData.getBytes();
+				byte[] b = bufferedData.getBytes(Charset.defaultCharset());
 				tmpOut2.write(b);
 				slowLink.pump(b.length);
 			}

@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 class WireMonitor extends Thread {
     private Log log = LogFactory.getLog(WireMonitor.class);
@@ -78,9 +79,9 @@ class WireMonitor extends Thread {
 
             // Signaling Main thread to continue
             trigger.response = headerBuffer.toString() + buffer.toString();
-            trigger.isFinished = true;
+            trigger.setFinished(true);
             OutputStream out = connection.getOutputStream();
-            out.write(("HTTP/1.1 202 Accepted" + "\r\n\r\n").getBytes());
+            out.write(("HTTP/1.1 202 Accepted" + "\r\n\r\n").getBytes(Charset.defaultCharset()));
             out.flush();
             out.close();
             in.close();

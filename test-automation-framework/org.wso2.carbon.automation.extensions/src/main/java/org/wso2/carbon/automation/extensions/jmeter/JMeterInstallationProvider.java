@@ -46,6 +46,7 @@ public class JMeterInstallationProvider {
 
         File saveServiceProps;
         File upgradeProps;
+        boolean isDeleted = false;
 
         //creating jmeter directory
         jMeterHome = new File(targetDir, "jmeter");
@@ -93,29 +94,48 @@ public class JMeterInstallationProvider {
         System.setProperty("upgrade_properties",
                            File.separator + "bin" + File.separator + "upgrade.properties");
 
+        FileOutputStream out = null;
+        FileInputStream in = null;
+
         try {
+
+            out = new FileOutputStream(jmeterPropertyFile);
+            in = new FileInputStream(jmeterPropertyFileTemp);
             // if the properties file is not specified in the papameters
             log.info("Loading default jmeter.properties...");
             Utils.copyFromClassPath("bin/jmeter.properties", jmeterPropertyFileTemp);
 
             if(jmeterPropertyFileTemp.exists()){
-                FileOutputStream out = new FileOutputStream(jmeterPropertyFile);
-                FileInputStream in = new FileInputStream(jmeterPropertyFileTemp);
+
                 Properties props = new Properties();
 
                 props.load(in);
-                in.close();
+
                 //set jemeter properties to stop demon thread creation
                 props.setProperty("jmeter.exit.check.pause", "0");
                 props.setProperty("jmeterengine.stopfail.system.exit", "true");
                 props.store(out, null);
-                out.close();
-                jmeterPropertyFileTemp.delete();
+
+                isDeleted = jmeterPropertyFileTemp.delete();
+                if (!isDeleted) {
+                    log.error("Could not delete file");
+                }
             }
 
         } catch (IOException e) {
             log.error("Could not create jmeter.properties", e);
+        } finally {
+            try {
+                if (in != null)
+                    in.close();
+
+                if (out != null)
+                    out.close();
+            } catch (IOException e) {
+                log.error("Could not close jmeter.properties", e);
+            }
         }
+
         System.setProperty("jmeter_properties",
                            File.separator + "bin" + File.separator + "jmeter.properties");
 

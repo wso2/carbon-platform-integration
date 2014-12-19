@@ -611,4 +611,5 @@ public class AutomationContext {
         Node node = (Node) xpath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
         node.setTextContent(replaceBy);
     }
+
 }

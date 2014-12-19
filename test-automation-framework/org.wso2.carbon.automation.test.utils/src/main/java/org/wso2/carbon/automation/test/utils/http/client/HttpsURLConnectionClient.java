@@ -22,6 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public class HttpsURLConnectionClient {
     public static HttpsResponse getRequest(String Uri, String requestParameters)
@@ -46,7 +47,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -89,7 +90,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -135,7 +136,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -184,7 +185,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -231,7 +232,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);
@@ -275,7 +276,7 @@ public class HttpsURLConnectionClient {
             StringBuilder sb = new StringBuilder();
             BufferedReader rd = null;
             try {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.defaultCharset()));
                 String line;
                 while ((line = rd.readLine()) != null) {
                     sb.append(line);

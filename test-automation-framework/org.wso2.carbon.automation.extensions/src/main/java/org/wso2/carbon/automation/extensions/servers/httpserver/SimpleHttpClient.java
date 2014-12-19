@@ -31,6 +31,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -89,7 +90,7 @@ public class SimpleHttpClient {
                 if (zip) {
                     out = new GZIPOutputStream(outputStream);
                 }
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, Charset.defaultCharset());
 //                OutputStreamWriter writer = new OutputStreamWriter(
 //                        new FileOutputStream(reportFile, true), "UTF-8");
                 outputStreamWriter.write(payload);
@@ -120,7 +121,7 @@ public class SimpleHttpClient {
             byte[] tmp = new byte[2048];
             StringBuilder buffer = new StringBuilder();
             while ((length = in.read(tmp)) != -1) {
-                buffer.append(new String(tmp, 0, length));
+                buffer.append(new String(tmp, 0, length, Charset.defaultCharset()));
             }
             return buffer.toString();
         }

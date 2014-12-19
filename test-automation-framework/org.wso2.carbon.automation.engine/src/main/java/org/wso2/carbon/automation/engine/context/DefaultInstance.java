@@ -19,15 +19,10 @@ package org.wso2.carbon.automation.engine.context;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 public class DefaultInstance extends AutomationConfiguration {
     private static final Log log = LogFactory.getLog(DefaultInstance.class);
@@ -43,7 +38,7 @@ public class DefaultInstance extends AutomationConfiguration {
                 tenantDomain = getConfigurationValue(ContextXpathConstants.TENANT_DOMAIN);
             }
         } catch (XPathExpressionException e) {
-            log.error("Error while reading the super Tenant:" + e.getStackTrace());
+            log.error("Error while reading the super Tenant:" , e);
             throw new XPathExpressionException("Error While Reading default Tenant Domain:- " +
                                                e.getStackTrace().toString());
 

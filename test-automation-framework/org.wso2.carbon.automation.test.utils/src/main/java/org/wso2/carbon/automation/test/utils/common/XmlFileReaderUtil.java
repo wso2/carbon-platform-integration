@@ -23,21 +23,23 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 public class XmlFileReaderUtil {
     public static OMElement read(String filePath) throws FileNotFoundException,
             XMLStreamException {
         OMElement documentElement = null;
-        FileInputStream inputStream = null;
         XMLStreamReader parser = null;
-        File file = new File(filePath);
+        InputStreamReader in = null;
+
         try {
-            inputStream = new FileInputStream(filePath);
-            parser = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
+
+            in = new InputStreamReader(new FileInputStream(filePath), Charset.defaultCharset());
+            parser = XMLInputFactory.newInstance().createXMLStreamReader(in);
             //create the builder
             StAXOMBuilder builder = new StAXOMBuilder(parser);
             //get the root element
@@ -47,13 +49,14 @@ public class XmlFileReaderUtil {
             if (parser != null) {
                 parser.close();
             }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    //ignore
-                }
+
+            try {
+                if (in != null)
+                    in.close();
+            } catch (IOException e) {
+                //ignore
             }
+
         }
         return documentElement;
     }

@@ -52,9 +52,10 @@ public class ArchiveExtractor {
                 int n;
 
                 File newFile = new File(entryName);
+                boolean fileCreated = false;
                 if (zipentry.isDirectory()) {
                     if (!newFile.exists()) {
-                        newFile.mkdirs();
+                        fileCreated = newFile.mkdirs();
                     }
                     zipentry = zipinputstream.getNextEntry();
                     continue;
