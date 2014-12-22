@@ -48,7 +48,7 @@ public class ArchiveManipulator {
     public void archiveDir(String archiveDestination, String sourceDir) throws IOException {
         File zipDir = new File(sourceDir);
         if (!zipDir.isDirectory()) {
-            throw new RuntimeException(sourceDir + " is not a directory");
+            throw new IllegalArgumentException(sourceDir + " is not a directory");
         }
 
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveDestination));
@@ -126,6 +126,11 @@ public class ArchiveManipulator {
                 if (zin != null) {
                     zin.close();
                 }
+            } catch (IOException e) {
+                // No need to throw an exception, since this will not interrupt the process
+                log.warn("Could not close ZipInputStream ", e);
+            }
+            try {
                 if (in != null) {
                     in.close();
                 }
@@ -203,7 +208,7 @@ public class ArchiveManipulator {
         } catch (IOException e) {
             String msg = "Cannot unzip archive. It is probably corrupted";
             log.error(msg, e);
-            throw new RuntimeException(msg, e);
+            throw new IllegalArgumentException(msg, e);
         } finally {
             try {
                 if (zin != null) {
