@@ -141,6 +141,13 @@ public class ArchiveManipulator {
         }
     }
 
+    /**
+     * Extract archive
+     *
+     * @param archive    archive location
+     * @param extractDir location to be extract
+     * @throws IOException
+     */
     public void extract(String archive, String extractDir) throws IOException {
         FileInputStream inputStream = new FileInputStream(archive);
         try {
@@ -155,6 +162,13 @@ public class ArchiveManipulator {
         }
     }
 
+    /**
+     * Extract InputStream to a directory
+     *
+     * @param inputStream archive inputStream
+     * @param extractDir  location to be extract
+     * @throws IOException
+     */
     public void extractFromStream(InputStream inputStream, String extractDir) throws IOException {
         ZipInputStream zin = null;
         OutputStream out = null;
