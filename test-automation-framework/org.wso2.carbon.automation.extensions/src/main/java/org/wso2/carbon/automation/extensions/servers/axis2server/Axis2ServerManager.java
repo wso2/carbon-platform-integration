@@ -32,6 +32,7 @@ import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.extensions.ExtensionUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class Axis2ServerManager implements BackendServer {
     private static final Log log = LogFactory.getLog(Axis2ServerManager.class);
@@ -120,39 +121,53 @@ public class Axis2ServerManager implements BackendServer {
                 new File(FrameworkPathUtil.getSystemResourceLocation() + File.separator +
                         "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
                         File.separator + file);
-        if (config != null) {
-            String currentLine;
-            BufferedReader br = new BufferedReader(new FileReader(config));
-            while ((currentLine = br.readLine()) != null) {
-                if (currentLine.contains("REPLACE_CK")) {
-                    currentLine = currentLine.replace("REPLACE_CK",
-                            System.getProperty(FrameworkConstants.CARBON_HOME) +
-                                    File.separator + "repository" + File.separator +
-                                    "resources" + File.separator + "security" +
-                                    File.separator + "wso2carbon.jks");
-                } else if (currentLine.contains("REPLACE_TS")) {
-                    currentLine = currentLine.replace("REPLACE_TS",
-                            System.getProperty(FrameworkConstants.CARBON_HOME) +
-                                    File.separator + "repository" + File.separator +
-                                    "resources" + File.separator + "security" +
-                                    File.separator + "client-truststore.jks");
-                }
-                sb.append(currentLine);
-            }
-            br.close();
-        }
-        File newConfig =
-                new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
-                        "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
-                        File.separator + newFile);
-        if (newConfig.exists()) {
-            FileUtils.deleteQuietly(newConfig);
-        }
+        BufferedReader br = null;
+        OutputStream os = null;
 
-        FileUtils.touch(newConfig);
-        OutputStream os = FileUtils.openOutputStream(newConfig);
-        os.write(sb.toString().getBytes("UTF-8"));
-        os.close();
+        try {
+
+            if (config != null) {
+                String currentLine;
+
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(config),
+                        Charset.defaultCharset()));
+                while ((currentLine = br.readLine()) != null) {
+                    if (currentLine.contains("REPLACE_CK")) {
+                        currentLine = currentLine.replace("REPLACE_CK",
+                                System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                        File.separator + "repository" + File.separator +
+                                        "resources" + File.separator + "security" +
+                                        File.separator + "wso2carbon.jks");
+                    } else if (currentLine.contains("REPLACE_TS")) {
+                        currentLine = currentLine.replace("REPLACE_TS",
+                                System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                        File.separator + "repository" + File.separator +
+                                        "resources" + File.separator + "security" +
+                                        File.separator + "client-truststore.jks");
+                    }
+                    sb.append(currentLine);
+                }
+                br.close();
+            }
+            File newConfig =
+                    new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
+                            "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
+                            File.separator + newFile);
+            if (newConfig.exists()) {
+                FileUtils.deleteQuietly(newConfig);
+            }
+
+            FileUtils.touch(newConfig);
+            os = FileUtils.openOutputStream(newConfig);
+            os.write(sb.toString().getBytes("UTF-8"));
+
+        } finally {
+            if (os != null)
+                os.close();
+
+            if (br != null)
+                br.close();
+        }
 
     }
 
@@ -165,53 +180,72 @@ public class Axis2ServerManager implements BackendServer {
         }
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        InputStream is;
-        if (resourceName.contains(".aar")) {
-            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                    File.separator + "artifacts" + File.separator + "AXIS2" +
-                    File.separator + "aar" +
-                    File.separator + resourceName);
-        } else {
-            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                    File.separator + "artifacts" + File.separator + "AXIS2" +
-                    File.separator + "config" +
-                    File.separator + resourceName);
-        }
-        if (is != null) {
-            byte[] data = new byte[1024];
-            int len;
-            while ((len = is.read(data)) != -1) {
-                os.write(data, 0, len);
+        InputStream is = null;
+
+        try {
+            if (resourceName.contains(".aar")) {
+                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                        File.separator + "artifacts" + File.separator + "AXIS2" +
+                        File.separator + "aar" +
+                        File.separator + resourceName);
+            } else {
+                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                        File.separator + "artifacts" + File.separator + "AXIS2" +
+                        File.separator + "config" +
+                        File.separator + resourceName);
             }
+            if (is != null) {
+                byte[] data = new byte[1024];
+                int len;
+                while ((len = is.read(data)) != -1) {
+                    os.write(data, 0, len);
+                }
+            }
+        } finally {
+            os.flush();
+            os.close();
+
+            if (is != null)
+                is.close();
         }
-        os.flush();
-        os.close();
-        is.close();
+
         return file;
     }
 
     private File copyServiceToFileSystem(String resourceName, String fileName) throws IOException {
+
         File file = new File(System.getProperty("basedir") + File.separator + "target" +
                 File.separator + fileName);
+
         if (file.exists()) {
             FileUtils.deleteQuietly(file);
         }
+
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        InputStream is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                File.separator + "artifacts" + File.separator + "AXIS2" +
-                File.separator + "config" +
-                File.separator + resourceName);
-        if (is != null) {
-            byte[] data = new byte[1024];
-            int len;
-            while ((len = is.read(data)) != -1) {
-                os.write(data, 0, len);
+        InputStream is = null;
+
+        try {
+
+            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                    File.separator + "artifacts" + File.separator + "AXIS2" +
+                    File.separator + "config" +
+                    File.separator + resourceName);
+
+            if (is != null) {
+                byte[] data = new byte[1024];
+                int len;
+                while ((len = is.read(data)) != -1) {
+                    os.write(data, 0, len);
+                }
+                os.flush();
+
             }
-            os.flush();
+        } finally {
             os.close();
             is.close();
         }
+
         return file;
     }
 }
