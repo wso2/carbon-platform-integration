@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.extensions.ExtensionUtils;
 
 import java.io.*;
@@ -38,6 +39,7 @@ public class Axis2ServerManager implements BackendServer {
     private ListenerManager listenerManager;
     private boolean started;
     String repositoryPath = null;
+    String MODIFIED_RESOURCE_NAME = "";
 
     public Axis2ServerManager() {
         this("test_axis2_server_9000.xml");
@@ -46,12 +48,14 @@ public class Axis2ServerManager implements BackendServer {
     }
 
     public Axis2ServerManager(String axis2xmlFile) {
+        String newFile = axis2xmlFile + "_bk";
         repositoryPath = System.getProperty(FrameworkConstants.CARBON_HOME) + File.separator +
                 "samples" + File.separator + "axis2Server" + File.separator + "repository";
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());
         try {
-            File axis2xml = copyResourceToFileSystem(axis2xmlFile, "axis2.xml");
+            changeConfiguration(axis2xmlFile, newFile);
+            File axis2xml = copyResourceToFileSystem(newFile, "axis2.xml");
             if (!axis2xml.exists()) {
                 log.error("Error while copying the test axis2.xml to the file system");
                 return;
@@ -109,6 +113,49 @@ public class Axis2ServerManager implements BackendServer {
         AxisServiceGroup serviceGroup = DeploymentEngine.loadServiceGroup(file, cfgCtx);
         cfgCtx.getAxisConfiguration().addServiceGroup(serviceGroup);
     }
+
+    private void changeConfiguration(String file, String newFile) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        File config =
+                new File(FrameworkPathUtil.getSystemResourceLocation() + File.separator +
+                        "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
+                        File.separator + file);
+        if (config != null) {
+            String currentLine;
+            BufferedReader br = new BufferedReader(new FileReader(config));
+            while ((currentLine = br.readLine()) != null) {
+                if (currentLine.contains("REPLACE_CK")) {
+                    currentLine = currentLine.replace("REPLACE_CK",
+                            System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                    File.separator + "repository" + File.separator +
+                                    "resources" + File.separator + "security" +
+                                    File.separator + "wso2carbon.jks");
+                } else if (currentLine.contains("REPLACE_TS")) {
+                    currentLine = currentLine.replace("REPLACE_TS",
+                            System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                    File.separator + "repository" + File.separator +
+                                    "resources" + File.separator + "security" +
+                                    File.separator + "client-truststore.jks");
+                }
+                sb.append(currentLine);
+            }
+            br.close();
+        }
+        File newConfig =
+                new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
+                        "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
+                        File.separator + newFile);
+        if (newConfig.exists()) {
+            FileUtils.deleteQuietly(newConfig);
+        }
+
+        FileUtils.touch(newConfig);
+        OutputStream os = FileUtils.openOutputStream(newConfig);
+        os.write(sb.toString().getBytes("UTF-8"));
+        os.close();
+
+    }
+
 
     private File copyResourceToFileSystem(String resourceName, String fileName) throws IOException {
         File file = new File(System.getProperty("basedir") + File.separator + "target" +
@@ -168,4 +215,3 @@ public class Axis2ServerManager implements BackendServer {
         return file;
     }
 }
-
