@@ -41,17 +41,41 @@ public class EmailServerUtil {
         greenMail.start ();
     }
 
+    /**
+     * send simple text mail
+     * @param receiver
+     * @param sender
+     * @param subject
+     * @param content
+     */
     public void sendTextEmail(String receiver, String sender, String subject, String content) {
         GreenMailUtil.sendTextEmailTest(receiver, sender, subject, content);
     }
+
+    /**
+     * get mail message body based on index
+     * @param index
+     * @return
+     */
 
     public String getMailBody(int index) {
         return GreenMailUtil.getBody(greenMail.getReceivedMessages()[index]);
     }
 
+    /**
+     * get mail message headers based on message index
+     * @param index
+     * @return
+     */
+
     public String getMailHeaders( int index) {
         return GreenMailUtil.getHeaders(greenMail.getReceivedMessages()[index]);
     }
+
+    /**
+     * get all the received messages in the mail server, this is total messages in the server instance
+     * @return
+     */
 
     public MimeMessage[] getReceivedMessages() {
         return greenMail.getReceivedMessages();
@@ -61,11 +85,26 @@ public class EmailServerUtil {
         greenMail.stop();
     }
 
+    /**
+     * create user in green mail server memory
+     * @param mailAddress
+     * @param username
+     * @param password
+     * @return
+     */
+
     public MailUser createUser (String mailAddress, String username, String password) {
         MailUser mailUser = new MailUser(greenMail);
         mailUser.createUser(greenMail.setUser(mailAddress, username, password));
         return mailUser;
     }
+
+    /**
+     * create mime message
+     * @param mailString
+     * @return
+     * @throws MessagingException
+     */
 
     public MimeMessage createMailMessage(String mailString ) throws MessagingException {
         return GreenMailUtil.newMimeMessage(mailString);

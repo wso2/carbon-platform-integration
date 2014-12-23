@@ -32,6 +32,10 @@ import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this is user created in the mail server, messages are stored in memory
+ */
+
 public class MailUser {
 
     static final Log log = LogFactory.getLog(MailUser.class);
@@ -46,6 +50,12 @@ public class MailUser {
         this.greenMailUser = greenMailUser;
     }
 
+    /**
+     * send message to users inbox
+     * @param mimeMessage
+     * @throws RuntimeException
+     */
+
     public void sendMessage(MimeMessage mimeMessage) throws RuntimeException {
         try {
             greenMailUser.deliver(mimeMessage);
@@ -54,6 +64,12 @@ public class MailUser {
             throw new RuntimeException("Error occurred while delivering user mail via greenmail", e);
         }
     }
+
+    /**
+     * get all messages count
+     * @return
+     * @throws RuntimeException
+     */
 
     public int getMessageCount() throws RuntimeException {
 
@@ -68,6 +84,12 @@ public class MailUser {
         return mailCount;
     }
 
+    /**
+     * get unread message count
+     * @return
+     * @throws RuntimeException
+     */
+
     public int getUnReadMessageCount() throws RuntimeException {
 
         int mailCount = 0;
@@ -80,6 +102,12 @@ public class MailUser {
 
         return mailCount;
     }
+
+    /**
+     * get unread mail messages as MimeMessages
+     * @return
+     * @throws RuntimeException
+     */
 
     public List<MimeMessage> getUnreadMails() throws RuntimeException {
 
@@ -103,6 +131,10 @@ public class MailUser {
         return mimeMessages;
     }
 
+    /**
+     * delete all messages in inbox
+     * @throws RuntimeException
+     */
     public void deleteAllMessages() throws RuntimeException{
         try {
             greenMail.getManagers().getUserManager().getImapHostManager().

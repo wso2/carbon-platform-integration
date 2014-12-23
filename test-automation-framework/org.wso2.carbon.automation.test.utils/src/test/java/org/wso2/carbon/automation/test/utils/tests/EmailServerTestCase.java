@@ -25,6 +25,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.automation.test.utils.generic.email.EmailServerUtil;
 
+/**
+ * simple test case for greenmail server
+ */
 public class EmailServerTestCase {
 
     static final Log log = LogFactory.getLog(EmailServerTestCase.class);
