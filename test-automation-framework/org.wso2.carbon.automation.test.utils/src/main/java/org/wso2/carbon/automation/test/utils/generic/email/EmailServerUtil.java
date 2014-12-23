@@ -17,20 +17,27 @@
 */
 
 
-package org.wso2.carbon.automation.test.utils.generic;
+package org.wso2.carbon.automation.test.utils.generic.email;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
-import com.icegreen.greenmail.util.ServerSetupTest;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * simple mail server for test cases using greenMail , http://www.icegreen.com/greenmail/readme.html
+ */
 public class EmailServerUtil {
 
     GreenMail greenMail = null;
 
+    /**
+     * start mail Server
+     */
     public void startMailServer() {
-        greenMail = new GreenMail ( ServerSetupTest.SMTP );
+        // all protocols supported here
+        greenMail = new GreenMail();
         greenMail.start ();
     }
 
@@ -52,5 +59,15 @@ public class EmailServerUtil {
 
     public void stopMailServer () {
         greenMail.stop();
+    }
+
+    public MailUser createUser (String mailAddress, String username, String password) {
+        MailUser mailUser = new MailUser(greenMail);
+        mailUser.createUser(greenMail.setUser(mailAddress, username, password));
+        return mailUser;
+    }
+
+    public MimeMessage createMailMessage(String mailString ) throws MessagingException {
+        return GreenMailUtil.newMimeMessage(mailString);
     }
 }

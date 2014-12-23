@@ -153,7 +153,6 @@ public class Axis2ServerManager implements BackendServer {
                     }
                     sb.append(currentLine);
                 }
-                br.close();
             }
             File newConfig =
                     new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
