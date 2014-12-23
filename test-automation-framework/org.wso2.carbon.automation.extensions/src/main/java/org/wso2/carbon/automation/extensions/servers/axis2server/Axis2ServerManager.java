@@ -40,7 +40,6 @@ public class Axis2ServerManager implements BackendServer {
     private ListenerManager listenerManager;
     private boolean started;
     String repositoryPath = null;
-    String MODIFIED_RESOURCE_NAME = "";
 
     public Axis2ServerManager() {
         this("test_axis2_server_9000.xml");
@@ -55,6 +54,7 @@ public class Axis2ServerManager implements BackendServer {
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());
         try {
+            //replace HTTPS configuration  key store paths
             changeConfiguration(axis2xmlFile, newFile);
             File axis2xml = copyResourceToFileSystem(newFile, "axis2.xml");
             if (!axis2xml.exists()) {
@@ -115,6 +115,12 @@ public class Axis2ServerManager implements BackendServer {
         cfgCtx.getAxisConfiguration().addServiceGroup(serviceGroup);
     }
 
+    /**
+     * replace key store paths of file for HTTPS transport
+     * @param file
+     * @param newFile
+     * @throws IOException
+     */
     private void changeConfiguration(String file, String newFile) throws IOException {
         StringBuilder sb = new StringBuilder();
         File config =
@@ -171,6 +177,13 @@ public class Axis2ServerManager implements BackendServer {
 
     }
 
+    /**
+     * copy resources
+     * @param resourceName
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
 
     private File copyResourceToFileSystem(String resourceName, String fileName) throws IOException {
         File file = new File(System.getProperty("basedir") + File.separator + "target" +

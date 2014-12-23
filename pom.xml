@@ -407,6 +407,11 @@
                 <artifactId>commons-httpclient</artifactId>
                 <version>${commons.httpclient.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.icegreen</groupId>
+                <artifactId>greenmail</artifactId>
+                <version>1.3.1b</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <properties>
