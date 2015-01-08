@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -117,12 +117,13 @@ public class Axis2ServerManager implements BackendServer {
 
     /**
      * replace key store paths of file for HTTPS transport
-     * @param file
-     * @param newFile
+     * @param file - name of the file to read
+     * @param newFile - name of the new file to e created
      * @throws IOException
      */
     private void changeConfiguration(String file, String newFile) throws IOException {
         StringBuilder sb = new StringBuilder();
+        // axis2 config
         File config =
                 new File(FrameworkPathUtil.getSystemResourceLocation() + File.separator +
                         "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
@@ -154,6 +155,7 @@ public class Axis2ServerManager implements BackendServer {
                     sb.append(currentLine);
                 }
             }
+            // created axis2 config
             File newConfig =
                     new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
                             "artifacts" + File.separator + "AXIS2" + File.separator + "config" +

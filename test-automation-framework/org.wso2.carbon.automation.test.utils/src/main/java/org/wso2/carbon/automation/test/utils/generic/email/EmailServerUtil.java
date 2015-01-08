@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -30,7 +30,7 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailServerUtil {
 
-    GreenMail greenMail = null;
+    GreenMail greenMail;
 
     /**
      * start mail Server
@@ -43,10 +43,10 @@ public class EmailServerUtil {
 
     /**
      * send simple text mail
-     * @param receiver
-     * @param sender
-     * @param subject
-     * @param content
+     * @param receiver - email address of receiver
+     * @param sender - email address of sender
+     * @param subject - email subject
+     * @param content - email body
      */
     public void sendTextEmail(String receiver, String sender, String subject, String content) {
         GreenMailUtil.sendTextEmailTest(receiver, sender, subject, content);
@@ -54,7 +54,7 @@ public class EmailServerUtil {
 
     /**
      * get mail message body based on index
-     * @param index
+     * @param index - mail index
      * @return
      */
 
@@ -64,7 +64,7 @@ public class EmailServerUtil {
 
     /**
      * get mail message headers based on message index
-     * @param index
+     * @param index - mail index
      * @return
      */
 
@@ -81,6 +81,9 @@ public class EmailServerUtil {
         return greenMail.getReceivedMessages();
     }
 
+    /**
+     * stop mail server
+     */
     public void stopMailServer () {
         greenMail.stop();
     }
@@ -93,14 +96,14 @@ public class EmailServerUtil {
      * @return
      */
 
-    public MailUser createUser (String mailAddress, String username, String password) {
+    public MailUser createUser(String mailAddress, String username, String password) {
         MailUser mailUser = new MailUser(greenMail);
-        mailUser.createUser(greenMail.setUser(mailAddress, username, password));
+        mailUser.registerUser(greenMail.setUser(mailAddress, username, password));
         return mailUser;
     }
 
     /**
-     * create mime message
+     * create mime message with given content
      * @param mailString
      * @return
      * @throws MessagingException

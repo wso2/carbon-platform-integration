@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -39,14 +39,19 @@ import java.util.List;
 public class MailUser {
 
     static final Log log = LogFactory.getLog(MailUser.class);
-    GreenMailUser greenMailUser = null;
-    GreenMail greenMail = null;
+    GreenMailUser greenMailUser;
+    GreenMail greenMail;
 
     public MailUser (GreenMail greenMail) {
         this.greenMail = greenMail;
     }
 
-    public void createUser (GreenMailUser greenMailUser) {
+    /**
+     * create email user within the memory
+     * @param greenMailUser
+     */
+
+    public void registerUser(GreenMailUser greenMailUser) {
         this.greenMailUser = greenMailUser;
     }
 

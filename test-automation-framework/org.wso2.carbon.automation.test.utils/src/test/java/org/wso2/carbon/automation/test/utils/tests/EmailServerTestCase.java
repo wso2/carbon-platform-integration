@@ -20,10 +20,12 @@ package org.wso2.carbon.automation.test.utils.tests;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.automation.test.utils.generic.email.EmailServerUtil;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * simple test case for greenmail server
@@ -34,7 +36,7 @@ public class EmailServerTestCase {
 
     EmailServerUtil emailServerUtil = null;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void init() {
         emailServerUtil = new EmailServerUtil();
         emailServerUtil.startMailServer();
@@ -47,6 +49,11 @@ public class EmailServerTestCase {
             emailServerUtil.sendTextEmail("to@localhost.com", "from@localhost.com", "subject", "body");
         }
 
-        Assert.assertEquals(emailServerUtil.getReceivedMessages().length, 5, "email messages not received");
+        assertEquals(emailServerUtil.getReceivedMessages().length, 5, "email messages not received");
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void clean() {
+        emailServerUtil.stopMailServer();
     }
 }
