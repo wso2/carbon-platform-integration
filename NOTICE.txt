@@ -1,5 +1,5 @@
 WSO2 Test Automation Framework (TAF) - Carbon Platfrm Integration
-Copyright (c) 2014 WSO2 Inc
+Copyright (c) 2015 WSO2 Inc
 This product includes software developed at The Apache Software Foundation (http://www.apache.org/)
 
    =======================================================================================
@@ -15,7 +15,7 @@ See the LICENSE file for details.
 
 COPYRIGHT NOTICES
 
-Copyright (c) 2014, WSO2 Inc. (http://wso2.com). All Rights Reserved.
+Copyright (c) 2015, WSO2 Inc. (http://wso2.com). All Rights Reserved.
 
 WSO2 TAF - Carbon Platfrm Integration binary is bundled with:
 
