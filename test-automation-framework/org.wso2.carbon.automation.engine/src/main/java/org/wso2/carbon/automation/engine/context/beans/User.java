@@ -57,7 +57,7 @@ public class User {
 
     public List<String> getRoles() {
         if (roles == null) {
-            roles = new ArrayList<String>(0);
+            roles = new ArrayList<String>();
         }
         return roles;
     }
