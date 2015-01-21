@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -28,9 +28,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.extensions.ExtensionUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class Axis2ServerManager implements BackendServer {
     private static final Log log = LogFactory.getLog(Axis2ServerManager.class);
@@ -46,12 +48,15 @@ public class Axis2ServerManager implements BackendServer {
     }
 
     public Axis2ServerManager(String axis2xmlFile) {
+        String newFile = axis2xmlFile + "_bk";
         repositoryPath = System.getProperty(FrameworkConstants.CARBON_HOME) + File.separator +
                 "samples" + File.separator + "axis2Server" + File.separator + "repository";
         File repository = new File(repositoryPath);
         log.info("Using the Axis2 repository path: " + repository.getAbsolutePath());
         try {
-            File axis2xml = copyResourceToFileSystem(axis2xmlFile, "axis2.xml");
+            //replace HTTPS configuration  key store paths
+            changeConfiguration(axis2xmlFile, newFile);
+            File axis2xml = copyResourceToFileSystem(newFile, "axis2.xml");
             if (!axis2xml.exists()) {
                 log.error("Error while copying the test axis2.xml to the file system");
                 return;
@@ -110,6 +115,77 @@ public class Axis2ServerManager implements BackendServer {
         cfgCtx.getAxisConfiguration().addServiceGroup(serviceGroup);
     }
 
+    /**
+     * replace key store paths of file for HTTPS transport
+     * @param file - name of the file to read
+     * @param newFile - name of the new file to e created
+     * @throws IOException
+     */
+    private void changeConfiguration(String file, String newFile) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        // axis2 config
+        File config =
+                new File(FrameworkPathUtil.getSystemResourceLocation() + File.separator +
+                        "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
+                        File.separator + file);
+        BufferedReader br = null;
+        OutputStream os = null;
+
+        try {
+
+            if (config != null) {
+                String currentLine;
+
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(config),
+                        Charset.defaultCharset()));
+                while ((currentLine = br.readLine()) != null) {
+                    if (currentLine.contains("REPLACE_CK")) {
+                        currentLine = currentLine.replace("REPLACE_CK",
+                                System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                        File.separator + "repository" + File.separator +
+                                        "resources" + File.separator + "security" +
+                                        File.separator + "wso2carbon.jks");
+                    } else if (currentLine.contains("REPLACE_TS")) {
+                        currentLine = currentLine.replace("REPLACE_TS",
+                                System.getProperty(FrameworkConstants.CARBON_HOME) +
+                                        File.separator + "repository" + File.separator +
+                                        "resources" + File.separator + "security" +
+                                        File.separator + "client-truststore.jks");
+                    }
+                    sb.append(currentLine);
+                }
+            }
+            // created axis2 config
+            File newConfig =
+                    new File(ExtensionUtils.getSystemResourceLocation() + File.separator +
+                            "artifacts" + File.separator + "AXIS2" + File.separator + "config" +
+                            File.separator + newFile);
+            if (newConfig.exists()) {
+                FileUtils.deleteQuietly(newConfig);
+            }
+
+            FileUtils.touch(newConfig);
+            os = FileUtils.openOutputStream(newConfig);
+            os.write(sb.toString().getBytes("UTF-8"));
+
+        } finally {
+            if (os != null)
+                os.close();
+
+            if (br != null)
+                br.close();
+        }
+
+    }
+
+    /**
+     * copy resources
+     * @param resourceName
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+
     private File copyResourceToFileSystem(String resourceName, String fileName) throws IOException {
         File file = new File(System.getProperty("basedir") + File.separator + "target" +
                 File.separator + fileName);
@@ -118,54 +194,72 @@ public class Axis2ServerManager implements BackendServer {
         }
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        InputStream is;
-        if (resourceName.contains(".aar")) {
-            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                    File.separator + "artifacts" + File.separator + "AXIS2" +
-                    File.separator + "aar" +
-                    File.separator + resourceName);
-        } else {
-            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                    File.separator + "artifacts" + File.separator + "AXIS2" +
-                    File.separator + "config" +
-                    File.separator + resourceName);
-        }
-        if (is != null) {
-            byte[] data = new byte[1024];
-            int len;
-            while ((len = is.read(data)) != -1) {
-                os.write(data, 0, len);
+        InputStream is = null;
+
+        try {
+            if (resourceName.contains(".aar")) {
+                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                        File.separator + "artifacts" + File.separator + "AXIS2" +
+                        File.separator + "aar" +
+                        File.separator + resourceName);
+            } else {
+                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                        File.separator + "artifacts" + File.separator + "AXIS2" +
+                        File.separator + "config" +
+                        File.separator + resourceName);
             }
+            if (is != null) {
+                byte[] data = new byte[1024];
+                int len;
+                while ((len = is.read(data)) != -1) {
+                    os.write(data, 0, len);
+                }
+            }
+        } finally {
+            os.flush();
+            os.close();
+
+            if (is != null)
+                is.close();
         }
-        os.flush();
-        os.close();
-        is.close();
+
         return file;
     }
 
     private File copyServiceToFileSystem(String resourceName, String fileName) throws IOException {
+
         File file = new File(System.getProperty("basedir") + File.separator + "target" +
                 File.separator + fileName);
+
         if (file.exists()) {
             FileUtils.deleteQuietly(file);
         }
+
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        InputStream is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                File.separator + "artifacts" + File.separator + "AXIS2" +
-                File.separator + "config" +
-                File.separator + resourceName);
-        if (is != null) {
-            byte[] data = new byte[1024];
-            int len;
-            while ((len = is.read(data)) != -1) {
-                os.write(data, 0, len);
+        InputStream is = null;
+
+        try {
+
+            is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
+                    File.separator + "artifacts" + File.separator + "AXIS2" +
+                    File.separator + "config" +
+                    File.separator + resourceName);
+
+            if (is != null) {
+                byte[] data = new byte[1024];
+                int len;
+                while ((len = is.read(data)) != -1) {
+                    os.write(data, 0, len);
+                }
+                os.flush();
+
             }
-            os.flush();
+        } finally {
             os.close();
             is.close();
         }
+
         return file;
     }
 }
-
