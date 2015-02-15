@@ -17,10 +17,12 @@
 */
 package org.wso2.carbon.automation.test.utils.dbutils;
 
+import com.sun.rowset.CachedRowSetImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 
+import javax.sql.rowset.CachedRowSet;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
@@ -92,19 +94,22 @@ public class MySqlDatabaseManager implements DatabaseManager {
      * @return
      * @throws java.sql.SQLException
      */
-    public ResultSet executeQuery(String sql) throws SQLException {
+    public CachedRowSet executeQuery(String sql) throws SQLException {
         ResultSet rs;
         Statement st = null;
+        CachedRowSet cachedRowSet;
         try {
             st = connection.createStatement();
             log.debug(sql);
             rs = st.executeQuery(sql);
+            cachedRowSet = new CachedRowSetImpl();
+            cachedRowSet.populate(rs);
         } finally {
             if (st != null) {
                 st.close();
             }
         }
-        return rs;
+        return cachedRowSet;
     }
 
     /**
