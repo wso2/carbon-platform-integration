@@ -94,7 +94,7 @@ public class MySqlDatabaseManager implements DatabaseManager {
      * @return
      * @throws java.sql.SQLException
      */
-    public CachedRowSet executeQuery(String sql) throws SQLException {
+    public ResultSet executeQuery(String sql) throws SQLException {
         ResultSet rs;
         Statement st = null;
         CachedRowSet cachedRowSet;
