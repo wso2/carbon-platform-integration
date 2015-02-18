@@ -41,7 +41,7 @@ public class TestReportListener implements IReporter {
     }
 
     private void handleException(String msg, Exception e) {
-        log.error("Execution error occurred in TestReportListener:-" + e.getStackTrace());
+        log.error("Execution error occurred in TestReportListener:-" , e);
         throw new RuntimeException(msg, e);
     }
 }

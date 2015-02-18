@@ -24,7 +24,7 @@ package org.wso2.carbon.automation.test.utils.common;
 public class WireMonitorServer {
     private static final int TIMEOUT_VALUE = 60000;
     int READ_TIME_OUT = 30000;
-    boolean isFinished = false;
+    private boolean isFinished = false;
     String response;
     int port;
 
@@ -62,5 +62,9 @@ public class WireMonitorServer {
 
     public void setReadTimeOut (int timeout) {
         READ_TIME_OUT = timeout;
+    }
+
+    public void setFinished(boolean isFinished) {
+        this.isFinished = isFinished;
     }
 }

@@ -124,8 +124,8 @@ public class SimpleHttpServer implements BackendServer {
 
     private int getParameter(String name, int def) {
         String val = properties.getProperty(name);
-        if (val != null && Integer.valueOf(val) > 0) {
-            return Integer.valueOf(val);
+        if (val != null && Integer.parseInt(val) > 0) {
+            return Integer.parseInt(val);
         }
         return def;
     }

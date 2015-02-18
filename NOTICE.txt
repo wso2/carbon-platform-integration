@@ -1,0 +1,32 @@
+WSO2 Test Automation Framework (TAF) - Carbon Platfrm Integration
+Copyright (c) 2015 WSO2 Inc
+This product includes software developed at The Apache Software Foundation (http://www.apache.org/)
+
+   =======================================================================================
+   ==  NOTICE file corresponding to the section 4 d of the Apache License, Version 2.0  ==
+   ==  in this case for the WSO2 TAF - carbon platfrm integration - distribution.       ==
+   =======================================================================================
+
+The WSO2 TAF binary distribution includes software distributed under the
+Apache License (AL) Version 2.0, Eclipse Public License - v 1.0,
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0,
+Mozilla Public License 1.1 and the Creative Commons Public Domain license.
+See the LICENSE file for details.
+
+COPYRIGHT NOTICES
+
+Copyright (c) 2015, WSO2 Inc. (http://wso2.com). All Rights Reserved.
+
+WSO2 TAF - carbon platfrm integration binary is bundled with:
+
+  emma-2.1.5320.jar
+  testng-6.1.1.jar
+  selenium-java-2.40.0.jar
+  operadriver-0.8.1.jar
+  sauce-ondemand-driver-2.6.jar
+  selenium-client-factory-2.6.jar
+  zip4j-1.2.3.jar
+
+
+The original software is available from
+     https://github.com/wso2-dev/carbon-platform-integration

@@ -43,12 +43,12 @@ public class ArchiveManipulator {
      *
      * @param archiveDestination archive destination
      * @param sourceDir          source directory
-     * @throws IOException
+     * @throws IOException if directory archiving failed
      */
     public void archiveDir(String archiveDestination, String sourceDir) throws IOException {
         File zipDir = new File(sourceDir);
         if (!zipDir.isDirectory()) {
-            throw new RuntimeException(sourceDir + " is not a directory");
+            throw new IOException(sourceDir + " is not a directory");
         }
 
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveDestination));
@@ -60,7 +60,6 @@ public class ArchiveManipulator {
             try {
                 zos.close();
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Unable to close the ZipOutputStream ", e);
             }
         }
@@ -71,7 +70,7 @@ public class ArchiveManipulator {
      *
      * @param from from file path
      * @param to   to file path
-     * @throws IOException
+     * @throws IOException if file archiving failed
      */
     public void archiveFile(String from, String to) throws IOException {
         ZipOutputStream out = null;
@@ -87,7 +86,6 @@ public class ArchiveManipulator {
             try {
                 in.close();
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Unable to close the InputStream ", e);
             }
 
@@ -96,7 +94,6 @@ public class ArchiveManipulator {
                     out.close();
                 }
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Unable to close the OutputStream ", e);
             }
         }
@@ -107,12 +104,12 @@ public class ArchiveManipulator {
      *
      * @param archive archive file
      * @return List of Zip Entries
-     * @throws IOException
+     * @throws IOException if archive listing failed
      */
     public String[] check(String archive) throws IOException {
         ZipInputStream zin = null;
         InputStream in = null;
-        Collection<String> entries = new ArrayList<String>(0);
+        Collection<String> entries = new ArrayList<String>();
         try {
             in = new FileInputStream(archive);
             zin = new ZipInputStream(in);
@@ -126,16 +123,26 @@ public class ArchiveManipulator {
                 if (zin != null) {
                     zin.close();
                 }
+            } catch (IOException e) {
+                log.warn("Could not close ZipInputStream ", e);
+            }
+            try {
                 if (in != null) {
                     in.close();
                 }
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Could not close InputStream ", e);
             }
         }
     }
 
+    /**
+     * Extract archive
+     *
+     * @param archive    archive location
+     * @param extractDir location to be extract
+     * @throws IOException if extracting archive failed
+     */
     public void extract(String archive, String extractDir) throws IOException {
         FileInputStream inputStream = new FileInputStream(archive);
         try {
@@ -144,12 +151,18 @@ public class ArchiveManipulator {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Could not close InputStream ", e);
             }
         }
     }
 
+    /**
+     * Extract InputStream to a directory
+     *
+     * @param inputStream archive inputStream
+     * @param extractDir  location to be extract
+     * @throws IOException if extracting InputStream failed
+     */
     public void extractFromStream(InputStream inputStream, String extractDir) throws IOException {
         ZipInputStream zin = null;
         OutputStream out = null;
@@ -200,17 +213,12 @@ public class ArchiveManipulator {
                     }
                 }
             }
-        } catch (IOException e) {
-            String msg = "Cannot unzip archive. It is probably corrupted";
-            log.error(msg, e);
-            throw new RuntimeException(msg, e);
         } finally {
             try {
                 if (zin != null) {
                     zin.close();
                 }
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Unable to close the InputStream ", e);
             }
 
@@ -219,7 +227,6 @@ public class ArchiveManipulator {
                     out.close();
                 }
             } catch (IOException e) {
-                // No need to throw an exception, since this will not interrupt the process
                 log.warn("Unable to close the OutputStream ", e);
             }
         }
@@ -256,7 +263,6 @@ public class ArchiveManipulator {
                     //close the Stream
                     fis.close();
                 } catch (IOException e) {
-                    // No need to throw an exception, since this will not interrupt the process
                     log.warn("Unable to close the FileInputStream ", e);
                 }
             }

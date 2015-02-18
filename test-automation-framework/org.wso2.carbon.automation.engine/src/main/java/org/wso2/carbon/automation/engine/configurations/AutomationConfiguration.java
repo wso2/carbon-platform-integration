@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -22,9 +21,9 @@ public class AutomationConfiguration {
             configurationReader.readAutomationConfigurations();
             configurationDocument = configurationReader.getConfigurationXmlDocument();
         } catch (Exception e) {
-            log.error("Error While reading configurations"+ e.getStackTrace());
-            throw new IllegalArgumentException("Error While reading configurations" +
-                                               e.getStackTrace().toString());
+            log.error("Error While reading configurations ",  e);
+            throw new IllegalArgumentException("Error While reading configurations" ,
+                                               e);
         }
     }
 

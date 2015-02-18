@@ -21,6 +21,7 @@ package org.wso2.carbon.automation.test.utils.generic;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Map;
@@ -117,6 +118,8 @@ public class MutualSSLClient {
     public static String sendPostRequest(String backendURL, String message, Map<String, String> requestProps)
             throws IOException {
 
+        String result = "";
+
         URL url = new URL(backendURL);
 
         httpsURLConnection = (HttpsURLConnection)url.openConnection();
@@ -133,31 +136,39 @@ public class MutualSSLClient {
 
         OutputStream outputStream = null;
         InputStream inputStream = null;
-        BufferedReader reader = null;
+        BufferedReader bufferedReader = null;
         StringBuilder response = null;
 
         try {
             outputStream = httpsURLConnection.getOutputStream();
-            outputStream.write(message.getBytes());
+            outputStream.write(message.getBytes(Charset.defaultCharset()));
 
             inputStream = httpsURLConnection.getInputStream();
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
+            Reader reader = new InputStreamReader(inputStream, Charset.defaultCharset());
+            bufferedReader = new BufferedReader(reader);
             response = new StringBuilder();
 
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 response.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            reader.close();
-            inputStream.close();
-            outputStream.close();
+            if (bufferedReader != null)
+                bufferedReader.close();
+
+            if (inputStream != null)
+                inputStream.close();
+
+            if (outputStream != null)
+                outputStream.close();
         }
 
-        return response.toString();
+        if (response != null)
+            result = response.toString();
+
+        return result;
     }
 
     public static String getKeyStoreType() {
