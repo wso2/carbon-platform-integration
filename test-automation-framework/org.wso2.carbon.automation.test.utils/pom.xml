@@ -66,7 +66,18 @@
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.wso2.carbon.automation</groupId>
+            <artifactId>org.wso2.carbon.automation.artifacts</artifactId>
+            <version>4.3.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>${java.version}</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

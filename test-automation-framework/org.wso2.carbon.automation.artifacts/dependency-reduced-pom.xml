@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>test-automation-framework</artifactId>
+    <groupId>org.wso2.carbon.automation</groupId>
+    <version>4.3.2-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.wso2.carbon.automation.OSscenarios</artifactId>
+  <name>WSO2 Carbon Automation - OS scenarios</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer>
+                  <mainClass>org.wso2.carbon.automation.artifacts.JMXclientUtils.Deadlock</mainClass>
+                </transformer>
+              </transformers>
+              <outputDirectory>../org.wso2.carbon.automation.test.utils/src/test/resources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <version>1.6.0</version>
+      <scope>system</scope>
+      <systemPath>/home/buddhi/tools/jdk1.6.0_45/jre/../lib/tools.jar</systemPath>
+    </dependency>
+  </dependencies>
+</project>
+
