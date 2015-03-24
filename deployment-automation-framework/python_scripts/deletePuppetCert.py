@@ -24,9 +24,9 @@ if __name__ == '__main__':
     try:
         print (" Loading server node structure...")
         serverList = load_server_config()
-	for vm in serverList:
-                print (" Deleting certificate for " + vm + ".openstacklocal...")
-		call("puppet cert clean " + vm + ".openstacklocal", shell=True)
+        for vm in serverList:
+            print (" Deleting certificate for " + vm + ".openstacklocal...")
+            call("puppet cert clean " + vm + ".openstacklocal", shell=True)
 
     except BaseException as b:
         print 'Exception in deletePuppetCert.py: ', b
