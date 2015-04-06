@@ -19,8 +19,13 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentProducer;
 import org.apache.http.entity.EntityTemplate;
@@ -31,7 +36,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
