@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class BrowserManager {
     private static final Log log = LogFactory.getLog(BrowserManager.class);
     private static AutomationContext automationContext;
-    public static WebDriver driver;
+    private static WebDriver driver;
 
     public static WebDriver getWebDriver() throws MalformedURLException, XPathExpressionException {
         automationContext = new AutomationContext();

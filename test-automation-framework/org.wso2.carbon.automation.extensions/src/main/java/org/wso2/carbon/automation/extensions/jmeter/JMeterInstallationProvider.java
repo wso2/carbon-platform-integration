@@ -81,7 +81,7 @@ public class JMeterInstallationProvider {
         }
 
         System.setProperty("saveservice_properties",
-                           File.separator + "bin" + File.separator + "saveservice.properties");
+                File.separator + "bin" + File.separator + "saveservice.properties");
 
         //copying upgrade.properties from classpath
         try {
@@ -92,7 +92,7 @@ public class JMeterInstallationProvider {
         }
 
         System.setProperty("upgrade_properties",
-                           File.separator + "bin" + File.separator + "upgrade.properties");
+                File.separator + "bin" + File.separator + "upgrade.properties");
 
         FileOutputStream out = null;
         FileInputStream in = null;
@@ -105,7 +105,7 @@ public class JMeterInstallationProvider {
             log.info("Loading default jmeter.properties...");
             Utils.copyFromClassPath("bin/jmeter.properties", jmeterPropertyFileTemp);
 
-            if(jmeterPropertyFileTemp.exists()){
+            if (jmeterPropertyFileTemp.exists()) {
 
                 Properties props = new Properties();
 
@@ -122,26 +122,34 @@ public class JMeterInstallationProvider {
                 }
             }
 
+
+            System.setProperty("jmeter_properties",
+                    File.separator + "bin" + File.separator + "jmeter.properties");
+
+            logDir = new File(jMeterHome, "logs");
+            if (!logDir.mkdirs()) {
+                log.error("Unable to create log directory");
+            }
+
         } catch (IOException e) {
             log.error("Could not create jmeter.properties", e);
         } finally {
-            try {
-                if (in != null)
-                    in.close();
 
-                if (out != null)
-                    out.close();
-            } catch (IOException e) {
-                log.error("Could not close jmeter.properties", e);
-            }
-        }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        //ignore here
+                    }
+                }
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        //ignore here
+                    }
+                }
 
-        System.setProperty("jmeter_properties",
-                           File.separator + "bin" + File.separator + "jmeter.properties");
-
-        logDir = new File(jMeterHome, "logs");
-        if (!logDir.mkdirs()) {
-            log.error("Unable to create log directory");
         }
     }
 

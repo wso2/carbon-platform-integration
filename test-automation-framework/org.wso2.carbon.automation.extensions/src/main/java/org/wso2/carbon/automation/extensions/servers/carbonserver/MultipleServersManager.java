@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,11 +42,18 @@ public class MultipleServersManager {
      * Start a set of Carbon servers
      *
      * @param serverManagers vararg which specifies a TestServerManager instance per Carbon server
-     * @throws java.io.IOException If an error occurs while copying deployment artifacts into Carbon servers
+     * @throws AutomationFrameworkException If an error occurs while copying deployment artifacts into Carbon servers
      */
-    public void startServers(TestServerManager... serverManagers) throws Exception {
+    public void startServers(TestServerManager... serverManagers) throws AutomationFrameworkException {
         for (TestServerManager zip : serverManagers) {
-            String carbonHome = zip.startServer();
+            String carbonHome = null;
+            try {
+                carbonHome = zip.startServer();
+            } catch (IOException e) {
+                throw new AutomationFrameworkException("Server start failed", e);
+            } catch (AutomationFrameworkException e) {
+                throw new AutomationFrameworkException("Server start failed", e);
+            }
             servers.put(carbonHome, zip);
         }
     }
@@ -52,9 +62,9 @@ public class MultipleServersManager {
      * Stop all servers started by this org.wso2.carbon.automation.extensions.servers.carbonserver.
      * MultipleServersManager
      *
-     * @throws Exception If an error occurs while stopping servers
+     * @throws AutomationFrameworkException If an error occurs while stopping servers
      */
-    public void stopAllServers() throws Exception {
+    public void stopAllServers() throws AutomationFrameworkException {
         for (TestServerManager serverUtils : servers.values()) {
             serverUtils.stopServer();
         }

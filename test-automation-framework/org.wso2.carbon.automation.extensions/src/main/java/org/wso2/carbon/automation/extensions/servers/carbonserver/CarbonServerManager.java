@@ -23,12 +23,9 @@ import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
-import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
-import org.wso2.carbon.automation.extensions.servers.utils.ClientConnectionUtil;
-import org.wso2.carbon.automation.extensions.servers.utils.FileManipulator;
-import org.wso2.carbon.automation.extensions.servers.utils.InputStreamHandler;
-import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
+import org.wso2.carbon.automation.extensions.servers.utils.*;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,7 +57,7 @@ public class CarbonServerManager {
 
     public synchronized void startServerUsingCarbonHome(String carbonHome,
                                                         Map<String, String> commandMap)
-            throws Exception {
+            throws AutomationFrameworkException {
         if (process != null) { // An instance of the server is running
             return;
         }
@@ -76,7 +73,11 @@ public class CarbonServerManager {
                                                    (defaultHttpsPort + portOffset) + " : Port already in use");
         }
         Process tempProcess;
-        isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+        try {
+            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Coverage config not  found", e);
+        }
         try {
             if (isCoverageEnable) {
                 CodeCoverageUtils.init();
@@ -158,6 +159,8 @@ public class CarbonServerManager {
             log.info("Server started successfully.");
         } catch (IOException e) {
             throw new RuntimeException("Unable to start server", e);
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Unable to get config", e);
         }
         process = tempProcess;
     }
@@ -195,20 +198,31 @@ public class CarbonServerManager {
                 extractedCarbonDir;
     }
 
-    public synchronized void serverShutdown(int portOffset) throws Exception {
+    public synchronized void serverShutdown(int portOffset) throws AutomationFrameworkException {
         if (process != null) {
             log.info("Shutting down server..");
             if (ClientConnectionUtil.isPortOpen(Integer.parseInt(
                     ExtensionConstants.SERVER_DEFAULT_HTTPS_PORT) + portOffset)) {
 
                 int httpsPort = defaultHttpsPort + portOffset;
-                String url = automationContext.getContextUrls().getBackEndUrl();
+                String url = null;
+                try {
+                    url = automationContext.getContextUrls().getBackEndUrl();
+                } catch (XPathExpressionException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                }
                 String backendURL = url.replaceAll("(:\\d+)", ":" + httpsPort);
 
-                ClientConnectionUtil.sendForcefulShutDownRequest(
-                        backendURL,
-                        automationContext.getSuperTenant().getContextUser().getUserName(),
-                        automationContext.getSuperTenant().getContextUser().getPassword());
+                try {
+                    ClientConnectionUtil.sendForcefulShutDownRequest(
+                            backendURL,
+                            automationContext.getSuperTenant().getContextUser().getUserName(),
+                            automationContext.getSuperTenant().getContextUser().getPassword());
+                } catch (AutomationFrameworkException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                } catch (XPathExpressionException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                }
 
                 long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
                 while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
@@ -231,25 +245,40 @@ public class CarbonServerManager {
         }
     }
 
-    public synchronized void restartGracefully() throws Exception {
+    public synchronized void restartGracefully() throws AutomationFrameworkException {
 
-        ClientConnectionUtil.sendGraceFullRestartRequest(
-                automationContext.getContextUrls().getSecureServiceUrl(),
-                automationContext.getSuperTenant().getContextUser().getUserName(),
-                automationContext.getSuperTenant().getContextUser().getPassword());
+        try {
+            ClientConnectionUtil.sendGraceFullRestartRequest(
+                    automationContext.getContextUrls().getSecureServiceUrl(),
+                    automationContext.getSuperTenant().getContextUser().getUserName(),
+                    automationContext.getSuperTenant().getContextUser().getPassword());
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("restart failed" , e);
+        }
 
         long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
         while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                System.currentTimeMillis() < time) {
             // wait until server shutdown is completed
         }
-        Thread.sleep(5000);//wait for port to close
+
+        time = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() < time + 5000) {
+            //wait for port to close
+        }
+
         if (isCoverageEnable) {
             CodeCoverageUtils.renameCoverageDataFile(carbonHome);
         }
-        ClientConnectionUtil.waitForPort(Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
-                                         automationContext.getInstance().getHosts().get("default"));
-        ClientConnectionUtil.waitForLogin(automationContext);
+
+        try {
+            ClientConnectionUtil.waitForPort(Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
+                    automationContext.getInstance().getHosts().get("default"));
+            ClientConnectionUtil.waitForLogin(automationContext);
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Connection failed" , e);
+        }
     }
 
     private String[] expandServerStartupCommandList(Map<String, String> commandMap) {
