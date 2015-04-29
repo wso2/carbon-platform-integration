@@ -27,10 +27,19 @@ public class CustomFileFilter {
     public static List<File> getFilesRecursive(final File basedir, final FileFilter filter) {
         List<File> files = new ArrayList<File>();
         if (basedir != null && basedir.isDirectory()) {
-            for (File subDir : basedir.listFiles(TypeFilter.DIR)) {
-                files.addAll(CustomFileFilter.getFilesRecursive(subDir, filter));
+            File[] filesInDir = basedir.listFiles(TypeFilter.DIR);
+            if (filesInDir != null) {
+                File[] filesSub = basedir.listFiles(TypeFilter.DIR);
+                if (filesSub != null) {
+                    for (File subDir : filesSub) {
+                        files.addAll(CustomFileFilter.getFilesRecursive(subDir, filter));
+                    }
+                }
             }
-            files.addAll(Arrays.asList(basedir.listFiles(filter)));
+            File [] addList = basedir.listFiles(filter);
+            if (addList != null) {
+                files.addAll(Arrays.asList(addList));
+            }
         }
         return files;
     }

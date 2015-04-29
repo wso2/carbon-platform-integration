@@ -121,16 +121,29 @@ public class FileManager {
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
         InputStream is = new FileInputStream(sourcePath);
-        if (is != null) {
-            byte[] data = new byte[1024];
-            int len;
-            while ((len = is.read(data)) != -1) {
-                os.write(data, 0, len);
+
+        try {
+                byte[] data = new byte[1024];
+                int len;
+                while ((len = is.read(data)) != -1) {
+                    os.write(data, 0, len);
+                    os.flush();
+                }
+
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                //ignore
             }
-            os.flush();
-            os.close();
-            is.close();
+
+            try {
+                is.close();
+            } catch (IOException e) {
+                //ignore
+            }
         }
+
         return file;
     }
 
@@ -171,6 +184,8 @@ public class FileManager {
             if (jarOutputStream != null) {
                 jarOutputStream.close();
             }
+
+            jarFile.close();
         }
     }
 
@@ -207,6 +222,8 @@ public class FileManager {
                 } catch (IOException e) {
                 }
             }
+
+            jarFile.close();
         }
     }
 

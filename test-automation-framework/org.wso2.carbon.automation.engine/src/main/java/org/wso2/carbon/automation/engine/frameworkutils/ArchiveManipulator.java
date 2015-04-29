@@ -238,32 +238,34 @@ public class ArchiveManipulator {
         byte[] readBuffer = new byte[BUFFER_SIZE];
         int bytesIn = 0;
         //loop through dirList, and zip the files
-        for (String dir : dirList) {
-            File f = new File(zipDir, dir);
-            //place the zip entry in the ZipOutputStream object
-            zos.putNextEntry(new ZipEntry(getZipEntryPath(f)));
-            if (f.isDirectory()) {
-                //if the File object is a directory, call this
-                //function again to add its content recursively
-                zipDir(f, zos);
-                //loop again
-                continue;
-            }
-            //if we reached here, the File object f was not a directory
-            //create a FileInputStream on top of f
-            FileInputStream fis = new FileInputStream(f);
-
-            try {
-                //now write the content of the file to the ZipOutputStream
-                while ((bytesIn = fis.read(readBuffer)) != -1) {
-                    zos.write(readBuffer, 0, bytesIn);
+        if (dirList != null) {
+            for (String dir : dirList) {
+                File f = new File(zipDir, dir);
+                //place the zip entry in the ZipOutputStream object
+                zos.putNextEntry(new ZipEntry(getZipEntryPath(f)));
+                if (f.isDirectory()) {
+                    //if the File object is a directory, call this
+                    //function again to add its content recursively
+                    zipDir(f, zos);
+                    //loop again
+                    continue;
                 }
-            } finally {
+                //if we reached here, the File object f was not a directory
+                //create a FileInputStream on top of f
+                FileInputStream fis = new FileInputStream(f);
+
                 try {
-                    //close the Stream
-                    fis.close();
-                } catch (IOException e) {
-                    log.warn("Unable to close the FileInputStream ", e);
+                    //now write the content of the file to the ZipOutputStream
+                    while ((bytesIn = fis.read(readBuffer)) != -1) {
+                        zos.write(readBuffer, 0, bytesIn);
+                    }
+                } finally {
+                    try {
+                        //close the Stream
+                        fis.close();
+                    } catch (IOException e) {
+                        log.warn("Unable to close the FileInputStream ", e);
+                    }
                 }
             }
         }

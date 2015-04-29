@@ -33,8 +33,7 @@ import static org.testng.Assert.assertEquals;
 public class EmailServerTestCase {
 
     static final Log log = LogFactory.getLog(EmailServerTestCase.class);
-
-    EmailServerUtil emailServerUtil = null;
+    EmailServerUtil emailServerUtil;
 
     @BeforeClass(alwaysRun = true)
     public void init() {
@@ -43,8 +42,8 @@ public class EmailServerTestCase {
     }
 
     @Test(groups = "email.unit.test", description = "tests basic email server functionality")
-    public void emailTransportTest()  {
-
+    public void emailTransportTest() throws InterruptedException {
+        Thread.sleep(1000); //wait 1sec before staring the server
         for (int i = 0; i < 5; i++) {
             emailServerUtil.sendTextEmail("to@localhost.com", "from@localhost.com", "subject", "body");
         }

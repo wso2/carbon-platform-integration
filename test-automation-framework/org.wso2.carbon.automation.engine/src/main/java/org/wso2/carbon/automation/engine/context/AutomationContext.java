@@ -23,11 +23,7 @@ import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 import org.wso2.carbon.automation.engine.configurations.UrlGenerationUtil;
-import org.wso2.carbon.automation.engine.context.beans.ContextUrls;
-import org.wso2.carbon.automation.engine.context.beans.Instance;
-import org.wso2.carbon.automation.engine.context.beans.ProductGroup;
-import org.wso2.carbon.automation.engine.context.beans.Tenant;
-import org.wso2.carbon.automation.engine.context.beans.User;
+import org.wso2.carbon.automation.engine.context.beans.*;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -76,7 +72,7 @@ public class AutomationContext {
             this.isAdminUser = true;
         }
         this.productGroupName = productGroupName;
-        this.workerInstanceName = instanceName;
+        //this.workerInstanceName = instanceName;
         this.managerInstanceName = instanceName;
         this.isClustered = Boolean.parseBoolean(getConfigurationValue(
                 String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
@@ -475,13 +471,18 @@ public class AutomationContext {
      */
     public ContextUrls getContextUrls() throws XPathExpressionException {
         ContextUrls contextUrls = new ContextUrls();
-        contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
-        contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
-                                                                  this.getInstance(), false));
-        contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
-                                                                        this.getInstance(), true));
-        contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getContextTenant(),
-                                                                this.getInstance()));
+        try {
+            contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
+            contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
+                    this.getInstance(), false));
+            contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
+                    this.getInstance(), true));
+            contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getContextTenant(),
+                    this.getInstance()));
+        } catch (XPathExpressionException e) {
+            throw new XPathExpressionException("configuration retrieve failed");
+        }
+
         return contextUrls;
     }
 
@@ -612,4 +613,7 @@ public class AutomationContext {
         node.setTextContent(replaceBy);
     }
 
+    public String getWorkerInstanceName() {
+        return workerInstanceName;
+    }
 }

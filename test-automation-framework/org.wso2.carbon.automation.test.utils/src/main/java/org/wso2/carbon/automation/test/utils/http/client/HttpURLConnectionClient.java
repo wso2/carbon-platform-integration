@@ -17,6 +17,8 @@
 */
 package org.wso2.carbon.automation.test.utils.http.client;
 
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -125,16 +127,16 @@ public class HttpURLConnectionClient {
      * @param data     Data to be sent
      * @param endpoint The endpoint to which the data has to be POSTed
      * @param output   Output
-     * @throws Exception If an error occurs while POSTing
+     * @throws AutomationFrameworkException If an error occurs while POSTing
      */
-    public static void sendPostRequest(Reader data, URL endpoint, Writer output) throws Exception {
+    public static void sendPostRequest(Reader data, URL endpoint, Writer output) throws AutomationFrameworkException {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) endpoint.openConnection();
             try {
                 urlConnection.setRequestMethod("POST");
             } catch (ProtocolException e) {
-                throw new Exception("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
+                throw new AutomationFrameworkException("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
             }
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
@@ -147,7 +149,7 @@ public class HttpURLConnectionClient {
                 pipe(data, writer);
                 writer.close();
             } catch (IOException e) {
-                throw new Exception("IOException while posting data", e);
+                throw new AutomationFrameworkException("IOException while posting data", e);
             } finally {
                 if (out != null) {
                     out.close();
@@ -159,14 +161,14 @@ public class HttpURLConnectionClient {
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
-                throw new Exception("IOException while reading response", e);
+                throw new AutomationFrameworkException("IOException while reading response", e);
             } finally {
                 if (in != null) {
                     in.close();
                 }
             }
         } catch (IOException e) {
-            throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
+            throw new AutomationFrameworkException("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -185,17 +187,17 @@ public class HttpURLConnectionClient {
      * @param endpoint    The endpoint to which the data has to be POSTed
      * @param output      Output
      * @param contentType content type of the message
-     * @throws Exception If an error occurs while POSTing
+     * @throws AutomationFrameworkException If an error occurs while POSTing
      */
     public static void sendPostRequest(Reader data, URL endpoint, Writer output, String contentType)
-            throws Exception {
+            throws AutomationFrameworkException {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) endpoint.openConnection();
             try {
                 urlConnection.setRequestMethod("POST");
             } catch (ProtocolException e) {
-                throw new Exception("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
+                throw new AutomationFrameworkException("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
             }
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
@@ -208,7 +210,7 @@ public class HttpURLConnectionClient {
                 pipe(data, writer);
                 writer.close();
             } catch (IOException e) {
-                throw new Exception("IOException while posting data", e);
+                throw new AutomationFrameworkException("IOException while posting data", e);
             } finally {
                 if (out != null) {
                     out.close();
@@ -220,14 +222,14 @@ public class HttpURLConnectionClient {
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
-                throw new Exception("IOException while reading response", e);
+                throw new AutomationFrameworkException("IOException while reading response", e);
             } finally {
                 if (in != null) {
                     in.close();
                 }
             }
         } catch (IOException e) {
-            throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
+            throw new AutomationFrameworkException("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -246,17 +248,17 @@ public class HttpURLConnectionClient {
      * @param endpoint    The endpoint to which the data has to be POSTed
      * @param output      Output
      * @param contentType content type of the message
-     * @throws Exception If an error occurs while POSTing
+     * @throws AutomationFrameworkException If an error occurs while POSTing
      */
     public static void sendPutRequest(Reader data, URL endpoint, Writer output, String contentType)
-            throws Exception {
+            throws AutomationFrameworkException {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) endpoint.openConnection();
             try {
                 urlConnection.setRequestMethod("PUT");
             } catch (ProtocolException e) {
-                throw new Exception("Shouldn't happen: HttpURLConnection doesn't support PUT??", e);
+                throw new AutomationFrameworkException("Shouldn't happen: HttpURLConnection doesn't support PUT??", e);
             }
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
@@ -269,7 +271,7 @@ public class HttpURLConnectionClient {
                 pipe(data, writer);
                 writer.close();
             } catch (IOException e) {
-                throw new Exception("IOException while posting data", e);
+                throw new AutomationFrameworkException("IOException while posting data", e);
             } finally {
                 if (out != null) {
                     out.close();
@@ -281,14 +283,14 @@ public class HttpURLConnectionClient {
                 pipe(reader, output);
                 reader.close();
             } catch (IOException e) {
-                throw new Exception("IOException while reading response", e);
+                throw new AutomationFrameworkException("IOException while reading response", e);
             } finally {
                 if (in != null) {
                     in.close();
                 }
             }
         } catch (IOException e) {
-            throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
+            throw new AutomationFrameworkException("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -307,11 +309,11 @@ public class HttpURLConnectionClient {
      * @param endpoint    The endpoint to which the data has to be POSTed
      * @param output      Output
      * @param contentType content type of the message
-     * @throws Exception If an error occurs while POSTing
+     * @throws AutomationFrameworkException If an error occurs while POSTing
      */
     public static String sendPostRequestAndReadResponse(Reader data, URL endpoint, Writer output,
                                                         String contentType)
-            throws Exception {
+            throws AutomationFrameworkException {
         HttpURLConnection urlConnection = null;
         String resultData;
         try {
@@ -319,7 +321,7 @@ public class HttpURLConnectionClient {
             try {
                 urlConnection.setRequestMethod("POST");
             } catch (ProtocolException e) {
-                throw new Exception("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
+                throw new AutomationFrameworkException("Shouldn't happen: HttpURLConnection doesn't support POST??", e);
             }
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
@@ -332,7 +334,7 @@ public class HttpURLConnectionClient {
                 pipe(data, writer);
                 writer.close();
             } catch (IOException e) {
-                throw new Exception("IOException while posting data", e);
+                throw new AutomationFrameworkException("IOException while posting data", e);
             } finally {
                 if (out != null) {
                     out.close();
@@ -344,7 +346,7 @@ public class HttpURLConnectionClient {
                 in.close();
             }
         } catch (IOException e) {
-            throw new Exception("Connection error (is server running at " + endpoint + " ?): " + e);
+            throw new AutomationFrameworkException("Connection error (is server running at " + endpoint + " ?): " + e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

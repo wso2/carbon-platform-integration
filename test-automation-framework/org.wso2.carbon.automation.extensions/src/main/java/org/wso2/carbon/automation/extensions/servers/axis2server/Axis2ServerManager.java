@@ -192,35 +192,40 @@ public class Axis2ServerManager implements BackendServer {
         if (file.exists()) {
             FileUtils.deleteQuietly(file);
         }
+
+        String filePath;
+
+        if (resourceName.contains(".aar")) {
+            filePath = ExtensionUtils.getSystemResourceLocation() +
+                    File.separator + "artifacts" + File.separator + "AXIS2" +
+                    File.separator + "aar" +
+                    File.separator + resourceName;
+        } else {
+            filePath = ExtensionUtils.getSystemResourceLocation() +
+                    File.separator + "artifacts" + File.separator + "AXIS2" +
+                    File.separator + "config" +
+                    File.separator + resourceName;
+        }
+
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        InputStream is = null;
+        InputStream is = new FileInputStream(filePath);
 
         try {
-            if (resourceName.contains(".aar")) {
-                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                        File.separator + "artifacts" + File.separator + "AXIS2" +
-                        File.separator + "aar" +
-                        File.separator + resourceName);
-            } else {
-                is = new FileInputStream(ExtensionUtils.getSystemResourceLocation() +
-                        File.separator + "artifacts" + File.separator + "AXIS2" +
-                        File.separator + "config" +
-                        File.separator + resourceName);
+            byte[] data = new byte[1024];
+            int len;
+            while ((len = is.read(data)) != -1) {
+                os.write(data, 0, len);
             }
-            if (is != null) {
-                byte[] data = new byte[1024];
-                int len;
-                while ((len = is.read(data)) != -1) {
-                    os.write(data, 0, len);
-                }
-            }
+
         } finally {
             os.flush();
-            os.close();
 
-            if (is != null)
-                is.close();
+            try {
+                os.close();
+            } catch (IOException e) {
+                //ignore
+            }
         }
 
         return file;
@@ -256,8 +261,16 @@ public class Axis2ServerManager implements BackendServer {
 
             }
         } finally {
-            os.close();
-            is.close();
+            try {
+                os.close();
+            } catch (IOException e) {
+            }
+
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+
         }
 
         return file;

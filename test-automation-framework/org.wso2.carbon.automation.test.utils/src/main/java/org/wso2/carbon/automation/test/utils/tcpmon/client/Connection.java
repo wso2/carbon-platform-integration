@@ -337,6 +337,8 @@ class Connection extends Thread {
 				listener.getConnectionData().get(1 + index).setState("Done");
 			}
 
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Exception e) {
 			StringWriter st = new StringWriter();
 			PrintWriter wr = new PrintWriter(st);

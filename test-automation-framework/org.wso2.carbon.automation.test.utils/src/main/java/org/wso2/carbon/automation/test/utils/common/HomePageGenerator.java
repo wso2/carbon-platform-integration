@@ -23,6 +23,7 @@ import org.wso2.carbon.automation.test.utils.AutomationContextXPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 public class HomePageGenerator {
+
     public static String getProductHomeURL(AutomationContext automationContext) throws XPathExpressionException {
         String indexURL;
         String webContextRoot = null;
@@ -30,11 +31,11 @@ public class HomePageGenerator {
         String httpsPort = null;
         boolean webContextEnabled = false;
         boolean portEnabled = false;
-        if (automationContext.getConfigurationNodeList
-                (String.format(AutomationContextXPathConstants.WEB_CONTEXT_ENABLED)).equals("true")) {
+        if ( automationContext.getConfigurationNodeList(
+                String.format(AutomationContextXPathConstants.WEB_CONTEXT_ENABLED)).toString().equalsIgnoreCase("true")) {
             webContextEnabled = true;
-            webContextRoot = automationContext.getConfigurationNodeList
-                    (String.format(AutomationContextXPathConstants.WEB_CONTEXT_ROOT)).toString();
+            webContextRoot = automationContext.getConfigurationNodeList(
+                    AutomationContextXPathConstants.WEB_CONTEXT_ROOT).toString();
         }
         if (automationContext.getInstance().getPorts().size() != 0) {
             portEnabled = true;

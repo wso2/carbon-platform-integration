@@ -19,6 +19,7 @@ package org.wso2.carbon.automation.extensions.servers.jmsserver.client;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config.JMSBrokerConfiguration;
 
 import javax.jms.*;
@@ -108,9 +109,9 @@ public class JMSTopicMessageConsumer implements MessageListener {
      * this will returns all the message received  from the topic after the subscription
      *
      * @return
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public List<String> getMessages() throws Exception {
+    public List<String> getMessages() throws AutomationFrameworkException {
         return messageList;
     }
 

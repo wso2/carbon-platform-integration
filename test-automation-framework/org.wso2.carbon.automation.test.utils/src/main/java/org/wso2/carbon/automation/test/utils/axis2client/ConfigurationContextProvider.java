@@ -22,11 +22,11 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 
 import java.io.File;
@@ -38,20 +38,23 @@ public class ConfigurationContextProvider {
 
     private ConfigurationContextProvider() {
         try {
-            MultiThreadedHttpConnectionManager httpConnectionManager;
-            HttpClient httpClient;
-            HttpConnectionManagerParams params;
+            PoolingHttpClientConnectionManager poolingHttpClientConnectionManager;
             configurationContext = ConfigurationContextFactory.createConfigurationContextFromFileSystem(
                     FrameworkPathUtil.getSystemResourceLocation() + File.separator + "client", null);
-            httpConnectionManager = new MultiThreadedHttpConnectionManager();
-            params = new HttpConnectionManagerParams();
-            params.setDefaultMaxConnectionsPerHost(25);
-            httpConnectionManager.setParams(params);
-            httpClient = new HttpClient(httpConnectionManager);
-            configurationContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
+
+            poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+
+            poolingHttpClientConnectionManager.setDefaultMaxPerRoute(25);
+            poolingHttpClientConnectionManager.setMaxTotal(5);
+
+            CloseableHttpClient client =
+                    HttpClients.custom().setConnectionManager(poolingHttpClientConnectionManager).build();
+
+            configurationContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, client);
             configurationContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Constants.VALUE_TRUE);
+
         } catch (AxisFault axisFault) {
-            log.error(axisFault);
+            log.error("Error while creating axis2 configuration context", axisFault);
         }
     }
 

@@ -19,7 +19,10 @@ package org.wso2.carbon.automation.extensions.servers.axis2server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.extensions.ExecutionListenerExtension;
+
+import java.io.IOException;
 
 public class Axis2ServerExtension extends ExecutionListenerExtension {
     private Axis2ServerManager axis2ServerManager;
@@ -29,13 +32,17 @@ public class Axis2ServerExtension extends ExecutionListenerExtension {
     public static final String SIMPLE_AXIS2_SERVICE = "Axis2Service";
     private static final Log log = LogFactory.getLog(Axis2ServerExtension.class);
 
-    public void initiate() throws Exception {
+    public void initiate() throws AutomationFrameworkException {
     }
 
-    public void onExecutionStart() throws Exception {
+    public void onExecutionStart() throws AutomationFrameworkException {
         axis2ServerManager = new Axis2ServerManager();
         log.info("Starting Simple Axis2 server");
-        axis2ServerManager.start();
+        try {
+            axis2ServerManager.start();
+        } catch (IOException e) {
+            throw  new AutomationFrameworkException("Axis2Server start failed", e);
+        }
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ignored) {
@@ -43,14 +50,19 @@ public class Axis2ServerExtension extends ExecutionListenerExtension {
         }
         log.info("Deploying services to Axis2 server");
         if (axis2ServerManager.isStarted()) {
-            axis2ServerManager.deployService(SIMPLE_STOCK_QUOTE_SERVICE);
-            axis2ServerManager.deployService(SECURE_STOCK_QUOTE_SERVICE);
-            axis2ServerManager.deployService(LB_SERVICE_1);
-            axis2ServerManager.deployService(SIMPLE_AXIS2_SERVICE);
+            try {
+                axis2ServerManager.deployService(SIMPLE_STOCK_QUOTE_SERVICE);
+                axis2ServerManager.deployService(SECURE_STOCK_QUOTE_SERVICE);
+                axis2ServerManager.deployService(LB_SERVICE_1);
+                axis2ServerManager.deployService(SIMPLE_AXIS2_SERVICE);
+            } catch (IOException e) {
+                throw  new AutomationFrameworkException("Axis2Server deploy service failed", e);
+            }
+
         }
     }
 
-    public void onExecutionFinish() throws Exception {
+    public void onExecutionFinish() throws AutomationFrameworkException {
         log.info("Stopping Simple Axis2 server");
         if (axis2ServerManager.isStarted()) {
             axis2ServerManager.stop();
