@@ -33,8 +33,8 @@ public class UrlGenerationUtil {
     /**
      * give the backend URL for the provided instance
      *
-     * @param instance
-     * @return
+     * @param instance - this is the automation server instance
+     * @return backend url of the server instance
      */
     public static String getBackendURL(Instance instance) {
         String backendUrl;
@@ -67,10 +67,10 @@ public class UrlGenerationUtil {
     /**
      * Returns the service URL
      *
-     * @param tenant
-     * @param instance
-     * @param isSecured
-     * @return
+     * @param tenant - tenant id
+     * @param instance - instance
+     * @param isSecured - http or https
+     * @return - service url  of instance http/https
      */
     public static String getServiceURL(Tenant tenant, Instance instance, boolean isSecured) throws XPathExpressionException {
         String serviceURL;
@@ -150,7 +150,7 @@ public class UrlGenerationUtil {
      *
      * @param tenant
      * @param instance
-     * @return
+     * @return return web app url
      */
     public static String getWebAppURL(Tenant tenant, Instance instance) throws XPathExpressionException {
         String webAppURL = null;

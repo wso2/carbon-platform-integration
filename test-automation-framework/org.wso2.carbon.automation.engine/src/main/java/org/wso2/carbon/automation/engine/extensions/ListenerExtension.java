@@ -41,7 +41,7 @@ public class ListenerExtension {
         parameterMap = new HashMap<String, String>();
         try {
             automationContext = new AutomationContext();
-        } catch (Exception e) {
+        } catch (XPathExpressionException e) {
             log.warn("Failed to initializing the Extension Class");
             log.error("Error initializing the Automation Context", e);
         }

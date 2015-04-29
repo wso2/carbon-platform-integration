@@ -76,7 +76,8 @@ public class HttpsURLConnectionClient {
             URL url = new URL(urlStr);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            String encode = new String(new org.apache.commons.codec.binary.Base64().encode(
+                    (userName + ":" + password).getBytes(Charset.defaultCharset())), Charset.defaultCharset()).replaceAll("\n", "");
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true);
             conn.setHostnameVerifier(new HostnameVerifier() {
@@ -114,13 +115,14 @@ public class HttpsURLConnectionClient {
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             String encode =
-                    new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+                    new String(new org.apache.commons.codec.binary.Base64().encode(
+                            (userName + ":" + password).getBytes(Charset.defaultCharset())), Charset.defaultCharset()).replaceAll("\n", "");
             ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes().length));
+            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes(Charset.defaultCharset()).length));
             conn.setUseCaches(false);
             conn.setHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
@@ -164,12 +166,13 @@ public class HttpsURLConnectionClient {
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             String encode =
-                    new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+                    new String(new org.apache.commons.codec.binary.Base64().encode(
+                            (userName + ":" + password).getBytes(Charset.defaultCharset())), Charset.defaultCharset()).replaceAll("\n", "");
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
             conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes().length));
+            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes(Charset.defaultCharset()).length));
             conn.setUseCaches(false);
             conn.setHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
@@ -211,13 +214,14 @@ public class HttpsURLConnectionClient {
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            String encode = new String(new org.apache.commons.codec.binary.Base64().encode
+                    ((userName + ":" + password).getBytes(Charset.defaultCharset())), Charset.defaultCharset()).replaceAll("\n", "");
             ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             conn.setDoOutput(true); // Triggers POST.
             conn.setRequestProperty("Content-Type", contentType);
             conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes().length));
+            conn.setRequestProperty("Content-Length", "" + Integer.toString(requestQuery.getBytes(Charset.defaultCharset()).length));
             conn.setUseCaches(false);
             conn.setHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
@@ -257,7 +261,8 @@ public class HttpsURLConnectionClient {
             URL url = new URL(uri);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
-            String encode = new String(new org.apache.commons.codec.binary.Base64().encode((userName + ":" + password).getBytes())).replaceAll("\n", "");
+            String encode = new String(new org.apache.commons.codec.binary.Base64().encode(
+                    (userName + ":" + password).getBytes(Charset.defaultCharset())), Charset.defaultCharset()).replaceAll("\n", "");
             ;
             conn.setRequestProperty("Authorization", "Basic " + encode);
             if (contentType != null) {

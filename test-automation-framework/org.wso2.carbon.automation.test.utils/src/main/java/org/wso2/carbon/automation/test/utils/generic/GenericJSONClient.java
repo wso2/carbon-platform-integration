@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ public class GenericJSONClient {
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
 
-    public JSONObject doGet(String endpoint, String query, String contentType) throws Exception {
+    public JSONObject doGet(String endpoint, String query, String contentType) throws AutomationFrameworkException, IOException {
         String charset = "UTF-8";
         OutputStream os = null;
         InputStream is = null;
@@ -67,9 +68,9 @@ public class GenericJSONClient {
             }
             return new JSONObject(out);
         } catch (IOException e) {
-            throw new Exception("Error occurred while executing the GET operation", e);
+            throw new AutomationFrameworkException("Error occurred while executing the GET operation", e);
         } catch (JSONException e) {
-            throw new Exception("Error occurred while parsing the response to a JSONObject", e);
+            throw new AutomationFrameworkException("Error occurred while parsing the response to a JSONObject", e);
         } finally {
             assert os != null;
             os.flush();
@@ -79,7 +80,7 @@ public class GenericJSONClient {
         }
     }
 
-    public void doPost(String endpoint, String queryString, String contentType) throws Exception {
+    public void doPost(String endpoint, String queryString, String contentType) throws AutomationFrameworkException {
         String charset = "UTF-8";
         try {
             if (contentType == null || "".equals(contentType)) {
@@ -97,11 +98,11 @@ public class GenericJSONClient {
             int responseCode = conn.getResponseCode();
             conn.getInputStream().close();
             if (responseCode != 202) {
-                throw new Exception("Server responded with an inappropriate response code : '" +
+                throw new AutomationFrameworkException("Server responded with an inappropriate response code : '" +
                         responseCode + "'");
             }
         } catch (IOException e) {
-            throw new Exception("Error occurred while executing the GET operation", e);
+            throw new AutomationFrameworkException("Error occurred while executing the GET operation", e);
         }
     }
 }

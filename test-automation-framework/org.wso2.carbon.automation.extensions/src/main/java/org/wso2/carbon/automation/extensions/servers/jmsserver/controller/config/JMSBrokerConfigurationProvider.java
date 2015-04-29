@@ -23,11 +23,15 @@ public class JMSBrokerConfigurationProvider {
 
 
     private JMSBrokerConfigurationProvider() {
-        configuration = getJMSBrokerConfiguration();
+        setConfiguration(getJMSBrokerConfiguration());
     }
 
     public static JMSBrokerConfigurationProvider getInstance() {
         return instance;
+    }
+
+    public static void setConfiguration(JMSBrokerConfiguration configuration) {
+        JMSBrokerConfigurationProvider.configuration = configuration;
     }
 
 

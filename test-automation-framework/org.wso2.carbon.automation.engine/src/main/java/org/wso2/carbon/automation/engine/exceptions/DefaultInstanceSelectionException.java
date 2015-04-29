@@ -5,8 +5,7 @@ public class DefaultInstanceSelectionException extends AutomationFrameworkExcept
         super(contextModule.concat(message));
     }
 
-    public DefaultInstanceSelectionException(StackTraceElement[] message) {
+    public DefaultInstanceSelectionException(String message) {
         super(message);
     }
-
 }

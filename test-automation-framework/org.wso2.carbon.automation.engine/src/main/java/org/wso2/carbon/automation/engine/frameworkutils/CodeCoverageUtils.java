@@ -220,7 +220,4 @@ public final class CodeCoverageUtils {
         }
         return DEFAULT_EXCLUDES;
     }
-
-
 }
-

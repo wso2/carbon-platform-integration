@@ -21,9 +21,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
-import org.wso2.carbon.automation.extensions.servers.carbonserver.CarbonServerManager;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class TestServerManager {
         return portOffset;
     }
 
-    public void configureServer() throws Exception {
+    public void configureServer() throws AutomationFrameworkException {
 
     }
 
@@ -93,7 +94,7 @@ public class TestServerManager {
      * @throws java.io.IOException If an error occurs while copying the deployment artifacts into the
      *                             Carbon server
      */
-    public String startServer() throws Exception {
+    public String startServer() throws IOException, AutomationFrameworkException {
         if(carbonHome == null) {
             if (carbonZip == null) {
                 carbonZip = System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_CARBON_ZIP_LOCATION);
@@ -111,11 +112,11 @@ public class TestServerManager {
 
     /**
      * Restarting server already started by the method startServer
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public void restartGracefully() throws Exception {
+    public void restartGracefully() throws AutomationFrameworkException {
         if(carbonHome == null) {
-            throw new Exception("No Running Server found to restart. Please make sure whether server is started");
+            throw new AutomationFrameworkException("No Running Server found to restart. Please make sure whether server is started");
         }
         carbonServer.restartGracefully();
     }
@@ -125,9 +126,9 @@ public class TestServerManager {
      * <p/>
      * Add the @AfterSuite annotation in the method overriding this method
      *
-     * @throws Exception If an error occurs while shutting down the server
+     * @throws AutomationFrameworkException If an error occurs while shutting down the server
      */
-    public void stopServer() throws Exception {
+    public void stopServer() throws AutomationFrameworkException {
         carbonServer.serverShutdown(portOffset);
     }
 }

@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -25,23 +25,37 @@ import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.exceptions.ConfigurationMismatchException;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
+import java.io.IOException;
 
+/**
+ * read automation configuration from automation.xml
+ */
 public class AutomationConfigurationReader {
     private static final Log log = LogFactory.getLog(AutomationConfigurationReader.class);
     private static AutomationConfigurationReader sessionAutomationConfiguration;
     private static Document document;
 
+    /**
+     * read automation configuration from xml file
+     * @return Automation configuration reader object
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws XPathExpressionException
+     * @throws IOException
+     */
 
     public AutomationConfigurationReader readAutomationConfigurations()
-            throws Exception {
+            throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
         synchronized (AutomationConfigurationReader.class) {
             if (sessionAutomationConfiguration == null) {
                 sessionAutomationConfiguration = new AutomationConfigurationReader();
@@ -51,11 +65,16 @@ public class AutomationConfigurationReader {
         return sessionAutomationConfiguration;
     }
 
+    /**
+     * get configuration as a document
+     * @return document object
+     */
 	public Document getConfigurationDocument() {
 		return document;
 	}
 
-    private static Document readConfigurationXmlDocument() throws Exception {
+    private static Document readConfigurationXmlDocument()
+            throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
         File fXmlFile = new File(FrameworkPathUtil.
                 getSystemResourceLocation() + FrameworkConstants.CONFIGURATION_FILE_NAME);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

@@ -26,6 +26,7 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
@@ -124,9 +125,15 @@ public class AxisServiceClientUtils {
 
     public static void sendRequest(String eprUrl, String operation, String payload,
                                    int numberOfInstances, List<String> expectedStrings,
-                                   boolean twoWay) throws Exception {
-        waitForServiceDeployment(eprUrl);
-        assertFalse(!AxisServiceClientUtils.isServiceAvailable(eprUrl));
+                                   boolean twoWay) throws  AutomationFrameworkException {
+        try {
+            waitForServiceDeployment(eprUrl);
+            assertFalse(!AxisServiceClientUtils.isServiceAvailable(eprUrl));
+        } catch (IOException e) {
+            log.error(e);
+            throw new AutomationFrameworkException("Service not available " , e);
+        }
+
         for (int i = 0; i < numberOfInstances; i++) {
             try {
                 EndpointReference epr = new EndpointReference(eprUrl + "/" + operation);
@@ -143,10 +150,10 @@ public class AxisServiceClientUtils {
                 }
             } catch (XMLStreamException e) {
                 log.error(e);
-                throw new XMLStreamException("cannot read xml stream " + e);
+                throw new AutomationFrameworkException("cannot read xml stream " , e);
             } catch (AxisFault axisFault) {
                 log.error(axisFault.getMessage());
-                throw new AxisFault("cannot read xml stream " + axisFault.getMessage());
+                throw new AutomationFrameworkException("cannot read xml stream " + axisFault.getMessage());
             }
         }
     }
@@ -179,18 +186,23 @@ public class AxisServiceClientUtils {
         }
     }
 
-    public static void waitForServiceUnDeployment(String serviceUrl) throws Exception {
+    public static void waitForServiceUnDeployment(String serviceUrl) throws AutomationFrameworkException {
         int serviceTimeOut = 0;
-        while (isServiceAvailable(serviceUrl)) {
-            if (serviceTimeOut == 0) {
-            } else if (serviceTimeOut > 60) { //Check for the service for 100 seconds
-                throw new Exception("Service undeployment fail");
+        try {
+            while (isServiceAvailable(serviceUrl)) {
+                if (serviceTimeOut == 0) {
+                } else if (serviceTimeOut > 60) { //Check for the service for 100 seconds
+                    throw new AutomationFrameworkException("Service undeployment fail");
+                }
+                try {
+                    Thread.sleep(500);
+                    serviceTimeOut++;
+                } catch (InterruptedException ignored) {
+                }
             }
-            try {
-                Thread.sleep(500);
-                serviceTimeOut++;
-            } catch (InterruptedException ignored) {
-            }
+        } catch (IOException e) {
+            log.error("Service not available " , e);
+            throw new AutomationFrameworkException("Service not available " , e);
         }
     }
 

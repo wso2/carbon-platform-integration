@@ -21,6 +21,8 @@ package org.wso2.carbon.automation.engine.extensions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.xml.xpath.XPathExpressionException;
+
 public abstract class SuiteListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
     private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformSuiteManager/extentionClasses/class/name";
@@ -29,7 +31,7 @@ public abstract class SuiteListenerExtension extends ListenerExtension {
         super();
         try {
             setParameterMap(XPATH_TO_CLASS, getClass().getName());
-        } catch (Exception e) {
+        } catch (XPathExpressionException e) {
             log.warn("Failed to initializing the Extension Class");
             log.error("Error initializing the Automation Context", e);
         }

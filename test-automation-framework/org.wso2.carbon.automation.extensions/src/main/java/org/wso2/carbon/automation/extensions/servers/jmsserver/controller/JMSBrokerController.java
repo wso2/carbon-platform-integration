@@ -66,7 +66,7 @@ public class JMSBrokerController {
                     File.separator + broker.getBrokerDataDirectory());
             broker.addConnector(connector);
             broker.start();
-            JMSBrokerController.isBrokerStarted = true;
+            setBrokerStatus(true);
             log.info("JMSServerController: Broker is Successfully started. continuing tests");
             return true;
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class JMSBrokerController {
             log.info(" ************* Stopping **************");
             if (broker.isStarted()) {
                 broker.stop();
-                JMSBrokerController.isBrokerStarted = false;
+                setBrokerStatus(false);
             }
             return true;
         } catch (Exception e) {
@@ -98,5 +98,13 @@ public class JMSBrokerController {
 
     public static boolean isBrokerStarted() {
         return isBrokerStarted;
+    }
+
+    /**
+     * introduced to get rid of find bugs warning
+     * @param status
+     */
+    private static void setBrokerStatus(boolean status) {
+        JMSBrokerController.isBrokerStarted = status;
     }
 }

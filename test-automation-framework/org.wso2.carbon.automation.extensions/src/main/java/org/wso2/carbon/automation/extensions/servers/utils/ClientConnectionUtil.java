@@ -17,6 +17,10 @@
 */
 package org.wso2.carbon.automation.extensions.servers.utils;
 
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
@@ -26,18 +30,14 @@ import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.context.beans.User;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.wso2.carbon.automation.engine.context.beans.User;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 public class ClientConnectionUtil {
     private static final Log log = LogFactory.getLog(ClientConnectionUtil.class);
@@ -46,7 +46,7 @@ public class ClientConnectionUtil {
     /**
      * Wait for sometime until it is possible to login to the Carbon server
      */
-    public static void waitForLogin(AutomationContext context) throws Exception {
+    public static void waitForLogin(AutomationContext context) throws AutomationFrameworkException, XPathExpressionException {
 
         waitForLogin(context.getContextUrls().getSecureServiceUrl(), context.getSuperTenant().getTenantAdmin());
 //        long startTime = System.currentTimeMillis();
@@ -94,7 +94,7 @@ public class ClientConnectionUtil {
     /**
      * Wait for sometime until it is possible to login to the Carbon server
      */
-    public static void waitForLogin(String backendUrl, User userInfo) throws Exception {
+    public static void waitForLogin(String backendUrl, User userInfo) throws AutomationFrameworkException {
 
         long startTime = System.currentTimeMillis();
         boolean loginSuccess = false;
@@ -143,11 +143,10 @@ public class ClientConnectionUtil {
      * @param payload
      * @param endpointURL
      * @return return false if the login is success
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
     @Deprecated
-    public static boolean sendAdminServiceRequest(OMElement payload, String endpointURL)
-            throws Exception {
+    public static boolean sendAdminServiceRequest(OMElement payload, String endpointURL) {
 
         try {
             ServiceClient serviceClient = new ServiceClient();
@@ -177,10 +176,10 @@ public class ClientConnectionUtil {
      * @param payload
      * @param endpointURL
      * @return
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
     public static boolean checkAuthenticationAdminService(OMElement payload, String endpointURL)
-            throws Exception {
+            throws AutomationFrameworkException {
 
         try {
             ServiceClient serviceClient = new ServiceClient();
@@ -200,6 +199,7 @@ public class ClientConnectionUtil {
 
         } catch (AxisFault e) {
             log.error("Unable to login as user..");
+            throw new AutomationFrameworkException("Unable to login as user..", e);
         }
         return false;
     }
@@ -322,7 +322,7 @@ public class ClientConnectionUtil {
     }
 
     public static void sendForcefulShutDownRequest(String backendURL, String userName,
-                                                   String password) throws Exception {
+                                                   String password) throws AutomationFrameworkException {
         try {
             ServiceClient serviceClient = new ServiceClient();
             Options opts = new Options();
@@ -339,12 +339,12 @@ public class ClientConnectionUtil {
 
         } catch (AxisFault e) {
             log.error("Unable to shutdown carbon server forcefully..", e);
-            throw new Exception("Unable to shutdown carbon server forcefully..", e);
+            throw new AutomationFrameworkException("Unable to shutdown carbon server forcefully..", e);
         }
     }
 
     public static void sendGraceFullRestartRequest(String backendURL, String userName,
-                                                   String password) throws Exception {
+                                                   String password) throws AutomationFrameworkException {
         try {
             ServiceClient serviceClient = new ServiceClient();
             Options opts = new Options();
@@ -361,7 +361,7 @@ public class ClientConnectionUtil {
 
         } catch (AxisFault e) {
             log.error("Unable to restart carbon server gracefully..", e);
-            throw new Exception("Unable to restart carbon server gracefully..", e);
+            throw new AutomationFrameworkException("Unable to restart carbon server gracefully..", e);
         }
     }
 
