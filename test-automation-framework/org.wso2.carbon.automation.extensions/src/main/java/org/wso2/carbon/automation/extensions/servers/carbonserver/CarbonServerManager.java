@@ -33,6 +33,7 @@ import org.wso2.carbon.automation.extensions.servers.utils.FileManipulator;
 import org.wso2.carbon.automation.extensions.servers.utils.InputStreamHandler;
 import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,13 +64,18 @@ public class CarbonServerManager {
 
     public synchronized void startServerUsingCarbonHome(String carbonHome,
                                                         Map<String, String> commandMap)
-            throws Exception {
+            throws AutomationFrameworkException {
         if (process != null) { // An instance of the server is running
             return;
         }
         final int portOffset = checkPortAvailability(commandMap);
-        Process tempProcess;
-        isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+        Process tempProcess = null;
+
+        try {
+            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
+        }
         try {
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
@@ -101,17 +107,17 @@ public class CarbonServerManager {
 
                 String[] cmdArray;
                 if (isCoverageEnable) {
+                    //insert Jacoco agent configuration to carbon server startup script. This configuration
+                    //cannot be directly pass as server startup command due to script limitation.
                     insertJacocoAgentToShellScript(carbonHome, scriptName);
 
-                    System.out.println("Included " + CodeCoverageUtils.getInclusionJarsPattern(":"));
-                    System.out.println("Exclude " + CodeCoverageUtils.getExclusionJarsPattern(":"));
-
-                    System.out.println("Included XXX " + CodeCoverageUtils.getInclusionJarsPattern(","));
-                    System.out.println("Exclude XXX " + CodeCoverageUtils.getExclusionJarsPattern(","));
-
-
+                    if (log.isDebugEnabled()) {
+                        log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
+                        log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
+                    }
                     cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
                     cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
+
                 } else {
                     cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
                     cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
@@ -141,6 +147,7 @@ public class CarbonServerManager {
             ClientConnectionUtil.waitForPort(defaultHttpPort + portOffset,
                                              DEFAULT_START_STOP_WAIT_MS, false,
                                              automationContext.getInstance().getHosts().get("default"));
+
             //wait until Mgt console url printed.
             long time = System.currentTimeMillis() + 60 * 1000;
             while (!inputStreamHandler.getOutput().contains(SERVER_STARTUP_MESSAGE) &&
@@ -150,8 +157,11 @@ public class CarbonServerManager {
 
             ClientConnectionUtil.waitForLogin(automationContext);
             log.info("Server started successfully.");
+
         } catch (IOException e) {
-            throw new RuntimeException("Unable to start server", e);
+            throw new IllegalStateException("Unable to start server", e);
+        } catch (XPathExpressionException e) {
+            throw new IllegalStateException("Unable to start server", e);
         }
         process = tempProcess;
     }
@@ -184,14 +194,14 @@ public class CarbonServerManager {
             throws IOException {
 
         String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        String destFile = System.getProperty("java.io.tmpdir") + File.separator + "jacoco.exec";
+        String destFile = FrameworkPathUtil.getCoverageDumpFilePath();
 
         CodeCoverageUtils.insertStringToFile(
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
-                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + "sh"),
+                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
                 "-Dwso2.server.standalone=true",
                 "-javaagent:" + jacocoAgentFile + "=destfile=" + destFile + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + "\\");
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
     }
 
     private String[] mergePropertiesToCommandArray(String[] parameters, String[] cmdArray) {
@@ -227,20 +237,32 @@ public class CarbonServerManager {
                 extractedCarbonDir;
     }
 
-    public synchronized void serverShutdown(int portOffset) throws Exception {
+
+    public synchronized void serverShutdown(int portOffset) throws AutomationFrameworkException {
         if (process != null) {
             log.info("Shutting down server..");
+            if (ClientConnectionUtil.isPortOpen(Integer.parseInt(
+                    ExtensionConstants.SERVER_DEFAULT_HTTPS_PORT) + portOffset)) {
 
-            if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
                 int httpsPort = defaultHttpsPort + portOffset;
-                String url = automationContext.getContextUrls().getBackEndUrl();
+                String url = null;
+                try {
+                    url = automationContext.getContextUrls().getBackEndUrl();
+                } catch (XPathExpressionException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                }
                 String backendURL = url.replaceAll("(:\\d+)", ":" + httpsPort);
 
-                ClientConnectionUtil.sendForcefulShutDownRequest(
-                        backendURL,
-                        automationContext.getSuperTenant().getContextUser().getUserName(),
-                        automationContext.getSuperTenant().getContextUser().getPassword());
-
+                try {
+                    ClientConnectionUtil.sendForcefulShutDownRequest(
+                            backendURL,
+                            automationContext.getSuperTenant().getContextUser().getUserName(),
+                            automationContext.getSuperTenant().getContextUser().getPassword());
+                } catch (AutomationFrameworkException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                } catch (XPathExpressionException e) {
+                    throw new AutomationFrameworkException("Get context failed", e);
+                }
 
                 long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
                 while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
@@ -248,14 +270,20 @@ public class CarbonServerManager {
                     // wait until server shutdown is completed
                 }
                 log.info("Server stopped successfully...");
-
                 inputStreamHandler.stop();
                 process.destroy();
                 process = null;
-
                 //generate coverage report
                 if (isCoverageEnable) {
-                    generateCoverageReport();
+                    try {
+                        log.info("Generating Jacoco code coverage...");
+                        generateCoverageReport(
+                                new File(carbonHome + File.separator + "repository" +
+                                         File.separator + "components" + File.separator + "plugins" + File.separator));
+                    } catch (IOException e) {
+                        log.error("Failed to generate code coverage ", e);
+                        throw new AutomationFrameworkException("Failed to generate code coverage ", e);
+                    }
                 }
                 if (portOffset == 0) {
                     System.clearProperty(ExtensionConstants.CARBON_HOME);
@@ -264,40 +292,56 @@ public class CarbonServerManager {
         }
     }
 
-    private void generateCoverageReport() throws IOException {
-        String jacocoDumpFileLocation = System.getProperty("java.io.tmpdir") + File.separator + "jacoco.exec";
+    private void generateCoverageReport(File classesDir) throws IOException {
+        String jacocoDumpFileLocation = FrameworkPathUtil.getCoverageDumpFilePath();
 
-        String classesDir = ArchiveExtractorUtil.setUpCarbonHome(FrameworkPathUtil.getCarbonZipLocation()) +
-                            File.separator + "repository" + File.separator + "components" + File.separator +
-                            "plugins" + File.separator;
-
-        String coverageReportDir = System.getProperty("basedir") + File.separator + "target" + File.separator +
-                                   "jacoco" + File.separator + "coverage";
-
-        ReportGenerator reportGenerator = new ReportGenerator(new File(jacocoDumpFileLocation),
-                                                              new File(classesDir),
-                                                              new File(coverageReportDir));
+        ReportGenerator reportGenerator =
+                new ReportGenerator(new File(jacocoDumpFileLocation),
+                                    classesDir,
+                                    new File(FrameworkPathUtil.getCoverageDirPath()),
+                                    null);
         reportGenerator.create();
+
+        log.info("Jacoco coverage dump file path : " + jacocoDumpFileLocation);
+        log.info("Jacoco class file path : " + classesDir);
+        log.info("Jacoco coverage report path : " + FrameworkPathUtil.getCoverageDirPath());
     }
 
-    public synchronized void restartGracefully() throws Exception {
-        ClientConnectionUtil.sendGraceFullRestartRequest(
-                automationContext.getContextUrls().getSecureServiceUrl(),
-                automationContext.getSuperTenant().getContextUser().getUserName(),
-                automationContext.getSuperTenant().getContextUser().getPassword());
+    public synchronized void restartGracefully() throws AutomationFrameworkException {
+
+        try {
+            ClientConnectionUtil.sendGraceFullRestartRequest(
+                    automationContext.getContextUrls().getSecureServiceUrl(),
+                    automationContext.getSuperTenant().getContextUser().getUserName(),
+                    automationContext.getSuperTenant().getContextUser().getPassword());
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("restart failed", e);
+        }
 
         long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
-
         while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                System.currentTimeMillis() < time) {
             // wait until server shutdown is completed
         }
-        ClientConnectionUtil.waitForPort(
-                Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
-                automationContext.getInstance().getHosts().get("default"));
 
-        ClientConnectionUtil.waitForLogin(automationContext);
+        time = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() < time + 5000) {
+            //wait for port to close
+        }
+
+        try {
+            ClientConnectionUtil.waitForPort(
+                    Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
+                    automationContext.getInstance().getHosts().get("default"));
+
+            ClientConnectionUtil.waitForLogin(automationContext);
+
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Connection attempt to carbon server failed", e);
+        }
     }
+
 
     private String[] expandServerStartupCommandList(Map<String, String> commandMap) {
         if (commandMap == null || commandMap.size() == 0) {

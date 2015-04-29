@@ -53,11 +53,12 @@ public class ReportGenerator {
 
     private ExecFileLoader execFileLoader;
 
-    public ReportGenerator(File executionDataFile, File classesDirectory, File reportDirectory) {
+    public ReportGenerator(File executionDataFile, File classesDirectory, File reportDirectory,
+                           File sourceDirectory) {
         this.executionDataFile = executionDataFile;
         this.classesDirectory = classesDirectory;
         this.reportDirectory = reportDirectory;
-        this.sourceDirectory = null;
+        this.sourceDirectory = sourceDirectory;
     }
 
     /**
@@ -89,7 +90,7 @@ public class ReportGenerator {
 
         // Populate the report structure with the bundle coverage information.
         // Call visitGroup if you need groups in your report.
-        visitor.visitBundle(bundleCoverage, new DirectorySourceFileLocator(null, OUTPUT_ENCODING, 4));
+        visitor.visitBundle(bundleCoverage, new DirectorySourceFileLocator(sourceDirectory, OUTPUT_ENCODING, 4));
 //        visitor.visitGroup("AS");
 
         // Signal end of structure information to allow report to write all
@@ -143,6 +144,7 @@ public class ReportGenerator {
 
         for (final File file : filesToAnalyze) {
             analyzer.analyzeAll(file);
+            log.info("File analyzed for coverage : " + file.getName());
         }
         return coverageBuilder.getBundle("Overall Coverage Summary");
     }

@@ -120,20 +120,21 @@ public final class CodeCoverageUtils {
 
             String thisLine = "";
             while ((thisLine = in.readLine()) != null) {
-                System.out.println(thisLine);
                 if (thisLine.contains(lineToBeChecked)) {
                     out.println(lineToBeInserted);
                 }
                 out.println(thisLine);
             }
 
-            if (inFile.delete()) {
-                log.warn("Failed to delete temporary file - " + inFile.getName());
-            }
-
             if (!tmpFile.renameTo(inFile)) {
                 throw new IOException("Failed to rename file " + tmpFile.getName() + "as " + inFile.getName());
             }
+
+            if (!tmpFile.delete()) {
+                log.warn("Failed to delete temporary file - " + tmpFile.getAbsolutePath());
+            }
+            log.info("File " + inFile + "has been modified and inserted new line after " + lineToBeChecked);
+            log.info("New line inserted : " + lineToBeInserted);
 
         } finally {
             if (out != null) {
@@ -168,7 +169,6 @@ public final class CodeCoverageUtils {
                 rf.close();
             }
         }
-        System.out.println(filePatterns.toString());
         return filePatterns;
     }
 
@@ -186,7 +186,7 @@ public final class CodeCoverageUtils {
     }
 
     public static String getInclusionJarsPattern(String delimiter) throws IOException {
-        log.info("Building inclusion jar list ...");
+        log.info("Building jar list for jacoco coverage inclusion...");
         File instrumentationTxt =
                 System.getProperty("instr.file") != null ?
                 new File(System.getProperty("instr.file")) :
@@ -202,7 +202,7 @@ public final class CodeCoverageUtils {
     }
 
     public static String getExclusionJarsPattern(String delimiter) throws IOException {
-        log.info("Building exclusion jar list ...");
+        log.info("Building jar list for jacoco coverage exclusion...");
         String jacocoFilters = System.getProperty("filters.file");
         if (jacocoFilters == null) {
             jacocoFilters = System.getProperty("basedir") + File.separator + "src" +
