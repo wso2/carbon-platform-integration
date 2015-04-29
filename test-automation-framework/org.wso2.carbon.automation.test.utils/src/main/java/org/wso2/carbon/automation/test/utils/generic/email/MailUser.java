@@ -116,7 +116,7 @@ public class MailUser {
 
     public List<MimeMessage> getUnreadMails() throws RuntimeException {
 
-        List<StoredMessage> storedMessageList = new ArrayList<StoredMessage>();
+        List<StoredMessage> storedMessageList;
         List<MimeMessage> mimeMessages = new ArrayList<MimeMessage>();
         try {
             storedMessageList = greenMail.getManagers().getUserManager().getImapHostManager().

@@ -17,6 +17,7 @@
 */
 package org.wso2.carbon.automation.extensions.servers.jmsserver.client;
 
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config.JMSBrokerConfiguration;
 
 import javax.jms.*;
@@ -103,26 +104,38 @@ public class JMSTopicMessagePublisher {
      * this will publish the message to given topic
      *
      * @param messageContent
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public void publish(String messageContent) throws Exception {
+    public void publish(String messageContent) throws AutomationFrameworkException {
         if (publisher == null) {
-            throw new Exception("No Connection with topic. Please connect");
+            throw new AutomationFrameworkException("No Connection with topic. Please connect");
         }
         // Create a messages;
-        TextMessage message = session.createTextMessage(messageContent);
-        publisher.publish(message);
+        TextMessage message = null;
+        try {
+            message = session.createTextMessage(messageContent);
+            publisher.publish(message);
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("Message creation failed", e);
+        }
+
     }
 
     /*
     * This Will send byte stream to the destination
     * @param byte content
-    * @throws Exception
+    * @throws AutomationFrameworkException
      */
 
-    public void sendBytesMessage(byte[] payload) throws Exception {
-        BytesMessage bm = session.createBytesMessage();
-        bm.writeBytes(payload);
-        publisher.publish(bm);
+    public void sendBytesMessage(byte[] payload) throws AutomationFrameworkException {
+        BytesMessage bm = null;
+        try {
+            bm = session.createBytesMessage();
+            bm.writeBytes(payload);
+            publisher.publish(bm);
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("Byte Message creation failed", e);
+        }
+
     }
 }

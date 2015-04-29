@@ -23,10 +23,10 @@ import javax.xml.xpath.XPathExpressionException;
 
 public class GRegBackEndURLEvaluator {
     public String getBackEndURL() throws XPathExpressionException {
-        String baseUrl;
+        //String baseUrl;
         //todo
         AutomationContext gregContext = new AutomationContext("GREG", "", "", "");
-        baseUrl = "https://" + gregContext.getInstance().getHosts().get(0);
+        //baseUrl = "https://" + gregContext.getInstance().getHosts().get(0);
        /* if (gregContext.getConfigurationValue().getEnvironmentSettings().isEnablePort()
             && gregProperties.getHttpsPort() != null) {
             baseUrl = baseUrl + ":" + gregProperties.getHttpsPort();

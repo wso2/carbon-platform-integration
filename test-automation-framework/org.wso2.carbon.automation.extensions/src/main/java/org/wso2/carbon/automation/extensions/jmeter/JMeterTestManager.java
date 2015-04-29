@@ -26,10 +26,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -55,7 +59,7 @@ public class JMeterTestManager {
     private File jmeterProps = null;
 
     public void runTest(JMeterTest jMeterTest)
-            throws Exception {
+            throws AutomationFrameworkException {
         JMeterResult results;
 
         // Init JMeter
@@ -63,7 +67,11 @@ public class JMeterTestManager {
 
         testFile = jMeterTest.getTestFile();
         //setting jmeter.properties file parameter
-        setJMeterPropertyFile(jMeterTest);
+        try {
+            setJMeterPropertyFile(jMeterTest);
+        } catch (IOException e) {
+            throw new AutomationFrameworkException("Set property failed", e);
+        }
 
         if (jMeterTest.getLogLevel() != null) {
             jmeterLogLevel = jMeterTest.getLogLevel();
@@ -73,7 +81,7 @@ public class JMeterTestManager {
 //        checkForErrors();
         log.info("for more info. " + results.getFileName());
         if (results.getErrorCount() > 0) {
-            throw new Exception("Test Failed. " + results.getErrorCount() + " Error/s Found.\n"
+            throw new AutomationFrameworkException("Test Failed. " + results.getErrorCount() + " Error/s Found.\n"
                                 + results.getErrorList().toString() + "\nRefer "
                                 + results.getFileName() + " for test result");
         }
@@ -86,10 +94,15 @@ public class JMeterTestManager {
 
     }
 
-    private JMeterResult executeMe() throws Exception {
-        addLogFile(testFile.getName());
+    private JMeterResult executeMe() throws AutomationFrameworkException {
+
+        try {
+            addLogFile(testFile.getName());
+        } catch (IOException e) {
+            throw new AutomationFrameworkException("Can't add log file", e);
+        }
         Boolean resultState = true;
-        JMeterResult results = new JMeterResult();
+        JMeterResult results;
 
         String resultFile = executeTest(testFile);
         try {
@@ -101,19 +114,14 @@ public class JMeterTestManager {
             log.error(ex);
             resultState = false;
         }
-        try {
-            results = resultValidator(resultFile);
-        } catch (FileNotFoundException e) {
-            log.error(e);
-            resultState = false;
-        }
+        results = resultValidator(resultFile);
         results.setFileName(resultFile);
         results.setExecutionState(resultState);
 
         return results;
     }
 
-    private void checkForErrors() throws Exception {
+    private void checkForErrors() throws AutomationFrameworkException, IOException {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     new FileInputStream(jmeterLogFile), Charset.defaultCharset()));
@@ -121,7 +129,7 @@ public class JMeterTestManager {
             String line;
             while ((line = in.readLine()) != null) {
                 if (PAT_ERROR.matcher(line).find()) {
-                    throw new Exception("There were test errors, see logfile '" + jmeterLogFile + "' for further information");
+                    throw new AutomationFrameworkException("There were test errors, see logfile '" + jmeterLogFile + "' for further information");
                 }
             }
             in.close();
@@ -144,7 +152,7 @@ public class JMeterTestManager {
         }
     }
 
-    private String executeTest(File test) throws Exception {
+    private String executeTest(File test) throws AutomationFrameworkException {
         String reportFileName;
         String reportFileFullPath;
         JMeter jmeterInstance = new JMeter();
@@ -199,7 +207,7 @@ public class JMeterTestManager {
 
             } catch (ExitException e) {
                 if (e.getCode() != 0) {
-                    throw new Exception("Test failed", e);
+                    throw new AutomationFrameworkException("Test failed", e);
                 }
             } catch (Exception e) {
                 log.error(e);
@@ -209,7 +217,7 @@ public class JMeterTestManager {
                 Thread.setDefaultUncaughtExceptionHandler(oldHandler);
             }
         } catch (IOException e) {
-            throw new Exception("Can't execute test", e);
+            throw new AutomationFrameworkException("Can't execute test", e);
         }
         return reportFileFullPath;
     }
@@ -230,7 +238,7 @@ public class JMeterTestManager {
         }
     }
 
-    private JMeterResult resultValidator(String fileName) throws Exception {
+    private JMeterResult resultValidator(String fileName) throws AutomationFrameworkException {
 
         JMeterResult result = null;
         XMLStreamReader parser = null;
@@ -307,10 +315,24 @@ public class JMeterTestManager {
 
                 result.setErrorList(errorList);
                 result.setAssertList(assertionFailureList);
+            } catch (FileNotFoundException e) {
+                throw new AutomationFrameworkException("Result File is not Created");
+            } catch (ParserConfigurationException e) {
+                throw new AutomationFrameworkException("Result File is not Created");
+            } catch (SAXException e) {
+                throw new AutomationFrameworkException("Result File is not Created");
+            } catch (IOException e) {
+                throw new AutomationFrameworkException("Result File is not Created");
+            } catch (XMLStreamException e) {
+                throw new AutomationFrameworkException("Result File is not Created");
             } finally {
 
                 if (parser != null) {
-                    parser.close();
+                    try {
+                        parser.close();
+                    } catch (XMLStreamException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if (inputStream != null) {
                     try {
@@ -321,7 +343,7 @@ public class JMeterTestManager {
                 }
             }
         } else {
-            throw new FileNotFoundException("Result File is not Created");
+            throw new AutomationFrameworkException("Result File is not Created");
         }
         return result;
     }

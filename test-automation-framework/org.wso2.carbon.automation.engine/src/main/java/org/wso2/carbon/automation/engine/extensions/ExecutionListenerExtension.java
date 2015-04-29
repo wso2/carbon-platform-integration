@@ -19,6 +19,7 @@ package org.wso2.carbon.automation.engine.extensions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 public abstract class ExecutionListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
@@ -34,10 +35,10 @@ public abstract class ExecutionListenerExtension extends ListenerExtension {
         }
     }
 
-    public abstract void initiate() throws Exception;
+    public abstract void initiate() throws AutomationFrameworkException;
 
-    public abstract void onExecutionStart() throws Exception;
+    public abstract void onExecutionStart() throws AutomationFrameworkException;
 
-    public abstract void onExecutionFinish() throws Exception;
+    public abstract void onExecutionFinish() throws AutomationFrameworkException;
 
 }

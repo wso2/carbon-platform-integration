@@ -17,6 +17,7 @@
 */
 package org.wso2.carbon.automation.extensions.servers.jmsserver.client;
 
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config.JMSBrokerConfiguration;
 
 import javax.jms.*;
@@ -105,44 +106,55 @@ public class JMSQueueMessageConsumer {
      * this will get the first message from the Queue and dequeue the message from the queue
      *
      * @return the message text
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public String popMessage() throws Exception {
+    public String popMessage() throws AutomationFrameworkException {
         if (consumer == null) {
-            throw new Exception("No Consumer with Queue. Please connect");
+            throw new AutomationFrameworkException("No Consumer with Queue. Please connect");
         }
-        Message message = consumer.receive(10000);
-        if (message != null) {
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
-                return textMessage.getText();
+        Message message = null;
+        try {
+            message = consumer.receive(10000);
+            if (message != null) {
+                if (message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage) message;
+                    return textMessage.getText();
+                } else {
+                    throw new AutomationFrameworkException("Test Framework Exception. Message Type is not a TextMessage");
+                }
             } else {
-                throw new Exception("Test Framework Exception. Message Type is not a TextMessage");
+                return null;
             }
-        } else {
-            return null;
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("Test Framework Exception. Message Type is not a TextMessage", e);
         }
+
     }
 
     /**
      * @param clzz
      * @param <T>
      * @return
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public <T> T popMessage(Class<T> clzz) throws Exception {
+    public <T> T popMessage(Class<T> clzz) throws AutomationFrameworkException {
         if (consumer == null) {
-            throw new Exception("No Consumer with Queue. Please connect");
+            throw new AutomationFrameworkException("No Consumer with Queue. Please connect");
         }
-        Message message = consumer.receive(10000);
-        if (message != null) {
-            if (clzz.isInstance(message)) {
-                return clzz.cast(message);
+        Message message = null;
+        try {
+            message = consumer.receive(10000);
+            if (message != null) {
+                if (clzz.isInstance(message)) {
+                    return clzz.cast(message);
+                } else {
+                    throw new AutomationFrameworkException("Test Framework Exception. Unexpected Message Type to cast");
+                }
             } else {
-                throw new Exception("Test Framework Exception. Unexpected Message Type to cast");
+                return null;
             }
-        } else {
-            return null;
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("Test Framework Exception. Unexpected Message Type to cast", e);
         }
     }
 
@@ -150,34 +162,44 @@ public class JMSQueueMessageConsumer {
      * this will get the first message from the Queue and dequeue the message from the queue
      *
      * @return JMS Message object
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public Message popRawMessage() throws Exception {
+    public Message popRawMessage() throws AutomationFrameworkException {
         if (consumer == null) {
-            throw new Exception("No Consumer with Queue. Please connect");
+            throw new AutomationFrameworkException("No Consumer with Queue. Please connect");
         }
-        return consumer.receive(10000);
+        try {
+            return consumer.receive(10000);
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("message receiving failed", e);
+        }
     }
 
     /**
      * Returns all the messages in the Queue and dequeue messages from the queue
      *
      * @return messages list
-     * @throws Exception
+     * @throws AutomationFrameworkException
      */
-    public List<String> getMessages() throws Exception {
+    public List<String> getMessages() throws AutomationFrameworkException {
         if (session == null) {
-            throw new Exception("No Connection with Queue. Please connect");
+            throw new AutomationFrameworkException("No Connection with Queue. Please connect");
         }
         QueueBrowser browser;
         List<String> list = new ArrayList<String>();
-        browser = session.createBrowser((Queue) destination);
-        Enumeration enu = browser.getEnumeration();
-        while (enu.hasMoreElements()) {
-            TextMessage message = (TextMessage) enu.nextElement();
-            list.add(message.getText());
+        try {
+            browser = session.createBrowser((Queue) destination);
+            Enumeration enu = browser.getEnumeration();
+            while (enu.hasMoreElements()) {
+                TextMessage message = (TextMessage) enu.nextElement();
+                list.add(message.getText());
+            }
+            browser.close();
+        } catch (JMSException e) {
+            throw new AutomationFrameworkException("create browser failed ", e);
         }
-        browser.close();
+
+
         return list;
     }
 }

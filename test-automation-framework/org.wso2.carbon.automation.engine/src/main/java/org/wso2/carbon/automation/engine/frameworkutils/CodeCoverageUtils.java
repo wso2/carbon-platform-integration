@@ -51,9 +51,15 @@ public final class CodeCoverageUtils {
         }
         try {
             if (System.getProperty("emma.properties") == null) {
-                for (File file : new File(emmaHome).listFiles()) {
-                    if (file.getName().startsWith("org.wso2.carbon.automation.engine")) {
-                        ArchiveExtractorUtil.extractFile(file.getAbsolutePath(), emmaHome);
+                File[] files = new File(emmaHome).listFiles();
+                if(files != null) {
+                    for (File file : files) {
+                        if (file != null) {
+                            String name = file.getName();
+                            if (!name.isEmpty() && name.startsWith("org.wso2.carbon.automation.engine")) {
+                                ArchiveExtractorUtil.extractFile(file.getAbsolutePath(), emmaHome);
+                            }
+                        }
                     }
                 }
                 System.setProperty("emma.properties",
@@ -75,8 +81,6 @@ public final class CodeCoverageUtils {
             }
         } catch (IOException e) {
             log.error("Cannot initialize Emma", e);
-        } catch (Exception e) {
-            log.error("Cannot initialize Emma", e);
         }
     }
 
@@ -91,10 +95,13 @@ public final class CodeCoverageUtils {
                 emmaHome += File.separator;
             }
             String emmaJarName = null;
-            for (File file : new File(emmaHome).listFiles()) {
-                String fileName = file.getName();
-                if (fileName.startsWith("emma") && fileName.endsWith(".jar")) {
-                    emmaJarName = fileName;
+            File[] files = new File(emmaHome).listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    String fileName = file.getName();
+                    if (fileName.startsWith("emma") && fileName.endsWith(".jar")) {
+                        emmaJarName = fileName;
+                    }
                 }
             }
             if (emmaJarName == null) {
@@ -156,16 +163,19 @@ public final class CodeCoverageUtils {
 
         //instrument the jars at plugins directory first (otherwise emma will complain about state versions of class files
         int instrumentedFileCount = 0;
-        for (File file : plugins.listFiles()) {
-            if (file.isFile()) {
-                if (filePatterns.isEmpty()) { // If file patterns are not specified, instrument all files
-                    instrument(file);
-                    instrumentedFileCount++;
-                } else {
-                    for (String filePattern : filePatterns) {
-                        if (file.getName().startsWith(filePattern)) {
-                            instrument(file);
-                            instrumentedFileCount++;
+        File[] files = plugins.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    if (filePatterns.isEmpty()) { // If file patterns are not specified, instrument all files
+                        instrument(file);
+                        instrumentedFileCount++;
+                    } else {
+                        for (String filePattern : filePatterns) {
+                            if (file.getName().startsWith(filePattern)) {
+                                instrument(file);
+                                instrumentedFileCount++;
+                            }
                         }
                     }
                 }
@@ -263,7 +273,7 @@ public final class CodeCoverageUtils {
             tempExtractedDir = System.getProperty("basedir") + File.separator + "target" +
                                File.separator + jarFileName.substring(0, jarFileName.lastIndexOf('.'));
             ArchiveExtractorUtil.extractFile(jarFilePath, tempExtractedDir);
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("Could not extract the file", e);
         } finally {
             jarFile.close();

@@ -49,7 +49,7 @@ public class Proxy {
                     display("listening...");
                     cSocket = sSocket.accept();
                     if (cSocket != null) {
-                        Proxy.clientCount++;
+                        incrementCount();
                         display("accepted as #" + clientCount + ":" + cSocket);
                         ProxyConnection c = new ProxyConnection(cSocket, host, port, timeout);
                         c.start();
@@ -66,5 +66,13 @@ public class Proxy {
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
+    }
+
+    private static void incrementCount () {
+        Proxy.clientCount++;
+    }
+
+    private static void decrementCount() {
+        Proxy.clientCount--;
     }
 }

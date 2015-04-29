@@ -19,14 +19,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentProducer;
 import org.apache.http.entity.EntityTemplate;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -35,7 +28,10 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -94,7 +90,7 @@ public class SimpleHttpClient {
                 if (zip) {
                     out = new GZIPOutputStream(outputStream);
                 }
-                out.write(payload.getBytes());
+                out.write(payload.getBytes(Charset.defaultCharset()));
                 out.flush();
                 out.close();
             }
@@ -122,7 +118,7 @@ public class SimpleHttpClient {
             byte[] tmp = new byte[2048];
             StringBuilder buffer = new StringBuilder();
             while ((length = in.read(tmp)) != -1) {
-                buffer.append(new String(tmp, 0, length));
+                buffer.append(new String(tmp, 0, length, Charset.defaultCharset()));
             }
             return buffer.toString();
         }
@@ -156,7 +152,7 @@ public class SimpleHttpClient {
      * @return Returned HTTP response
      * @throws IOException If an error occurs while making the invocation
      */
-    public HttpResponse doOptions(String url, final Map<String, String> headers,
+    /*public HttpResponse doOptions(String url, final Map<String, String> headers,
                                   final String payload, String contentType) throws IOException {
         HttpUriRequest request = new HttpOptions(url);
         setHeaders(headers, request);
@@ -170,7 +166,7 @@ public class SimpleHttpClient {
                     if (zip) {
                         out = new GZIPOutputStream(outputStream);
                     }
-                    out.write(payload.getBytes());
+                    out.write(payload.getBytes(Charset.defaultCharset()));
                     out.flush();
                     out.close();
                 }
@@ -182,7 +178,7 @@ public class SimpleHttpClient {
             entityEncReq.setEntity(ent);
         }
         return client.execute(request);
-    }
+    }*/
 
     /**
      * Send a HTTP Head request to the specified URL
@@ -235,7 +231,7 @@ public class SimpleHttpClient {
                 if (zip) {
                     out = new GZIPOutputStream(outputStream);
                 }
-                out.write(payload.getBytes());
+                out.write(payload.getBytes(Charset.defaultCharset()));
                 out.flush();
                 out.close();
             }

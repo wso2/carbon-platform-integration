@@ -75,9 +75,11 @@ public class FileManipulator {
             }
 
             String[] children = srcDir.list();
-            for (String aChildren : children) {
-                copyDir(new File(srcDir, aChildren),
-                        new File(dstDir, aChildren));
+            if (children != null) {
+                for (String aChildren : children) {
+                    copyDir(new File(srcDir, aChildren),
+                            new File(dstDir, aChildren));
+                }
             }
         } else {
             copyFile(srcDir, dstDir);
@@ -101,9 +103,8 @@ public class FileManipulator {
         }
 
         InputStream in = new FileInputStream(src);
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(dst);
+
+        try(OutputStream out = new FileOutputStream(dst)) {
 
             // Transfer bytes from in to out
             byte[] buf = new byte[10240];
@@ -116,14 +117,6 @@ public class FileManipulator {
                 in.close();
             } catch (IOException e) {
                 log.warn("Unable to close the InputStream " + e.getMessage(), e);
-            }
-
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                log.warn("Unable to close the OutputStream " + e.getMessage(), e);
             }
         }
     }

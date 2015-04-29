@@ -85,9 +85,9 @@ public class DerbyDatabaseManager implements DatabaseManager {
 
     /**
      * update database information bu giving sql file
-     *
-     * @param sqlFile sql file
-     * @throws Exception sql exception
+     * @param sqlFile
+     * @throws SQLException
+     * @throws IOException
      */
     public void executeUpdate(File sqlFile) throws SQLException, IOException {
         Statement st = null;
@@ -113,7 +113,7 @@ public class DerbyDatabaseManager implements DatabaseManager {
      *
      * @param sqlQuery query statement
      * @return output result-set
-     * @throws Exception exception
+     * @throws SQLException exception
      */
     public ResultSet executeQuery(String sqlQuery) throws SQLException {
         stmt = dbConnection.createStatement();
@@ -126,7 +126,7 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * execute sql statement
      *
      * @param sql sql statement
-     * @throws Exception exception
+     * @throws SQLException exception
      */
     public void execute(String sql) throws SQLException {
         stmt = dbConnection.createStatement();

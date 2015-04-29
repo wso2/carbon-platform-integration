@@ -34,6 +34,8 @@ public class MutualSSLClient {
 
     private static KeyStore keyStore;
     private static KeyStore trustStore;
+    private static FileInputStream keyStoreFIS;
+    private static FileInputStream trustStoreFIS;
     private static String keyStorePassword;
     private static String KEY_STORE_TYPE = "JKS";
     private static String TRUST_STORE_TYPE = "JKS";
@@ -59,7 +61,8 @@ public class MutualSSLClient {
 
         keyStorePassword = keyStorePassoword;
         keyStore = KeyStore.getInstance(KEY_STORE_TYPE);
-        keyStore.load(new FileInputStream(keyStorePath),
+        keyStoreFIS = new FileInputStream(keyStorePath);
+        keyStore.load(keyStoreFIS,
                 keyStorePassoword.toCharArray());
     }
 
@@ -77,7 +80,8 @@ public class MutualSSLClient {
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         trustStore = KeyStore.getInstance(TRUST_STORE_TYPE);
-        trustStore.load(new FileInputStream(trustStorePath),
+        trustStoreFIS = new FileInputStream(trustStorePath);
+        trustStore.load(trustStoreFIS,
                 trustStorePassoword.toCharArray());
     }
 
@@ -171,6 +175,15 @@ public class MutualSSLClient {
         return result;
     }
 
+    public static void unloadKeyStores()  {
+        try {
+            keyStoreFIS.close();
+            trustStoreFIS.close();
+        } catch (IOException e) {
+            //ignore here
+        }
+
+    }
     public static String getKeyStoreType() {
         return KEY_STORE_TYPE;
     }

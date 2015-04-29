@@ -30,7 +30,7 @@ import java.util.zip.ZipInputStream;
 public class ArchiveExtractorUtil {
     private static final Log log = LogFactory.getLog(ArchiveExtractorUtil.class);
 
-    public static void extractFile(String sourceFilePath, String extractedDir) throws Exception {
+    public static void extractFile(String sourceFilePath, String extractedDir) throws IOException {
         FileOutputStream fileoutputstream = null;
         String fileDestination = extractedDir + File.separator;
         byte[] buf = new byte[1024];
@@ -49,7 +49,7 @@ public class ArchiveExtractorUtil {
                 if (zipentry.isDirectory()) {
                     if (!newFile.exists()) {
                         if (!newFile.mkdirs()) {
-                            throw new Exception("Error occurred created new directory");
+                            throw new IOException("Error occurred created new directory");
                         }
                     }
                     zipentry = zipinputstream.getNextEntry();
