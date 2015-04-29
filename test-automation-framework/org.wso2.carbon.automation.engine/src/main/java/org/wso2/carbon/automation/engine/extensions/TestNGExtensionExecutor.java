@@ -31,44 +31,44 @@ public class TestNGExtensionExecutor {
         for (ExtensibleClass extensibleClass : orderedObjList) {
             Method execMethod;
             if (LISTENERMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_START)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_START);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_START);
             } else if (LISTENERMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH);
             } else if (LISTENERMethod.equals(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT);
             } else if (LISTENERMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_START)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_START);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_START);
             } else if (LISTENERMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_FINISH)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_FINISH);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_FINISH);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_TEST_START)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_TEST_START);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_TEST_START);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SUCCESS)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SUCCESS);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SUCCESS);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILURE)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILURE);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILURE);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SKIPPED)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SKIPPED);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SKIPPED);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_START)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_START);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_START);
             } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FINISH)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FINISH);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FINISH);
             } else if (LISTENERMethod.equals(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM)) {
-                execMethod = extensibleClass.getClazz()
-                        .getDeclaredMethod(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM);
+                Class<?> clazz = extensibleClass.getClazz();
+                execMethod = clazz.getDeclaredMethod(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM);
             } else {
                 break;
             }
@@ -93,7 +93,7 @@ public class TestNGExtensionExecutor {
                     if (classList.item(classNo).getNodeName().equals(ExtensionConstants.CLASS_NAME)) {
                         className = classList.item(classNo).getChildNodes().item(0).getNodeValue().trim();
                         if (!className.isEmpty()) {
-                            Class cls = Class.forName(className);
+                            Class<?> cls = Class.forName(className);
                             Object object = cls.newInstance();
                             Method initMethod = cls.getDeclaredMethod(FrameworkConstants.LISTENER_INIT_METHOD);
                             initMethod.invoke(object);

@@ -115,11 +115,6 @@
                 <version>${testng.version}</version>
             </dependency>
             <dependency>
-                <groupId>emma</groupId>
-                <artifactId>emma</artifactId>
-                <version>${emma.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.axis2.wso2</groupId>
                 <artifactId>axis2</artifactId>
                 <version>${axis2.wso2.version}</version>
@@ -316,11 +311,33 @@
                 <artifactId>sshd-core</artifactId>
                 <version>${sshd.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.core</artifactId>
+                <version>${jacoco.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.report</artifactId>
+                <version>${jacoco.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${org.codehaus.plexus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons.collections.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <properties>
         <testng.version>6.1.1</testng.version>
-        <emma.version>2.1.5320</emma.version>
+        <jacoco.core.version>0.7.4.201502262128</jacoco.core.version>
+        <org.codehaus.plexus.version>3.0.22</org.codehaus.plexus.version>
+        <commons.collections.version>3.2.1</commons.collections.version>
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
         <axiom.version>1.2.11.wso2v5</axiom.version>
         <operadriver.version>0.8.1</operadriver.version>

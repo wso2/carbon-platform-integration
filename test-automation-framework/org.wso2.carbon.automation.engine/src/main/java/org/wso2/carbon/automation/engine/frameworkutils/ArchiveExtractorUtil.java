@@ -19,9 +19,11 @@ package org.wso2.carbon.automation.engine.frameworkutils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
@@ -83,5 +85,71 @@ public class ArchiveExtractorUtil {
                 zipinputstream.close();
             }
         }
+    }
+
+    /**
+     * Extract carbon zip file and return the carbon home location.
+     *
+     * @param carbonServerZipFile - carbon zip file location
+     * @return - carbon home will be return
+     * @throws IOException - if zip distribution cannot be extracted
+     */
+    public static String setUpCarbonHome(String carbonServerZipFile)
+            throws IOException {
+
+        int indexOfZip = carbonServerZipFile.lastIndexOf(".zip");
+
+        if (indexOfZip == -1) {
+            throw new IllegalArgumentException(carbonServerZipFile + " is not a zip file");
+        }
+        String fileSeparator = (File.separator.equals("\\")) ? "\\" : "/";
+
+        if (fileSeparator.equals("\\")) {
+            carbonServerZipFile = carbonServerZipFile.replace("/", "\\");
+        }
+        String extractedCarbonDir =
+                carbonServerZipFile.substring(carbonServerZipFile.lastIndexOf(fileSeparator) + 1,
+                                              indexOfZip);
+        deleteDir(new File(extractedCarbonDir));
+        String extractDir = "carbontmp" + System.currentTimeMillis();
+        String baseDir = (System.getProperty("basedir", ".")) + File.separator + "target";
+        log.info("Extracting carbon zip file.. ");
+        extractFile(carbonServerZipFile, baseDir + File.separator + extractDir);
+        File carbonDistribution =
+                new File(new File(baseDir).getAbsolutePath() + File.separator + extractDir + File.separator +
+                         extractedCarbonDir);
+
+        if (!carbonDistribution.exists()) {
+            throw new FileNotFoundException("Carbon extracted distribution cannot be found at - " +
+                                            carbonDistribution.getAbsolutePath());
+        }
+
+        return new File(baseDir).getAbsolutePath() + File.separator + extractDir + File.separator +
+               extractedCarbonDir;
+    }
+
+    /**
+     * Deletes all files and subdirectories under dir.
+     * Returns true if all deletions were successful.
+     * If a deletion fails, the method stops attempting to delete and returns false.
+     *
+     * @param dir The directory to be deleted
+     * @return true if the directory and its descendents were deleted
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String child : children) {
+                    boolean success = deleteDir(new File(dir, child));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
     }
 }

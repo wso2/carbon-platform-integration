@@ -61,8 +61,8 @@ public class FrameworkPathUtil {
 
     public static String getReportLocation() {
         String reportLocation;
-        reportLocation = (System.getProperty(FrameworkConstants
-                .SYSTEM_PROPERTY_BASEDIR_LOCATION, ".")) + File.separator + "target";
+        reportLocation = (System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_BASEDIR_LOCATION, ".")) +
+                         File.separator + "target";
         return reportLocation;
     }
 
@@ -78,16 +78,25 @@ public class FrameworkPathUtil {
 
     public static String getCarbonServerAxisServiceDirectory() {
         return getCarbonHome() + File.separator + "repository" + File.separator
-                + "deployment" + File.separator + "server" + File.separator + "axis2services";
+               + "deployment" + File.separator + "server" + File.separator + "axis2services";
     }
 
     public static String getCarbonServerLibLocation() {
         return getCarbonHome() + File.separator + "repository" + File.separator + "components" +
-                File.separator + "lib";
+               File.separator + "lib";
     }
 
     public static String getCarbonServerConfLocation() {
         return getCarbonHome() + File.separator + "repository" + File.separator + "conf";
+    }
+
+    public static String getCoverageDirPath() {
+        return System.getProperty("basedir") + File.separator + "target" + File.separator +
+               "jacoco" + File.separator + "coverage";
+    }
+
+    public static String getCoverageDumpFilePath() {
+        return System.getProperty("java.io.tmpdir") + "jacoco.exec";
     }
 
     public static String getCarbonHome() {
