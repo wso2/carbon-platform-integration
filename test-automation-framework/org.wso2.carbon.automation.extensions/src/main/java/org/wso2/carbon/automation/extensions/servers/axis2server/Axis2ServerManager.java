@@ -209,9 +209,9 @@ public class Axis2ServerManager implements BackendServer {
 
         FileUtils.touch(file);
         OutputStream os = FileUtils.openOutputStream(file);
-        //InputStream is = new FileInputStream(filePath);
+        InputStream is = new FileInputStream(filePath);
 
-        try (InputStream is = new FileInputStream(filePath)){
+        try {
             byte[] data = new byte[1024];
             int len;
             while ((len = is.read(data)) != -1) {
