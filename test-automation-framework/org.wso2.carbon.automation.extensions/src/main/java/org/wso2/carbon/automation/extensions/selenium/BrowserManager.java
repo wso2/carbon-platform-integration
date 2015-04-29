@@ -50,7 +50,11 @@ public class BrowserManager {
         if (automationContext.getConfigurationNode(String.format(XPathConstants.SELENIUM_REMOTE_WEB_DRIVER_URL))
                 .getAttributes().item(0).getNodeValue().equals("false")) {
 
-            if (System.getenv().containsKey("JOB_URL")) {
+            /*log.info("Test runs on " + driverSelection + " browser...");
+            getDriver(driverSelection);
+            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            return driver;*/
+            if (System.getenv().containsKey("SELENIUM_PLATFORM")) {
                 log.info("Test runs on Sauce Labs environment...");
                 log.info("Operating System : " + System.getenv().get("SELENIUM_PLATFORM") +
                         " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version "+
