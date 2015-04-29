@@ -19,9 +19,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.engine.frameworkutils.ArchiveExtractorUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.engine.frameworkutils.ReportGenerator;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
 import org.wso2.carbon.automation.extensions.servers.utils.ClientConnectionUtil;
@@ -32,8 +36,6 @@ import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,9 +52,10 @@ public class CarbonServerManager {
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
-    private int defaultHttpsPort = 9443;
-    private int defaultHttpPort = 9763;
     private static final String CMD_ARG = "cmdArg";
+    private static int defaultHttpPort = Integer.parseInt(FrameworkConstants.SERVER_DEFAULT_HTTP_PORT);
+    private static int defaultHttpsPort = Integer.parseInt(FrameworkConstants.SERVER_DEFAULT_HTTPS_PORT);
+
 
     public CarbonServerManager(AutomationContext context) {
         this.automationContext = context;
@@ -64,27 +67,10 @@ public class CarbonServerManager {
         if (process != null) { // An instance of the server is running
             return;
         }
-        final int portOffset = getPortOffsetFromCommandMap(commandMap);
-        //check whether http port is already occupied
-        if (ClientConnectionUtil.isPortOpen(defaultHttpPort + portOffset)) {
-            throw new AutomationFrameworkException("Unable to start carbon server on port " +
-                                                   (defaultHttpPort + portOffset) + " : Port already in use");
-        }
-        //check whether https port is already occupied
-        if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
-            throw new AutomationFrameworkException("Unable to start carbon server on port " +
-                                                   (defaultHttpsPort + portOffset) + " : Port already in use");
-        }
+        final int portOffset = checkPortAvailability(commandMap);
         Process tempProcess;
         isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
         try {
-            if (isCoverageEnable) {
-                CodeCoverageUtils.init();
-                CodeCoverageUtils.instrument(carbonHome);
-            }
-            //defaultHttpsPort = Integer.parseInt(automationContext.getInstance().getPorts().get("https"));
-            //int defaultHttpPort = Integer.parseInt(automationContext.getInstance().getPorts().get("http"));
-            //set carbon home only if port offset is default.
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
                     System.setProperty(ExtensionConstants.CARBON_HOME, carbonHome);
@@ -93,7 +79,7 @@ public class CarbonServerManager {
             }
             File commandDir = new File(carbonHome);
 
-            log.info("Starting server............. ");
+            log.info("Starting carbon server............. ");
             String scriptName = getStartupScriptFileName();
             String[] parameters = expandServerStartupCommandList(commandMap);
 
@@ -102,9 +88,8 @@ public class CarbonServerManager {
                 String[] cmdArray;
 
                 if (isCoverageEnable) {
-                    cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat",
-                                            "-Demma.properties=" + System.getProperty("emma.properties"),
-                                            "-Demma.rt.control.port=" + (47653 + portOffset)};
+                    cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
+                    insertJacocoAgentToShellScript(carbonHome, scriptName);
                     cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
                 } else {
                     cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
@@ -116,9 +101,16 @@ public class CarbonServerManager {
 
                 String[] cmdArray;
                 if (isCoverageEnable) {
-                    cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh",
-                                            "-Demma.properties=" + System.getProperty("emma.properties"),
-                                            "-Demma.rt.control.port=" + (47653 + portOffset)};
+                    insertJacocoAgentToShellScript(carbonHome, scriptName);
+
+                    System.out.println("Included " + CodeCoverageUtils.getInclusionJarsPattern(":"));
+                    System.out.println("Exclude " + CodeCoverageUtils.getExclusionJarsPattern(":"));
+
+                    System.out.println("Included XXX " + CodeCoverageUtils.getInclusionJarsPattern(","));
+                    System.out.println("Exclude XXX " + CodeCoverageUtils.getExclusionJarsPattern(","));
+
+
+                    cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
                     cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
                 } else {
                     cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
@@ -133,6 +125,8 @@ public class CarbonServerManager {
             // start the stream readers
             inputStreamHandler.start();
             errorStreamHandler.start();
+
+            //register shutdown hook
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     try {
@@ -160,6 +154,44 @@ public class CarbonServerManager {
             throw new RuntimeException("Unable to start server", e);
         }
         process = tempProcess;
+    }
+
+    private int checkPortAvailability(Map<String, String> commandMap)
+            throws AutomationFrameworkException {
+        final int portOffset = getPortOffsetFromCommandMap(commandMap);
+
+        //check whether http port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpPort + portOffset) + " : Port already in use");
+        }
+        //check whether https port is already occupied
+        if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
+            throw new AutomationFrameworkException("Unable to start carbon server on port " +
+                                                   (defaultHttpsPort + portOffset) + " : Port already in use");
+        }
+        return portOffset;
+    }
+
+    /**
+     * This methods will insert jacoco agent settings into startup script under JAVA_OPTS
+     *
+     * @param carbonHome - carbonHome
+     * @param scriptName - Name of the startup script
+     * @throws IOException - throws if shell script edit fails
+     */
+    private void insertJacocoAgentToShellScript(String carbonHome, String scriptName)
+            throws IOException {
+
+        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
+        String destFile = System.getProperty("java.io.tmpdir") + File.separator + "jacoco.exec";
+
+        CodeCoverageUtils.insertStringToFile(
+                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
+                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + "sh"),
+                "-Dwso2.server.standalone=true",
+                "-javaagent:" + jacocoAgentFile + "=destfile=" + destFile + "" +
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + "\\");
     }
 
     private String[] mergePropertiesToCommandArray(String[] parameters, String[] cmdArray) {
@@ -198,9 +230,8 @@ public class CarbonServerManager {
     public synchronized void serverShutdown(int portOffset) throws Exception {
         if (process != null) {
             log.info("Shutting down server..");
-            if (ClientConnectionUtil.isPortOpen(Integer.parseInt(
-                    ExtensionConstants.SERVER_DEFAULT_HTTPS_PORT) + portOffset)) {
 
+            if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
                 int httpsPort = defaultHttpsPort + portOffset;
                 String url = automationContext.getContextUrls().getBackEndUrl();
                 String backendURL = url.replaceAll("(:\\d+)", ":" + httpsPort);
@@ -210,19 +241,21 @@ public class CarbonServerManager {
                         automationContext.getSuperTenant().getContextUser().getUserName(),
                         automationContext.getSuperTenant().getContextUser().getPassword());
 
+
                 long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
                 while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                        System.currentTimeMillis() < time) {
                     // wait until server shutdown is completed
                 }
                 log.info("Server stopped successfully...");
+
                 inputStreamHandler.stop();
                 process.destroy();
                 process = null;
+
+                //generate coverage report
                 if (isCoverageEnable) {
-                    List<File> list = new ArrayList<File>();
-                    list.add(new File(carbonHome));
-                    CodeCoverageUtils.generateReports(list);
+                    generateCoverageReport();
                 }
                 if (portOffset == 0) {
                     System.clearProperty(ExtensionConstants.CARBON_HOME);
@@ -231,24 +264,38 @@ public class CarbonServerManager {
         }
     }
 
-    public synchronized void restartGracefully() throws Exception {
+    private void generateCoverageReport() throws IOException {
+        String jacocoDumpFileLocation = System.getProperty("java.io.tmpdir") + File.separator + "jacoco.exec";
 
+        String classesDir = ArchiveExtractorUtil.setUpCarbonHome(FrameworkPathUtil.getCarbonZipLocation()) +
+                            File.separator + "repository" + File.separator + "components" + File.separator +
+                            "plugins" + File.separator;
+
+        String coverageReportDir = System.getProperty("basedir") + File.separator + "target" + File.separator +
+                                   "jacoco" + File.separator + "coverage";
+
+        ReportGenerator reportGenerator = new ReportGenerator(new File(jacocoDumpFileLocation),
+                                                              new File(classesDir),
+                                                              new File(coverageReportDir));
+        reportGenerator.create();
+    }
+
+    public synchronized void restartGracefully() throws Exception {
         ClientConnectionUtil.sendGraceFullRestartRequest(
                 automationContext.getContextUrls().getSecureServiceUrl(),
                 automationContext.getSuperTenant().getContextUser().getUserName(),
                 automationContext.getSuperTenant().getContextUser().getPassword());
 
         long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
+
         while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                System.currentTimeMillis() < time) {
             // wait until server shutdown is completed
         }
-        Thread.sleep(5000);//wait for port to close
-        if (isCoverageEnable) {
-            CodeCoverageUtils.renameCoverageDataFile(carbonHome);
-        }
-        ClientConnectionUtil.waitForPort(Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
-                                         automationContext.getInstance().getHosts().get("default"));
+        ClientConnectionUtil.waitForPort(
+                Integer.parseInt(automationContext.getInstance().getPorts().get("https")),
+                automationContext.getInstance().getHosts().get("default"));
+
         ClientConnectionUtil.waitForLogin(automationContext);
     }
 
@@ -278,7 +325,7 @@ public class CarbonServerManager {
             parameterArray[arrayIndex++] = parameter;
         }
         //setting cmdArg again
-        if(cmdArg != null) {
+        if (cmdArg != null) {
             commandMap.put(CMD_ARG, cmdArg);
         }
         if (cmdParaArray == null || cmdParaArray.length == 0) {
@@ -318,8 +365,7 @@ public class CarbonServerManager {
                 }
             }
         } else {
-            throw new FileNotFoundException("Server startup script not found at " +
-                                            carbonHome + File.separator + "bin");
+            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
         }
         return FilenameUtils.removeExtension(scriptName);
     }

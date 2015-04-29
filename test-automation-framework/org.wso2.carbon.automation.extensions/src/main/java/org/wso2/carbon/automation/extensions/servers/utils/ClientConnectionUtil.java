@@ -276,7 +276,7 @@ public class ClientConnectionUtil {
                 log.info("Successfully connected to the server on port " + port);
             }
         } catch (IOException e) {
-            log.info("Port " + port + " is Closed");
+            log.info("Port " + port + " is closed and available for use");
             isPortOpen = false;
         } finally {
             try {
