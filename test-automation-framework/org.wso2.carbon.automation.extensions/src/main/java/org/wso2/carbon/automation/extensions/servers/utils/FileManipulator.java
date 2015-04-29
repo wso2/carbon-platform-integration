@@ -103,8 +103,9 @@ public class FileManipulator {
         }
 
         InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
 
-        try(OutputStream out = new FileOutputStream(dst)) {
+        try {
 
             // Transfer bytes from in to out
             byte[] buf = new byte[10240];
