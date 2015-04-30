@@ -73,7 +73,8 @@ public class SFTPServer extends Thread {
         sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
         sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {
             @Override
-            public boolean authenticate(final String username, final String password, final ServerSession session) {
+            public boolean authenticate(final String username, final String password,
+                                        final ServerSession session) {
                 return StringUtils.equals(username, USERNAME) && StringUtils.equals
                         (password, java.nio.CharBuffer.wrap(PASSWORD).toString());
             }

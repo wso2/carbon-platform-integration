@@ -70,7 +70,7 @@ public class FileManager {
     public static void writeToFile(String filePath, String content) throws IOException {
 
         BufferedWriter writer = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream(filePath, true),Charset.defaultCharset()));
+                (new OutputStreamWriter(new FileOutputStream(filePath, true), Charset.defaultCharset()));
 
         try {
             writer.write(content);
@@ -91,7 +91,7 @@ public class FileManager {
         InputStreamReader in = new InputStreamReader(new FileInputStream(sourceFile), Charset.defaultCharset());
 
         BufferedWriter out = new BufferedWriter
-                (new OutputStreamWriter(new FileOutputStream(destinationFile),Charset.defaultCharset()));
+                (new OutputStreamWriter(new FileOutputStream(destinationFile), Charset.defaultCharset()));
         int c;
         try {
             while ((c = in.read()) != -1) {
@@ -231,5 +231,8 @@ public class FileManager {
         File jarFile = new File(filePathWithFileName);
         return !jarFile.isDirectory() && jarFile.delete();
     }
+
+
+
 }
 

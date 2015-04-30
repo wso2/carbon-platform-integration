@@ -49,6 +49,4 @@ public class FrameworkConstants {
     public static final String SUPER_TENANT_KEY = "superTenant";
     public static final String SUPER_TENANT_ADMIN = "superAdmin";
     public static final String CARBON_HOME = "carbon.home";
-
-
 }

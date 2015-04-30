@@ -103,7 +103,6 @@ public class TestServerManager {
                 throw new IllegalArgumentException("carbon zip file cannot find in the given location");
             }
             carbonHome = carbonServer.setUpCarbonHome(carbonZip);
-
             configureServer();
         }
         log.info("Carbon Home - " + carbonHome);
