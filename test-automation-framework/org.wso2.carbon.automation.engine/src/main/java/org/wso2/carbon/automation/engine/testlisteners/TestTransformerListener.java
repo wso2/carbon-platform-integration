@@ -33,6 +33,7 @@ import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -92,7 +93,7 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
         }
     }
 
-    private boolean annotationComparator(String annotation) throws Exception {
+    private boolean annotationComparator(String annotation) throws XPathExpressionException {
         boolean compSetup = false;
         if(annotation.contains(ExecutionEnvironment.ALL.name())) {
             compSetup = true;

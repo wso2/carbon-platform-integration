@@ -38,7 +38,10 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * method will start derby server and create a database connection
      *
      * @param jdbcURL JDBC url sample provided in class comment
-     * @throws Exception sql exceptions
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
     public DerbyDatabaseManager(String jdbcURL) throws ClassNotFoundException,
             SQLException, IllegalAccessException,
@@ -75,7 +78,7 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * update existing database information
      *
      * @param sql update sql string
-     * @throws Exception sql exception
+     * @throws SQLException sql exception
      */
     public void executeUpdate(String sql) throws SQLException {
         stmt = dbConnection.createStatement();

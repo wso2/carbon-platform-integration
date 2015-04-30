@@ -1,12 +1,11 @@
 package org.wso2.carbon.automation.test.utils.common;
 
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -59,46 +58,55 @@ public class EmailSender {
     }
 
 
-    public void sendEmail () throws Exception {
+    public void sendEmail () throws AutomationFrameworkException {
 
-        Transport transport = session.getTransport("smtp");
-        transport.connect();
-        Message message = new MimeMessage(session);
-        // Set from
-        message.setFrom(new InternetAddress(senderId));
-        // Set to
-        InternetAddress[] address = { new InternetAddress(recipientMail) };
-        message.setRecipients(Message.RecipientType.TO, address);
-        // Set subject
-        message.setSubject(subject);
-        // Set time
-        message.setSentDate(new Date());
-        // Set content
-        MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setText(body);
+        try {
+            Transport transport = session.getTransport("smtp");
+            transport.connect();
+            Message message = new MimeMessage(session);
+            // Set from
+            message.setFrom(new InternetAddress(senderId));
+            // Set to
+            InternetAddress[] address = {new InternetAddress(recipientMail)};
+            message.setRecipients(Message.RecipientType.TO, address);
+            // Set subject
+            message.setSubject(subject);
+            // Set time
+            message.setSentDate(new Date());
+            // Set content
+            MimeBodyPart bodyPart = new MimeBodyPart();
+            bodyPart.setText(body);
 
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(bodyPart);
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(bodyPart);
 
-        if (attachmentList != null) {
-            for (String attachment : attachmentList) {
+            if (attachmentList != null) {
+                for (String attachment : attachmentList) {
 
-                MimeBodyPart attachmentPart = new MimeBodyPart();
+                    MimeBodyPart attachmentPart = new MimeBodyPart();
 
-                // Put a file in the second part
-                FileDataSource fds = new FileDataSource(attachment);
-                attachmentPart.setDataHandler(new DataHandler(fds));
-                attachmentPart.setFileName(fds.getName());
-                multipart.addBodyPart(attachmentPart);
+                    // Put a file in the second part
+                    FileDataSource fds = new FileDataSource(attachment);
+                    attachmentPart.setDataHandler(new DataHandler(fds));
+                    attachmentPart.setFileName(fds.getName());
+                    multipart.addBodyPart(attachmentPart);
+                }
             }
+
+            message.setContent(multipart);
+            // Set complete
+            message.saveChanges();
+            // Send the message
+            transport.sendMessage(message, address);
+            transport.close();
+        } catch (AddressException e) {
+            throw new AutomationFrameworkException("Address not found", e);
+        } catch (NoSuchProviderException e) {
+            throw new AutomationFrameworkException("provider not found", e);
+        } catch (MessagingException e) {
+            throw new AutomationFrameworkException("message error", e);
         }
 
-        message.setContent(multipart);
-        // Set complete
-        message.saveChanges();
-        // Send the message
-        transport.sendMessage(message, address);
-        transport.close();
 
     }
 }
