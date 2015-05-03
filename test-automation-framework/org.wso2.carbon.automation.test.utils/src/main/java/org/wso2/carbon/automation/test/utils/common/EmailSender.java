@@ -51,13 +51,14 @@ public class EmailSender {
         this.recipientMail = recipientMail;
     }
 
-    public boolean createSession () {
+    public boolean createSession() {
 
         Authenticator authenticator = new EmailPasswordAuthenticator(username, password);
         session = Session.getInstance(properties, authenticator);
 
-        if (session == null)
+        if (session == null) {
             return false;
+        }
 
         return true;
     }
@@ -76,15 +77,17 @@ public class EmailSender {
     }
 
 
-    public void sendEmail () throws Exception {
+    public void sendEmail() throws MessagingException {
 
         Transport transport = session.getTransport("smtp");
+
         transport.connect();
+
         Message message = new MimeMessage(session);
         // Set from
         message.setFrom(new InternetAddress(senderId));
         // Set to
-        InternetAddress[] address = { new InternetAddress(recipientMail) };
+        InternetAddress[] address = {new InternetAddress(recipientMail)};
         message.setRecipients(Message.RecipientType.TO, address);
         // Set subject
         message.setSubject(subject);
@@ -124,13 +127,11 @@ class EmailPasswordAuthenticator extends Authenticator {
 
     protected PasswordAuthentication passwordAuthentication;
 
-    public EmailPasswordAuthenticator(String user, String password)
-    {
+    public EmailPasswordAuthenticator(String user, String password) {
         this.passwordAuthentication = new PasswordAuthentication(user, password);
     }
 
-    protected PasswordAuthentication getPasswordAuthentication()
-    {
+    protected PasswordAuthentication getPasswordAuthentication() {
         return passwordAuthentication;
     }
 }
