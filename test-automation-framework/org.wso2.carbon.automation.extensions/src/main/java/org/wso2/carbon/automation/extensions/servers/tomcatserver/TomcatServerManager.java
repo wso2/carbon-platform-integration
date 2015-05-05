@@ -57,7 +57,7 @@ public class TomcatServerManager {
         this.webappDirLocation = webAppDir;
     }
 
-    public void startJaxRsServer() throws IOException, LifecycleException {
+    public void startJaxRsServer() throws LifecycleException, IOException {
         final File base = createBaseDirectory(basedir);
         log.info("Using base folder: " + base.getAbsolutePath());
         tomcat = new Tomcat();

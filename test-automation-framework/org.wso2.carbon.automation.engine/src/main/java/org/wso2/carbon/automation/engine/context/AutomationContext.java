@@ -31,6 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -615,5 +616,44 @@ public class AutomationContext {
 
     public String getWorkerInstanceName() {
         return workerInstanceName;
+    }
+
+    public List<String> getTenantList() throws XPathExpressionException {
+        List<String> tenantList = new ArrayList<String>();
+        // add carbon.super
+        tenantList.add(FrameworkConstants.SUPER_TENANT_DOMAIN_NAME);
+
+        // add other tenants
+        NodeList tenantNodeList =
+                this.getConfigurationNodeList(ContextXpathConstants.TENANTS_NODE)
+                        .item(0)
+                        .getChildNodes();
+        for (int i = 0; i < tenantNodeList.getLength(); i++) {
+            tenantList.add(
+                    tenantNodeList.item(i).getAttributes()
+                            .getNamedItem(ContextXpathConstants.DOMAIN).getNodeValue()
+            );
+        }
+        return tenantList;
+    }
+
+    public List<String> getUserList(String tenantDomain) throws XPathExpressionException {
+        List<String> userList = new ArrayList<String>();
+
+        // set tenant type
+        String tenantType = ContextXpathConstants.TENANTS;
+        if (tenantDomain.equals(FrameworkConstants.SUPER_TENANT_DOMAIN_NAME)) {
+            tenantType = ContextXpathConstants.SUPER_TENANT;
+        }
+
+        NodeList userNodeList = this
+                .getConfigurationNodeList(
+                        String.format(ContextXpathConstants.USER_NODE, tenantType,
+                                tenantDomain));
+
+        for (int i = 0; i < userNodeList.getLength(); i++) {
+            userList.add(userNodeList.item(i).getAttributes().getNamedItem("key").getNodeValue());
+        }
+        return userList;
     }
 }

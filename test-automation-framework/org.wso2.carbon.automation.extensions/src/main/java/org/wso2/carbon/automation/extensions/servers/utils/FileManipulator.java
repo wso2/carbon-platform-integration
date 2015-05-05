@@ -98,14 +98,16 @@ public class FileManipulator {
         String dstAbsPath = dst.getAbsolutePath();
         String dstDir = dstAbsPath.substring(0, dstAbsPath.lastIndexOf(File.separator));
         File dir = new File(dstDir);
+        InputStream in = null;
+        OutputStream out = null;
+
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Fail to create the directory: " + dir.getAbsolutePath());
         }
 
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
         try {
+            in = new FileInputStream(src);
+            out = new FileOutputStream(dst);
 
             // Transfer bytes from in to out
             byte[] buf = new byte[10240];
@@ -115,9 +117,21 @@ public class FileManipulator {
             }
         } finally {
             try {
-                in.close();
+                if(in != null) {
+                    in.close();
+                }
             } catch (IOException e) {
                 log.warn("Unable to close the InputStream " + e.getMessage(), e);
+            }
+
+            try {
+                if(out != null){
+                    out.close();
+
+                }
+
+            } catch (IOException e) {
+                log.warn("Unable to close the OutStream ", e);
             }
         }
     }

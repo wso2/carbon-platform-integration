@@ -98,4 +98,8 @@ public class ContextXpathConstants {
 	public static final String ROLES = "roles";
 	public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
 			"//%s/tenant[@domain='%s']/users/user[@key='%s']/roles/role";
+
+    public static final String USER_NODE = "//%s/tenant[@domain='%s']/users/user";
+    public static final String TENANTS_NODE = "//tenants";
+    public static final String DOMAIN = "domain";
 }

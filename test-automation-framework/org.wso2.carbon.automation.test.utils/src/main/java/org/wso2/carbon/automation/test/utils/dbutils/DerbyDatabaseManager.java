@@ -38,10 +38,14 @@ public class DerbyDatabaseManager implements DatabaseManager {
      * method will start derby server and create a database connection
      *
      * @param jdbcURL JDBC url sample provided in class comment
+<<<<<<< HEAD
      * @throws ClassNotFoundException
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws InstantiationException
+=======
+     * @throws ClassNotFoundException sql exceptions
+>>>>>>> 08da37241ca4f608e5d10858d2e478611bb9f017
      */
     public DerbyDatabaseManager(String jdbcURL) throws ClassNotFoundException,
             SQLException, IllegalAccessException,
