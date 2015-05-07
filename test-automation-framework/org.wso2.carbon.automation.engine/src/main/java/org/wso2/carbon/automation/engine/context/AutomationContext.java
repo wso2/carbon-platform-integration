@@ -618,6 +618,11 @@ public class AutomationContext {
         return workerInstanceName;
     }
 
+    /**
+     * This is implemented to get tenant list described in automation.xml
+     * @return - list of tenant names
+     * @throws XPathExpressionException
+     */
     public List<String> getTenantList() throws XPathExpressionException {
         List<String> tenantList = new ArrayList<String>();
         // add carbon.super
@@ -637,6 +642,12 @@ public class AutomationContext {
         return tenantList;
     }
 
+    /**
+     * This is to get user list of given tenant in automation.xml
+     * @param tenantDomain - tenant name
+     * @return - user name list
+     * @throws XPathExpressionException
+     */
     public List<String> getUserList(String tenantDomain) throws XPathExpressionException {
         List<String> userList = new ArrayList<String>();
 
