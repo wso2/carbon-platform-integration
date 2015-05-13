@@ -17,52 +17,141 @@
 */
 package org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config;
 
+import org.apache.activemq.broker.TransportConnector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class provide the broker transport information of embedded ActiveMQ broker
+ */
+
 public class JMSBrokerConfigurationProvider {
-    private static JMSBrokerConfiguration configuration = null;
+    private static final Log log = LogFactory.getLog(JMSBrokerConfigurationProvider.class);
     private static JMSBrokerConfigurationProvider instance = new JMSBrokerConfigurationProvider();
+    private List<TransportConnector> connectors = new ArrayList<TransportConnector>();
+    private JMSBrokerConfiguration tcp = new JMSBrokerConfiguration();
+    private JMSBrokerConfiguration mqtt = new JMSBrokerConfiguration();
 
 
     private JMSBrokerConfigurationProvider() {
-        setConfiguration(getJMSBrokerConfiguration());
+        setTransportConnectors();
+        setBrokerConfig();
     }
 
+    /**
+     * This will provide the singleton instance
+     * @return JMSBrokerConfigurationProvider singleton instance
+     */
     public static JMSBrokerConfigurationProvider getInstance() {
         return instance;
     }
 
-    public static void setConfiguration(JMSBrokerConfiguration configuration) {
-        JMSBrokerConfigurationProvider.configuration = configuration;
-    }
-
-
+    /**
+     * This will return the provider url of tcp endpoint
+     * @return JMSBrokerConfiguration of tcp transport info
+     */
     public JMSBrokerConfiguration getBrokerConfiguration() {
-        return configuration;
+        return getJMSBrokerConfiguration("tcp");
+    }
+
+    /**
+     * Provide the transport configuration info
+     * @param transport(tcp,mqtt)
+     * @return JMSBrokerConfiguration
+     */
+    public JMSBrokerConfiguration getBrokerConfiguration(String transport) {
+        return getJMSBrokerConfiguration(transport);
+    }
+
+    /**
+     * provide the transport connectors available
+     * @return List of TransportConnector
+     */
+    public List<TransportConnector> getTransportConnectors() {
+        return connectors;
+    }
+
+    /**
+     * This will provide the TCP transport configuration
+     * @return TransportConnector for TCP transport
+     */
+    private TransportConnector getTCPConnector() {
+        //setting the tcp transport configurations
+        TransportConnector tcp = new TransportConnector();
+        tcp.setName("tcp");
+        try {
+            tcp.setUri(new URI("tcp://127.0.0.1:61616"));
+        } catch (URISyntaxException e) {
+            log.error("Error while setting tcp uri :tcp://127.0.0.1:61616", e);
+        }
+        return tcp;
+    }
+
+    /**
+     * This will provide the MQTT transport configuration
+     * @return TransportConnector for MQTT transport
+     */
+    private TransportConnector getMQTTConnector() {
+        //setting the mqtt transport configurations
+        TransportConnector mqtt = new TransportConnector();
+        mqtt.setName("mqtt");
+        try {
+            mqtt.setUri(new URI("mqtt://localhost:1883"));
+        } catch (URISyntaxException e) {
+            log.error("Error while setting MQTT uri:mqtt://localhost:1883");
+        }
+        return mqtt;
+    }
+
+    /**
+     * Adding the transport connectors which exposed by server
+     */
+    private void setTransportConnectors() {
+        connectors.add(getTCPConnector());
+        connectors.add(getMQTTConnector());
+
+    }
+
+    /**
+     * This will return the Broker transport information according to transport name
+     * @param transportName name of the transport
+     * @return JMSBrokerConfiguration with the transport information
+     */
+    private JMSBrokerConfiguration getJMSBrokerConfiguration(String transportName) {
+        if ("tcp".equalsIgnoreCase(transportName)) {
+            return tcp;
+        } else if ("mqtt".equalsIgnoreCase(transportName)) {
+            return mqtt;
+        } else {
+            JMSBrokerConfiguration jmsBrokerConfiguration = new JMSBrokerConfiguration();
+            jmsBrokerConfiguration.
+                    setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+            for (TransportConnector con : getTransportConnectors()) {
+                if (transportName.equalsIgnoreCase(con.getName())) {
+                    jmsBrokerConfiguration.setProviderURL(con.getUri().toString());
+                }
+            }
+            return jmsBrokerConfiguration;
+        }
+    }
+
+    /**
+     * setting the embedded broker transports which exposed at server startup
+     */
+    private void setBrokerConfig() {
+
+        tcp.setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        tcp.setProviderURL(getTCPConnector().getUri().toString());
+
+        mqtt.setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        mqtt.setProviderURL(getMQTTConnector().getUri().toString());
+
     }
 
 
-    private JMSBrokerConfiguration getJMSBrokerConfiguration() {
-        JMSBrokerConfiguration jmsBrokerConfiguration = new JMSBrokerConfiguration();
-//        if (new EnvironmentBuilder().getFrameworkSettings().getEnvironmentSettings().is_builderEnabled()) {
-//            //setting activemq configuration
-        jmsBrokerConfiguration.
-                setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        jmsBrokerConfiguration.setProviderURL("tcp://127.0.0.1:61616");
-
-//        } else {
-//            //setting wso2mb configuration
-//            ProductVariables mbServer = FrameworkFactory.getFrameworkProperties(FrameworkConstants.MB_SERVER_NAME)
-//                    .getProductVariables();
-//          //  InitialContextPublisher.getContext().getUserManagerContext();
-//            UserInfo userInfo = UserListCsvReader.getUserInfo(0);
-//            String userName = userInfo.;
-//            String password = userInfo.getPassword();
-//            String qpidPort = mbServer.getQpidPort();
-//            String hostaName = mbServer.getHostName();
-//            jmsBrokerConfiguration.setInitialNamingFactory("org.wso2.andes.jndi.PropertiesFileInitialContextFactory");
-//            jmsBrokerConfiguration.setProviderURL("amqp://" + userName + ":" + password + "@clientID/carbon?brokerlist='tcp://"
-//                                                  + hostaName + ":" + qpidPort + "'");
-//        }
-//
-        return jmsBrokerConfiguration;
-    }
 }

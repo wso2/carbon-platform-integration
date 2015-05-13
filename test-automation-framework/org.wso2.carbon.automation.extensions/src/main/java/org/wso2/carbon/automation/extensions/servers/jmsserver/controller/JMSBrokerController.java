@@ -26,31 +26,61 @@ import org.wso2.carbon.automation.extensions.servers.jmsserver.controller.config
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * This class provide the ActiveMQ broker service as embedded server
+ */
 public class JMSBrokerController {
     private static final Log log = LogFactory.getLog(JMSBrokerController.class);
     private String serverName;
-    private JMSBrokerConfiguration configuration;
+    private List<TransportConnector> transportConnectors;
     private BrokerService broker;
     private static boolean isBrokerStarted = false;
 
+    /**
+     * Constructor to defined broker transport
+     * @param serverName name for the server
+     * @param configuration Transport configurations which should expose by the server
+     */
     public JMSBrokerController(String serverName,
                                JMSBrokerConfiguration configuration) {
         this.serverName = serverName;
-        this.configuration = configuration;
+        this.transportConnectors = new ArrayList<TransportConnector>();
+        TransportConnector connector = new TransportConnector();
+        connector.setName("tcp");
+        try {
+            connector.setUri(new URI(configuration.getProviderURL()));
+        } catch (URISyntaxException e) {
+            log.error("Invalid URI", e);
+        }
+        transportConnectors.add(connector);
+
     }
 
+    /**
+     * Constructor to defined broker transport
+     * @param serverName name of the server
+     * @param transportConnectors transport configurations which should expose by the server
+     */
+    public JMSBrokerController(String serverName,
+                               List<TransportConnector> transportConnectors) {
+        this.serverName = serverName;
+        this.transportConnectors = transportConnectors;
+    }
+
+    /**
+     * Return the server name defined from constructor
+     * @return name of the broker service
+     */
     public String getServerName() {
         return serverName;
     }
 
-    public String getProviderURL() {
-        return configuration.getProviderURL();
-    }
-
     /**
      * starting ActiveMQ embedded broker
-     *
      * @return true if the broker is registered successfully
      */
     public boolean start() {
@@ -58,13 +88,14 @@ public class JMSBrokerController {
             log.info("JMSServerController: Preparing to start JMS Broker: " + serverName);
             broker = new BrokerService();
             // configure the broker
-            TransportConnector connector = new TransportConnector();
-            connector.setUri(new URI(configuration.getProviderURL()));
-            broker.setBrokerName("testBroker");
+
+            broker.setBrokerName(serverName);
             log.info(broker.getBrokerDataDirectory());
             broker.setDataDirectory(System.getProperty(FrameworkConstants.CARBON_HOME) +
-                    File.separator + broker.getBrokerDataDirectory());
-            broker.addConnector(connector);
+                                    File.separator + broker.getBrokerDataDirectory());
+            broker.setTransportConnectors(transportConnectors);
+            broker.setPersistent(true);
+
             broker.start();
             setBrokerStatus(true);
             log.info("JMSServerController: Broker is Successfully started. continuing tests");
@@ -79,7 +110,6 @@ public class JMSBrokerController {
 
     /**
      * Stopping ActiveMQ embedded broker
-     *
      * @return true if broker is successfully stopped
      */
     public boolean stop() {
@@ -87,6 +117,9 @@ public class JMSBrokerController {
             log.info(" ************* Stopping **************");
             if (broker.isStarted()) {
                 broker.stop();
+                for(TransportConnector transportConnector : transportConnectors) {
+                    transportConnector.stop();
+                }
                 setBrokerStatus(false);
             }
             return true;
@@ -96,6 +129,10 @@ public class JMSBrokerController {
         }
     }
 
+    /**
+     * getting the broker status
+     * @return true if the broker is started
+     */
     public static boolean isBrokerStarted() {
         return isBrokerStarted;
     }
