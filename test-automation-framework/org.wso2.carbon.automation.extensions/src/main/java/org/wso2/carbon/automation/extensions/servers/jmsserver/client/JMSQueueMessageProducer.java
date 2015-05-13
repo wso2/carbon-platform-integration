@@ -72,12 +72,11 @@ public class JMSQueueMessageProducer {
     /**
      * This will establish  the connection with the given Queue.
      * This must be called before calling pushMessage() to send messages
-     *
+     * @param persistMessage to persist message or not
      * @param queueName name of the Queue
-     * @throws JMSException
-     * @throws javax.naming.NamingException
+     * @throws JMSException when failed to connect to Queue
      */
-    public void connect(String queueName, boolean persistMessage) throws JMSException, NamingException {
+    public void connect(String queueName, boolean persistMessage) throws JMSException {
         // Create a Connection
         connection = connectionFactory.createConnection();
         connection.start();

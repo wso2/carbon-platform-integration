@@ -74,12 +74,11 @@ public class JMSTopicMessagePublisher {
     /**
      * This will establish  the connection with the given Topic.
      * This must be called before calling publish()
-     *
+     * @param persistMessage to persist message or not
      * @param topicName name of the topic
-     * @throws JMSException
-     * @throws javax.naming.NamingException
+     * @throws JMSException when failed to connect to Topic
      */
-    public void connect(String topicName, boolean persistMessage) throws JMSException, NamingException {
+    public void connect(String topicName, boolean persistMessage) throws JMSException {
         // Create a Connection
         connection = connectionFactory.createTopicConnection();
         connection.start();
