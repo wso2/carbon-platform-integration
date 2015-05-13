@@ -30,6 +30,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provide the ActiveMQ broker service as embedded server
+ */
 public class JMSBrokerController {
     private static final Log log = LogFactory.getLog(JMSBrokerController.class);
     private String serverName;
@@ -37,6 +40,11 @@ public class JMSBrokerController {
     private BrokerService broker;
     private static boolean isBrokerStarted = false;
 
+    /**
+     * Constructor to defined broker transport
+     * @param serverName name for the server
+     * @param configuration Transport configurations which should expose by the server
+     */
     public JMSBrokerController(String serverName,
                                JMSBrokerConfiguration configuration) {
         this.serverName = serverName;
@@ -52,19 +60,27 @@ public class JMSBrokerController {
 
     }
 
+    /**
+     * Constructor to defined broker transport
+     * @param serverName name of the server
+     * @param transportConnectors transport configurations which should expose by the server
+     */
     public JMSBrokerController(String serverName,
                                List<TransportConnector> transportConnectors) {
         this.serverName = serverName;
         this.transportConnectors = transportConnectors;
     }
 
+    /**
+     * Return the server name defined from constructor
+     * @return name of the broker service
+     */
     public String getServerName() {
         return serverName;
     }
 
     /**
      * starting ActiveMQ embedded broker
-     *
      * @return true if the broker is registered successfully
      */
     public boolean start() {
@@ -94,7 +110,6 @@ public class JMSBrokerController {
 
     /**
      * Stopping ActiveMQ embedded broker
-     *
      * @return true if broker is successfully stopped
      */
     public boolean stop() {

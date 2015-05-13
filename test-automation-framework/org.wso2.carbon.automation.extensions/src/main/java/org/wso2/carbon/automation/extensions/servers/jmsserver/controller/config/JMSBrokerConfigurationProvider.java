@@ -26,6 +26,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provide the broker transport information of embedded ActiveMQ broker
+ */
+
 public class JMSBrokerConfigurationProvider {
     private static final Log log = LogFactory.getLog(JMSBrokerConfigurationProvider.class);
     private static JMSBrokerConfigurationProvider instance = new JMSBrokerConfigurationProvider();
@@ -39,11 +43,18 @@ public class JMSBrokerConfigurationProvider {
         setBrokerConfig();
     }
 
+    /**
+     * This will provide the singleton instance
+     * @return JMSBrokerConfigurationProvider singleton instance
+     */
     public static JMSBrokerConfigurationProvider getInstance() {
         return instance;
     }
 
-
+    /**
+     * This will return the provider url of tcp endpoint
+     * @return JMSBrokerConfiguration of tcp transport info
+     */
     public JMSBrokerConfiguration getBrokerConfiguration() {
         return getJMSBrokerConfiguration("tcp");
     }
@@ -65,67 +76,80 @@ public class JMSBrokerConfigurationProvider {
         return connectors;
     }
 
-    private TransportConnector getTCPConnector() throws URISyntaxException {
+    /**
+     * This will provide the TCP transport configuration
+     * @return TransportConnector for TCP transport
+     */
+    private TransportConnector getTCPConnector() {
         //setting the tcp transport configurations
         TransportConnector tcp = new TransportConnector();
         tcp.setName("tcp");
-        tcp.setUri(new URI("tcp://127.0.0.1:61616"));
+        try {
+            tcp.setUri(new URI("tcp://127.0.0.1:61616"));
+        } catch (URISyntaxException e) {
+            log.error("Error while setting tcp uri :tcp://127.0.0.1:61616", e);
+        }
         return tcp;
     }
 
-    private TransportConnector getMQTTConnector() throws URISyntaxException{
+    /**
+     * This will provide the MQTT transport configuration
+     * @return TransportConnector for MQTT transport
+     */
+    private TransportConnector getMQTTConnector() {
         //setting the mqtt transport configurations
         TransportConnector mqtt = new TransportConnector();
         mqtt.setName("mqtt");
-        mqtt.setUri(new URI("mqtt://localhost:1883"));
+        try {
+            mqtt.setUri(new URI("mqtt://localhost:1883"));
+        } catch (URISyntaxException e) {
+            log.error("Error while setting MQTT uri:mqtt://localhost:1883");
+        }
         return mqtt;
     }
 
+    /**
+     * Adding the transport connectors which exposed by server
+     */
     private void setTransportConnectors() {
-
-        try {
-            connectors.add(getTCPConnector());
-            connectors.add(getMQTTConnector());
-        } catch (URISyntaxException e) {
-            log.error("Invalid URI", e);
-        }
-
+        connectors.add(getTCPConnector());
+        connectors.add(getMQTTConnector());
 
     }
 
-
+    /**
+     * This will return the Broker transport information according to transport name
+     * @param transportName name of the transport
+     * @return JMSBrokerConfiguration with the transport information
+     */
     private JMSBrokerConfiguration getJMSBrokerConfiguration(String transportName) {
-        if("tcp".equalsIgnoreCase(transportName)){
+        if ("tcp".equalsIgnoreCase(transportName)) {
             return tcp;
-        } else if("mqtt".equalsIgnoreCase(transportName)){
+        } else if ("mqtt".equalsIgnoreCase(transportName)) {
             return mqtt;
         } else {
             JMSBrokerConfiguration jmsBrokerConfiguration = new JMSBrokerConfiguration();
             jmsBrokerConfiguration.
                     setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-            for(TransportConnector con:getTransportConnectors()) {
-                if(transportName.equalsIgnoreCase(con.getName()))
+            for (TransportConnector con : getTransportConnectors()) {
+                if (transportName.equalsIgnoreCase(con.getName())) {
                     jmsBrokerConfiguration.setProviderURL(con.getUri().toString());
+                }
             }
             return jmsBrokerConfiguration;
         }
     }
 
+    /**
+     * setting the embedded broker transports which exposed at server startup
+     */
     private void setBrokerConfig() {
 
         tcp.setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        try {
-            tcp.setProviderURL(getTCPConnector().getUri().toString());
-        } catch (URISyntaxException e) {
-            log.error("Invalid URI", e);
-        }
+        tcp.setProviderURL(getTCPConnector().getUri().toString());
 
         mqtt.setInitialNamingFactory("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        try {
-            mqtt.setProviderURL(getMQTTConnector().getUri().toString());
-        } catch (URISyntaxException e) {
-            log.error("Invalid URI", e);
-        }
+        mqtt.setProviderURL(getMQTTConnector().getUri().toString());
 
     }
 
