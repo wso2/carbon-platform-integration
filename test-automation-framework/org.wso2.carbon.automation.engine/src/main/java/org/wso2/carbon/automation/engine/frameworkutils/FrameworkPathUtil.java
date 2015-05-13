@@ -95,8 +95,17 @@ public class FrameworkPathUtil {
                "jacoco" + File.separator + "coverage";
     }
 
+    public static String getJacocoCoverageHome() {
+        return System.getProperty("basedir") + File.separator + "target" + File.separator +
+               "jacoco";
+    }
+
     public static String getCoverageDumpFilePath() {
-        return System.getProperty("java.io.tmpdir") + "jacoco.exec";
+        return getJacocoCoverageHome() + File.separator + "jacoco" + System.currentTimeMillis() + ".exec";
+    }
+
+    public static String getCoverageMergeFilePath() {
+        return getJacocoCoverageHome() + File.separator + "jacoco-data-merge" + ".exec";
     }
 
     public static String getCarbonHome() {

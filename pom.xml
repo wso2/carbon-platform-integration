@@ -16,7 +16,9 @@
  ~specific language governing permissions and limitations
  ~under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
@@ -39,7 +41,8 @@
 
     <scm>
         <connection>scm:git:https://github.com/wso2/carbon-platform-integration.git</connection>
-        <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-platform-integration.git
+        </developerConnection>
         <url>https://github.com/wso2/carbon-platform-integration.git</url>
         <tag>test-automation-framework-4.3.1</tag>
     </scm>
@@ -341,7 +344,7 @@
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
         <axiom.version>1.2.11.wso2v5</axiom.version>
         <operadriver.version>0.8.1</operadriver.version>
-        <selenium.version>2.40.0</selenium.version>
+        <selenium.version>2.43.0</selenium.version>
         <jmeter.version>2.6</jmeter.version>
         <ftpserver.core.version>1.0.6</ftpserver.core.version>
         <activemq.version>5.9.1</activemq.version>

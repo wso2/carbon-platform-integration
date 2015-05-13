@@ -84,7 +84,7 @@ public class TomcatServerManager {
         tomcat.setPort(Integer.parseInt(webPort));
         tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         System.out.println("configuring app with basedir: " +
-                new File("./" + webappDirLocation).getAbsolutePath());
+                           new File("./" + webappDirLocation).getAbsolutePath());
         tomcat.start();
         tomcat.getServer().await();
     }
@@ -99,14 +99,24 @@ public class TomcatServerManager {
                         } else if (serverType.equals(TomcatServerType.webapp.name())) {
                             startWebAppServer();
                         }
-                    } catch (Exception e) {
-                        log.error("Tomcat server startup failed ");
+                    } catch (IOException e) {
+                        handleException(e);
+                    } catch (LifecycleException e) {
+                        handleException(e);
+                    } catch (ServletException e) {
+                        handleException(e);
                     }
                 }
             };
             tomcatThread.start();
             isRunning = true;
         }
+    }
+
+    private void handleException(Exception e) {
+        String msg = "Tomcat server startup failed";
+        log.error("Tomcat server startup failed ", e);
+        throw new IllegalStateException(msg, e);
     }
 
     private File createBaseDirectory(String basedirLocal) throws IOException {

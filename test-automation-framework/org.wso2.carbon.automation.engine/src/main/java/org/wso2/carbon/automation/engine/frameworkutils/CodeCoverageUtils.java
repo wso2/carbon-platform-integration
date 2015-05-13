@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) 2005-2011, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -17,10 +17,18 @@
 */
 package org.wso2.carbon.automation.engine.frameworkutils;
 
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jacoco.core.tools.ExecFileLoader;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -74,7 +82,7 @@ public final class CodeCoverageUtils {
                         File[] agentJars = new File(jacocoHome.getAbsolutePath() + File.separator + "agent").listFiles();
                         if (agentJars != null) {
                             for (File agentJar : agentJars) {
-                                if (agentJar.getName().contains("jacocoagent.jar")) {
+                                if (agentJar.getName().contains(FrameworkConstants.JACOCO_AGENT_JAR_NAME)) {
                                     jacocoAgentFilePath = agentJar.getAbsolutePath();
                                 }
                             }
@@ -109,14 +117,14 @@ public final class CodeCoverageUtils {
                                           String lineToBeInserted) throws IOException {
 
         FileInputStream fis = new FileInputStream(inFile);
-        BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+        BufferedReader in = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8));
         FileOutputStream fos;
         PrintWriter out = null;
 
         try {
             //create temporary out file to hold file content
             fos = new FileOutputStream(tmpFile);
-            out = new PrintWriter(fos);
+            out = new PrintWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), true);
 
             String thisLine = "";
             while ((thisLine = in.readLine()) != null) {
@@ -130,10 +138,14 @@ public final class CodeCoverageUtils {
                 throw new IOException("Failed to rename file " + tmpFile.getName() + "as " + inFile.getName());
             }
 
-            if (!tmpFile.delete()) {
-                log.warn("Failed to delete temporary file - " + tmpFile.getAbsolutePath());
+            if (tmpFile.exists()) {
+                if (!tmpFile.delete()) {
+                    log.warn("Failed to delete temporary file - " + tmpFile.getAbsolutePath());
+                }
             }
-            log.info("File " + inFile + "has been modified and inserted new line after " + lineToBeChecked);
+
+            log.info("File " + inFile.getName() + " has been modified and inserted new line after " + lineToBeChecked);
+            log.info("New line inserted in to : " + inFile.getName());
             log.info("New line inserted : " + lineToBeInserted);
 
         } finally {
@@ -147,7 +159,15 @@ public final class CodeCoverageUtils {
         }
     }
 
-
+    /**
+     * This method introduce to keep backward compatibility with older coverage generation configuration
+     * files such as instrumentation.txt and filter.txt. This will replace "-" and "+" signs at
+     * the beginning of jar list.
+     *
+     * @param patternList - Jar patten
+     * @return - jar list with replaced pattern
+     * @throws IOException - Throws if character replacement doesn't work
+     */
     public static List<String> getInstrumentationJarList(File patternList) throws IOException {
         List<String> filePatterns = new ArrayList<String>();
         if (patternList.exists()) {
@@ -174,19 +194,27 @@ public final class CodeCoverageUtils {
 
     public static String buildStringArrayOfJarList(List<String> jarList, String delimiter)
             throws IOException {
-        String jarListOfPatterns = "";
+
+        StringBuilder jarListOfPatternsBuffer = new StringBuilder();
         for (String jarPattern : jarList) {
             if (!jarList.get(jarList.size() - 1).equals(jarPattern)) { //without delimiter for last entry
-                jarListOfPatterns += jarPattern + delimiter;
+                jarListOfPatternsBuffer.append(jarPattern).append(delimiter);
             } else {
-                jarListOfPatterns += jarPattern;
+                jarListOfPatternsBuffer.append(jarPattern);
             }
         }
-        return jarListOfPatterns;
+        return jarListOfPatternsBuffer.toString();
     }
 
+    /**
+     * Generates jar list to be include from coverage report generation
+     *
+     * @param delimiter - delimiter to be used with jar list
+     * @return - String of jar list
+     * @throws IOException - Throws if jar inclusion list cannot be generated
+     */
     public static String getInclusionJarsPattern(String delimiter) throws IOException {
-        log.info("Building jar list for jacoco coverage inclusion...");
+        log.info("Building jar list for Jacoco coverage inclusion...");
         File instrumentationTxt =
                 System.getProperty("instr.file") != null ?
                 new File(System.getProperty("instr.file")) :
@@ -201,8 +229,15 @@ public final class CodeCoverageUtils {
         return DEFAULT_INCLUDES;
     }
 
+    /**
+     * Generates jar list to be exclude from coverage report generation
+     *
+     * @param delimiter - delimiter to be used with jar list
+     * @return - String of jar list
+     * @throws IOException - Throws if jar exclusion list cannot be generated
+     */
     public static String getExclusionJarsPattern(String delimiter) throws IOException {
-        log.info("Building jar list for jacoco coverage exclusion...");
+        log.info("Building jar list for Jacoco coverage exclusion...");
         String jacocoFilters = System.getProperty("filters.file");
         if (jacocoFilters == null) {
             jacocoFilters = System.getProperty("basedir") + File.separator + "src" +
@@ -219,5 +254,87 @@ public final class CodeCoverageUtils {
 
         }
         return DEFAULT_EXCLUDES;
+    }
+
+    /**
+     * Merge coverage data files
+     *
+     * @param dataFilePath - path to coverage data file
+     * @throws AutomationFrameworkException - Throws if coverage data files cannot be merged.
+     */
+    public static void executeMerge(String dataFilePath) throws AutomationFrameworkException {
+        final ExecFileLoader loader = new ExecFileLoader();
+        load(loader, dataFilePath);
+        save(loader);
+    }
+
+    /**
+     * Method will load all coverage data files
+     *
+     * @param loader       - ExceFileLoader
+     * @param dataFilePath - Coverage data file patch
+     * @throws AutomationFrameworkException - throws if coverage data files cannot be loaded.
+     */
+    private static void load(final ExecFileLoader loader, String dataFilePath)
+            throws AutomationFrameworkException {
+
+        Collection<File> fileSetsCollection = getJacocoDataFiles(dataFilePath);
+
+        //if no files found
+        if (fileSetsCollection.size() == 0) {
+            throw new AutomationFrameworkException("Couldn't find coverage data files at " +
+                                                   FrameworkPathUtil.getJacocoCoverageHome());
+        }
+
+        for (File inputFile : fileSetsCollection) {
+
+            if (inputFile.isDirectory()) {
+                continue;
+            }
+            try {
+                log.info("Loading execution data file " + inputFile.getAbsolutePath());
+                loader.load(inputFile);
+            } catch (IOException e) {
+                throw new AutomationFrameworkException("Unable to read " + inputFile.getAbsolutePath(), e);
+            }
+        }
+    }
+
+    /**
+     * Merge all coverage data files and save it as single coverage data file.
+     *
+     * @param loader - coverage data file loader
+     * @throws AutomationFrameworkException - Throws if coverage data files cannot be created
+     */
+    private static void save(final ExecFileLoader loader) throws AutomationFrameworkException {
+        File destinationFile = new File(FrameworkPathUtil.getCoverageMergeFilePath());
+
+        if (loader.getExecutionDataStore().getContents().isEmpty()) {
+            log.warn("Execution data is empty skipping coverage generation");
+            return;
+        }
+
+        log.info("Writing merged execution data to " + destinationFile.getAbsolutePath());
+
+        try {
+            loader.save(destinationFile, false);
+        } catch (IOException e) {
+            throw new AutomationFrameworkException("Unable to write merged file " +
+                                                   destinationFile.getAbsolutePath(), e);
+        }
+    }
+
+    /**
+     * Method to get all coverage data files matches with the extension *.exec
+     *
+     * @param filePath - Path to check for coverage data files
+     * @return - File collection of coverage data files
+     */
+    private static Collection<File> getJacocoDataFiles(String filePath) {
+        return FileUtils.listFiles(
+                new File(filePath),
+                new RegexFileFilter("[^s]+(.(?i)(exec))$"),
+                DirectoryFileFilter.DIRECTORY
+        );
     }
 }

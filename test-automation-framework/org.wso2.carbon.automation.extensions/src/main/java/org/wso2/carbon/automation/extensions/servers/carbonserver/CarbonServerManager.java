@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
+import org.apache.bcel.classfile.Code;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -48,6 +49,7 @@ public class CarbonServerManager {
     private Process process;
     private String carbonHome;
     private AutomationContext automationContext;
+    private String  coverageDumpFilePath;
     private ServerLogReader inputStreamHandler;
     private boolean isCoverageEnable = false;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
@@ -194,13 +196,13 @@ public class CarbonServerManager {
             throws IOException {
 
         String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        String destFile = FrameworkPathUtil.getCoverageDumpFilePath();
+        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
 
         CodeCoverageUtils.insertStringToFile(
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
                 new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
                 "-Dwso2.server.standalone=true",
-                "-javaagent:" + jacocoAgentFile + "=destfile=" + destFile + "" +
+                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
                 ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
     }
 
@@ -292,19 +294,20 @@ public class CarbonServerManager {
         }
     }
 
-    private void generateCoverageReport(File classesDir) throws IOException {
-        String jacocoDumpFileLocation = FrameworkPathUtil.getCoverageDumpFilePath();
+    private void generateCoverageReport(File classesDir)
+            throws IOException, AutomationFrameworkException {
 
+        CodeCoverageUtils.executeMerge(FrameworkPathUtil.getJacocoCoverageHome());
         ReportGenerator reportGenerator =
-                new ReportGenerator(new File(jacocoDumpFileLocation),
+                new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
                                     classesDir,
                                     new File(FrameworkPathUtil.getCoverageDirPath()),
                                     null);
         reportGenerator.create();
 
-        log.info("Jacoco coverage dump file path : " + jacocoDumpFileLocation);
+        log.info("Jacoco coverage dump file path : " + coverageDumpFilePath);
         log.info("Jacoco class file path : " + classesDir);
-        log.info("Jacoco coverage report path : " + FrameworkPathUtil.getCoverageDirPath());
+        log.info("Jacoco coverage HTML report path : " + FrameworkPathUtil.getCoverageDirPath() + File.separator + "index.html");
     }
 
     public synchronized void restartGracefully() throws AutomationFrameworkException {

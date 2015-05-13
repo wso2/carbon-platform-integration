@@ -19,7 +19,6 @@ package org.wso2.carbon.automation.engine.frameworkutils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.automation.engine.FrameworkConstants;
 
 import java.io.File;
 import java.io.FileInputStream;

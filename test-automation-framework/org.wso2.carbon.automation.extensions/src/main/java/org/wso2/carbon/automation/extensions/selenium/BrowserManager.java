@@ -49,16 +49,11 @@ public class BrowserManager {
                 getFirstChild().getNodeValue();
         if (automationContext.getConfigurationNode(String.format(XPathConstants.SELENIUM_REMOTE_WEB_DRIVER_URL))
                 .getAttributes().item(0).getNodeValue().equals("false")) {
-
-            /*log.info("Test runs on " + driverSelection + " browser...");
-            getDriver(driverSelection);
-            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-            return driver;*/
             if (System.getenv().containsKey("SELENIUM_PLATFORM")) {
                 log.info("Test runs on Sauce Labs environment...");
                 log.info("Operating System : " + System.getenv().get("SELENIUM_PLATFORM") +
-                        " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version "+
-                        System.getenv().get("SELENIUM_VERSION"));
+                         " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version " +
+                         System.getenv().get("SELENIUM_VERSION"));
                 driver = SeleniumFactory.createWebDriver();
                 driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
                 return driver;
@@ -73,8 +68,8 @@ public class BrowserManager {
             if (System.getenv().containsKey("JOB_URL")) {
                 log.info("Test runs on Sauce Labs environment...");
                 log.info("Operating System : " + System.getenv().get("SELENIUM_PLATFORM") +
-                        " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version "+
-                        System.getenv().get("SELENIUM_VERSION"));
+                         " On Browser " + System.getenv().get("SELENIUM_BROWSER") + " version " +
+                         System.getenv().get("SELENIUM_VERSION"));
                 driver = SeleniumFactory.createWebDriver();
                 driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
                 return driver;
@@ -91,8 +86,8 @@ public class BrowserManager {
             driver = new FirefoxDriver();
         } else if (driverSelection.equalsIgnoreCase(ExtensionConstants.CHROME_BROWSER)) {
             System.setProperty("webdriver.chrome.driver",
-                    automationContext.getConfigurationValue
-                            (String.format(XPathConstants.CHROME_WEB_DRIVER_URL)));
+                               automationContext.getConfigurationValue
+                                       (String.format(XPathConstants.CHROME_WEB_DRIVER_URL)));
             driver = new ChromeDriver();
         } else if (driverSelection.equalsIgnoreCase(ExtensionConstants.IE_BROWSER)) {
             driver = new InternetExplorerDriver();
@@ -103,7 +98,8 @@ public class BrowserManager {
         }
     }
 
-    private static void getRemoteWebDriver() throws MalformedURLException, XPathExpressionException {
+    private static void getRemoteWebDriver()
+            throws MalformedURLException, XPathExpressionException {
         URL url;
         String browserName = automationContext.getConfigurationNodeList(
                 String.format(XPathConstants.SELENIUM_BROWSER_TYPE)).item(0).
