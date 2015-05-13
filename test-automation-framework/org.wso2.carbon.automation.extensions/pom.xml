@@ -174,5 +174,9 @@
             <groupId>org.apache.httpcomponents.wso2</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-mqtt</artifactId>
+        </dependency>
     </dependencies>
 </project>
