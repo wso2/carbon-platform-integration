@@ -49,7 +49,7 @@ public class JMSQueueMessageProducer {
     }
 
     /**
-     * This will establish  the connection with the given Queue.
+     * This will establish  the connection with the given Queue and messages are not persisted.
      * This must be called before calling pushMessage() to send messages
      *
      * @param queueName name of the Queue
@@ -67,6 +67,31 @@ public class JMSQueueMessageProducer {
         // Create a MessageProducer from the Session to the Topic or Queue
         producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    }
+
+    /**
+     * This will establish  the connection with the given Queue.
+     * This must be called before calling pushMessage() to send messages
+     *
+     * @param queueName name of the Queue
+     * @throws JMSException
+     * @throws javax.naming.NamingException
+     */
+    public void connect(String queueName, boolean persistMessage) throws JMSException, NamingException {
+        // Create a Connection
+        connection = connectionFactory.createConnection();
+        connection.start();
+        // Create a Session
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        // Create a MessageConsumer from the Session to the Queue
+        Destination destination = session.createQueue(queueName);
+        // Create a MessageProducer from the Session to the Topic or Queue
+        producer = session.createProducer(destination);
+        if(persistMessage) {
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+        } else {
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        }
     }
 
     /**
