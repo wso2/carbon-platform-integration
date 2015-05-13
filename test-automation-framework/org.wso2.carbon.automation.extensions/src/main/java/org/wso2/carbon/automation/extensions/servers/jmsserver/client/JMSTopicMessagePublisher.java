@@ -51,7 +51,7 @@ public class JMSTopicMessagePublisher {
     }
 
     /**
-     * This will establish  the connection with the given Topic.
+     * This will establish  the connection with the given Topic and message are not persisted.
      * This must be called before calling publish()
      *
      * @param topicName name of the topic
@@ -69,6 +69,30 @@ public class JMSTopicMessagePublisher {
         // Create a MessageProducer from the Session to the Topic or Queue
         publisher = session.createPublisher(topic);
         publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+    }
+
+    /**
+     * This will establish  the connection with the given Topic.
+     * This must be called before calling publish()
+     * @param persistMessage to persist message or not
+     * @param topicName name of the topic
+     * @throws JMSException when failed to connect to Topic
+     */
+    public void connect(String topicName, boolean persistMessage) throws JMSException {
+        // Create a Connection
+        connection = connectionFactory.createTopicConnection();
+        connection.start();
+        // Create a Session
+        session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+        // Create a MessageConsumer from the Session to the Queue
+        Topic topic = session.createTopic(topicName);
+        // Create a MessageProducer from the Session to the Topic or Queue
+        publisher = session.createPublisher(topic);
+        if(persistMessage) {
+            publisher.setDeliveryMode(DeliveryMode.PERSISTENT);
+        } else {
+            publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        }
     }
 
     /**
