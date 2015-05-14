@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.automation.test.utils.JMXclient.utils;
+package org.wso2.carbon.automation.test.utils.jmxclient.utils;
 
 import java.io.File;
 import java.lang.management.ThreadInfo;
@@ -24,9 +24,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- *
  * provide utility methods
- *
  */
 
 public class AnalyzerUtils {
@@ -52,13 +50,12 @@ public class AnalyzerUtils {
     }
 
     /**
-     *
      * build the dump message of a thread.
      *
      * @param threadInfo ThreadInfo object
      * @return dump message of the thread
      */
-    public String buildDumpMessage(ThreadInfo threadInfo){
+    public String buildDumpMessage(ThreadInfo threadInfo) {
         StringBuilder dump = new StringBuilder();
         dump.append("Thread name:");
         dump.append('"');

@@ -16,9 +16,10 @@
  * under the License.
  */
 
-package org.wso2.carbon.automation.test.utils.JMXclient.ThreadInfo;
+package org.wso2.carbon.automation.test.utils.jmxclient.threadinfo;
 
-import org.wso2.carbon.automation.test.utils.JMXclient.utils.AnalyzerUtils;
+
+import org.wso2.carbon.automation.test.utils.jmxclient.utils.AnalyzerUtils;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -33,9 +34,7 @@ import java.lang.management.ThreadMXBean;
 import java.nio.charset.Charset;
 
 /**
- *
  * provide methods to get thread or threads information in a remote VM
- *
  */
 
 public class ThreadInformationProvider {
@@ -43,11 +42,11 @@ public class ThreadInformationProvider {
     /**
      * Get ThreadMXBean object of the remote VM using Objectname object and server connection.
      *
-     * @param nameOfThreadMXBeanObject          registered name of MBean object in MBeanServer.
-     * @param mBeanServerConnection MBeanServerConnection object.
+     * @param nameOfThreadMXBeanObject registered name of MBean object in MBeanServer.
+     * @param mBeanServerConnection    MBeanServerConnection object.
      * @return List of ThreadMXBean object which has only one value.
      * @throws java.io.IOException if MXBean proxy failure
-     *                     can be results in an <tt>IOException</tt>.
+     *                             can be results in an <tt>IOException</tt>.
      */
     public ThreadMXBean filterThreadMXBeanObjects(ObjectName nameOfThreadMXBeanObject,
                                                   MBeanServerConnection mBeanServerConnection)
@@ -163,7 +162,7 @@ public class ThreadInformationProvider {
      * @param allThreadInfo ArrayList of ThreadMXBean objects.
      * @param path          path, that wants to create new file.
      * @throws java.io.IOException if create new file failure
-     *                     can be results in an <tt>IOException</tt>.
+     *                             can be results in an <tt>IOException</tt>.
      */
 
     public void createThreadDumpFile(ThreadInfo[] allThreadInfo, String path)
