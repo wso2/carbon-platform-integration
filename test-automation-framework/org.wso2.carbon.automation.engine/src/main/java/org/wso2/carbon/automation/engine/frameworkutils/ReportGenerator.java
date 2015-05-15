@@ -102,6 +102,12 @@ public class ReportGenerator {
     IReportVisitor createVisitor(final Locale locale) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<IReportVisitor>();
 
+        if (getOutputDirectoryFile().exists()){
+            //delete coverage directory if it already exists. To avoid report generation
+            // conflicts when two carbon servers are shutting down
+            FileUtils.deleteDirectory(new File(getOutputDirectoryFile().getAbsolutePath()));
+        }
+
         if (!getOutputDirectoryFile().mkdirs()) {
             throw new IOException("Failed to create coverage report directory - " + getOutputDirectoryFile());
         }
