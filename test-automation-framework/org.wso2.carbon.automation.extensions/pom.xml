@@ -171,7 +171,7 @@
             <artifactId>sshd-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <groupId>org.wso2.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
