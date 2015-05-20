@@ -96,7 +96,8 @@ public final class CodeCoverageUtils {
         }
 
         if (jacocoAgentFilePath.isEmpty()) {
-            throw new FileNotFoundException("File cannot be found at " + jacocoHome.getAbsolutePath());
+            throw new FileNotFoundException("Jacoco Agent file path is empty and agent jar missing " +
+                                            jacocoHome.getAbsolutePath());
         }
 
         return jacocoAgentFilePath;

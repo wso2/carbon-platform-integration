@@ -1,5 +1,5 @@
 /*
-*Copyright (c) 2015​, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *WSO2 Inc. licenses this file to you under the Apache License,
 *Version 2.0 (the "License"); you may not use this file except
@@ -101,6 +101,12 @@ public class ReportGenerator {
 
     IReportVisitor createVisitor(final Locale locale) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<IReportVisitor>();
+
+        if (getOutputDirectoryFile().exists()){
+            //delete coverage directory if it already exists. To avoid report generation
+            // conflicts when two carbon servers are shutting down
+            FileUtils.deleteDirectory(new File(getOutputDirectoryFile().getAbsolutePath()));
+        }
 
         if (!getOutputDirectoryFile().mkdirs()) {
             throw new IOException("Failed to create coverage report directory - " + getOutputDirectoryFile());
