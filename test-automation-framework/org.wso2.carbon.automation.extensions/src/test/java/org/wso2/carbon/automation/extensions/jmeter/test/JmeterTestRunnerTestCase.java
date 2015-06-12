@@ -28,10 +28,11 @@ import java.io.File;
 
 public class JmeterTestRunnerTestCase {
 
-    @Test(groups = "wso2.as", description = "login and read session cookie")
+    @Test(description = "JMeter Test Runner Test Execution Test")
     public void testJmeterScriptFailureCase()  throws Exception {
 
-        File file = new File(FrameworkPathUtil.getSystemResourceLocation() + "/jmeter/sample-jmeter-script.jmx");
+        File file = new File(FrameworkPathUtil.getSystemResourceLocation() + File.separator + "jmeter"
+                             + File.separator + "sample-jmeter-script.jmx");
 
         JMeterTest script = new JMeterTest(file);
         JMeterTestManager manager = new JMeterTestManager();
