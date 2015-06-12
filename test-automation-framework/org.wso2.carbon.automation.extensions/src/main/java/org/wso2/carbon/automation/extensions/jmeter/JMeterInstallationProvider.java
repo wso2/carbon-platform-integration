@@ -112,19 +112,16 @@ public class JMeterInstallationProvider {
             if (jmeterPropertyFileTemp.exists()) {
                 in = new FileInputStream(jmeterPropertyFileTemp);
                 Properties props = new Properties();
-
+                //loading properties from temp file
                 props.load(in);
 
                 //set jemeter properties to stop demon thread creation
                 props.setProperty("jmeter.exit.check.pause", "0");
                 props.setProperty("jmeterengine.stopfail.system.exit", "true");
+
+                //storing properties from temp file to jmeter.properties
                 props.store(out, null);
 
-                isDeleted = jmeterPropertyFileTemp.delete();
-                if (!isDeleted) {
-                    log.error("Could not delete file");
-                    throw new RuntimeException("Could not delete file");
-                }
             }
 
 
