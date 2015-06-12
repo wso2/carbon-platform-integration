@@ -135,8 +135,14 @@ public final class CodeCoverageUtils {
                 out.println(thisLine);
             }
 
-            if (!tmpFile.renameTo(inFile)) {
-                throw new IOException("Failed to rename file " + tmpFile.getName() + "as " + inFile.getName());
+            if (!FileUtils.deleteQuietly(inFile)) { //delete original server startup file
+                throw new IOException("Failed to delete startup file " + inFile.getAbsolutePath());
+            }
+
+            FileUtils.moveFile(tmpFile, inFile);
+
+            if (tmpFile.exists()) {
+                throw new IOException("Failed to move file " + tmpFile.getAbsolutePath() + " as " + inFile.getAbsolutePath());
             }
 
             if (tmpFile.exists()) {
