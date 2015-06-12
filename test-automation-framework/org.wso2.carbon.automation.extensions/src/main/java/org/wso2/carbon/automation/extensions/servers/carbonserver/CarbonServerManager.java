@@ -228,7 +228,7 @@ public class CarbonServerManager {
         CodeCoverageUtils.insertJacocoAgentToStartupBat(
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
                 new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
-                ":runJava",
+                "-Dcatalina.base",
                 "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
                 ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":"));
     }
