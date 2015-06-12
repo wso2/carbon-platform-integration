@@ -70,7 +70,7 @@ public class JMeterTestManager {
         try {
             setJMeterPropertyFile(jMeterTest);
         } catch (IOException e) {
-            throw new AutomationFrameworkException("Set property failed", e);
+            throw new AutomationFrameworkException("Set property failed " + e.getMessage(), e);
         }
 
         if (jMeterTest.getLogLevel() != null) {
@@ -99,7 +99,7 @@ public class JMeterTestManager {
         try {
             addLogFile(testFile.getName());
         } catch (IOException e) {
-            throw new AutomationFrameworkException("Can't add log file", e);
+            throw new AutomationFrameworkException("Can't add log file " + e.getMessage(), e);
         }
         Boolean resultState = true;
         JMeterResult results;
@@ -207,7 +207,7 @@ public class JMeterTestManager {
 
             } catch (ExitException e) {
                 if (e.getCode() != 0) {
-                    throw new AutomationFrameworkException("Test failed", e);
+                    throw new AutomationFrameworkException("Test failed " + e.getMessage(), e);
                 }
             } catch (Exception e) {
                 log.error(e);
@@ -217,7 +217,7 @@ public class JMeterTestManager {
                 Thread.setDefaultUncaughtExceptionHandler(oldHandler);
             }
         } catch (IOException e) {
-            throw new AutomationFrameworkException("Can't execute test", e);
+            throw new AutomationFrameworkException("Can't execute test " + e.getMessage(), e);
         }
         return reportFileFullPath;
     }
@@ -392,7 +392,7 @@ public class JMeterTestManager {
         try {
             System.setProperty("log_file", jmeterLogFile.getCanonicalPath());
         } catch (IOException e) {
-            throw new IOException("Can't get canonical path for log file", e);
+            throw new IOException("Can't get canonical path for log file " + e.getMessage(), e);
         }
 
     }

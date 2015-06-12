@@ -52,6 +52,7 @@ public class JMeterInstallationProvider {
         jMeterHome = new File(targetDir, "jmeter");
         if (!jMeterHome.mkdirs()) {
             log.error("Unable to create jmeter directory");
+            throw new RuntimeException("Unable to create jmeter directory");
         }
 
         reportDir = new File(jMeterHome, "reports");
@@ -64,6 +65,7 @@ public class JMeterInstallationProvider {
         if (!binDir.exists()) {
             if (!binDir.mkdirs()) {
                 log.error("unable to create bin directory");
+                throw new RuntimeException("unable to create bin dir for Jmeter");
             }
         }
 
@@ -73,11 +75,21 @@ public class JMeterInstallationProvider {
         jmeterPropertyFile = new File(binDir, "jmeter.properties");
         jmeterPropertyFileTemp = new File(binDir, "jmeterTemp.properties");
 
+        if(!jmeterPropertyFileTemp.exists()) {
+            try {
+                jmeterPropertyFileTemp.createNewFile();
+            } catch (IOException e) {
+                log.error("Error creating a file " + e.getMessage(), e);
+                throw new RuntimeException("Error creating a file " + e.getMessage());
+            }
+        }
+
         //copying saveservice.properties from classpath
         try {
             Utils.copyFromClassPath("bin/saveservice.properties", saveServiceProps);
         } catch (IOException e) {
             log.error("Could not create temporary saveservice.properties", e);
+            throw new RuntimeException("Could not create temporary saveservice.properties " + e.getMessage(), e);
         }
 
         System.setProperty("saveservice_properties",
@@ -89,6 +101,7 @@ public class JMeterInstallationProvider {
 
         } catch (IOException e) {
             log.error("Could not create temporary upgrade.properties", e);
+            throw new RuntimeException("Could not create temporary upgrade.properties " + e.getMessage(), e);
         }
 
         System.setProperty("upgrade_properties",
@@ -119,6 +132,7 @@ public class JMeterInstallationProvider {
                 isDeleted = jmeterPropertyFileTemp.delete();
                 if (!isDeleted) {
                     log.error("Could not delete file");
+                    throw new RuntimeException("Could not delete file");
                 }
             }
 
@@ -129,10 +143,13 @@ public class JMeterInstallationProvider {
             logDir = new File(jMeterHome, "logs");
             if (!logDir.mkdirs()) {
                 log.error("Unable to create log directory");
+                throw new RuntimeException("Unable to create log directory");
+
             }
 
         } catch (IOException e) {
-            log.error("Could not create jmeter.properties", e);
+            log.error("Could not create jmeter.properties " + e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
 
                 if (out != null) {

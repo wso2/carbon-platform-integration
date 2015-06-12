@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Automation Extension Unit test suite">
+    <parameter name="useDefaultListeners" value="true"/>
+
+    <test name="Jmeter Runner tests" preserve-order="true" parallel="false">
+        <packages>
+            <package name="org.wso2.carbon.automation.extensions.jmeter.test.*"/>
+        </packages>
+    </test>
+</suite>
