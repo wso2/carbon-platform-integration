@@ -44,7 +44,6 @@ public class HttpRequestUtil {
      */
     public static HttpResponse sendGetRequest(String endpoint,
                                               String requestParameters) throws IOException {
-        if (endpoint.startsWith("http://")) {
             String urlStr = endpoint;
             if (requestParameters != null && requestParameters.length() > 0) {
                 urlStr += "?" + requestParameters;
@@ -71,8 +70,6 @@ public class HttpRequestUtil {
                 }
             }
             return new HttpResponse(sb.toString(), conn.getResponseCode());
-        }
-        return null;
     }
 
     /**
@@ -259,7 +256,6 @@ public class HttpRequestUtil {
 
     public static HttpResponse doGet(String endpoint, Map<String, String> headers) throws IOException {
         HttpResponse httpResponse;
-        if (endpoint.startsWith("http://")) {
             URL url = new URL(endpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -296,8 +292,6 @@ public class HttpRequestUtil {
                 }
             }
             return httpResponse;
-        }
-        return null;
     }
 
     /**
