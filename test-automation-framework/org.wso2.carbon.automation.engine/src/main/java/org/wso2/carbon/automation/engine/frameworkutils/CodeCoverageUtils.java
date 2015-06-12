@@ -136,6 +136,7 @@ public final class CodeCoverageUtils {
                 }
                 out.println(thisLine);
             }
+            Files.delete(inFile.toPath());
 
             Files.move(tmpFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -342,4 +343,6 @@ public final class CodeCoverageUtils {
                 DirectoryFileFilter.DIRECTORY
         );
     }
+
+
 }

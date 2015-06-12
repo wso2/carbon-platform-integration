@@ -97,7 +97,13 @@ public class CarbonServerManager {
 
                 if (isCoverageEnable) {
                     cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
-                    insertJacocoAgentToShellScript(carbonHome, scriptName);
+                    //insert Jacoco agent configuration to carbon server startup script. This configuration
+                    //cannot be directly pass as server startup command due to script limitation.
+                    insertJacocoAgentToBatScript(carbonHome, scriptName);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
+                        log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
+                    }
                     cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
                 } else {
                     cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
@@ -106,7 +112,6 @@ public class CarbonServerManager {
                 tempProcess = Runtime.getRuntime().exec(cmdArray, null, commandDir);
 
             } else {
-
                 String[] cmdArray;
                 if (isCoverageEnable) {
                     //insert Jacoco agent configuration to carbon server startup script. This configuration
@@ -202,6 +207,28 @@ public class CarbonServerManager {
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
                 new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
                 "-Dwso2.server.standalone=true",
+                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
+    }
+
+
+    /**
+     * This methods will insert jacoco agent settings into windows bat script
+     *
+     * @param carbonHome - carbonHome
+     * @param scriptName - Name of the startup script
+     * @throws IOException - throws if shell script edit fails
+     */
+    private void insertJacocoAgentToBatScript(String carbonHome, String scriptName)
+            throws IOException {
+
+        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
+        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
+
+        CodeCoverageUtils.insertStringToFile(
+                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
+                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
+                "-Dfile.encoding=UTF8",
                 "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
                 ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
     }
