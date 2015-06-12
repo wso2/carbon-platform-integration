@@ -75,14 +75,6 @@ public class JMeterInstallationProvider {
         jmeterPropertyFile = new File(binDir, "jmeter.properties");
         jmeterPropertyFileTemp = new File(binDir, "jmeterTemp.properties");
 
-        if(!jmeterPropertyFileTemp.exists()) {
-            try {
-                jmeterPropertyFileTemp.createNewFile();
-            } catch (IOException e) {
-                log.error("Error creating a file " + e.getMessage(), e);
-                throw new RuntimeException("Error creating a file " + e.getMessage(), e);
-            }
-        }
 
         //copying saveservice.properties from classpath
         try {
@@ -113,27 +105,23 @@ public class JMeterInstallationProvider {
         try {
 
             out = new FileOutputStream(jmeterPropertyFile);
-            in = new FileInputStream(jmeterPropertyFileTemp);
-            // if the properties file is not specified in the papameters
+            // if the properties file is not specified in the parameters
             log.info("Loading default jmeter.properties...");
             Utils.copyFromClassPath("bin/jmeter.properties", jmeterPropertyFileTemp);
 
             if (jmeterPropertyFileTemp.exists()) {
-
+                in = new FileInputStream(jmeterPropertyFileTemp);
                 Properties props = new Properties();
-
+                //loading properties from temp file
                 props.load(in);
 
                 //set jemeter properties to stop demon thread creation
                 props.setProperty("jmeter.exit.check.pause", "0");
                 props.setProperty("jmeterengine.stopfail.system.exit", "true");
+
+                //storing properties from temp file to jmeter.properties
                 props.store(out, null);
 
-                isDeleted = jmeterPropertyFileTemp.delete();
-                if (!isDeleted) {
-                    log.error("Could not delete file");
-                    throw new RuntimeException("Could not delete file");
-                }
             }
 
 
