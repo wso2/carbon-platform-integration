@@ -136,7 +136,10 @@ public final class CodeCoverageUtils {
                 }
                 out.println(thisLine);
             }
-            Files.delete(inFile.toPath());
+
+            //Need to close streams explicitly otherwise file move will not work on windows
+            in.close();
+            out.close();
 
             Files.move(tmpFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 

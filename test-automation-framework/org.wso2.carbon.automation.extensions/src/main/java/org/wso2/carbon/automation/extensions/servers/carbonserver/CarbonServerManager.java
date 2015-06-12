@@ -228,7 +228,7 @@ public class CarbonServerManager {
         CodeCoverageUtils.insertStringToFile(
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
                 new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
-                "-Dfile.encoding=UTF8",
+                ":runJava",
                 "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
                 ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
     }
