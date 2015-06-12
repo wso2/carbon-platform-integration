@@ -22,7 +22,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.logging.Log;
+
 import java.nio.file.Files;
+
 import org.apache.commons.logging.LogFactory;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
@@ -144,7 +146,8 @@ public final class CodeCoverageUtils {
             Files.move(tmpFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             if (tmpFile.exists()) {
-                throw new IOException("Failed to move file " + tmpFile.getAbsolutePath() + " as " + inFile.getAbsolutePath());
+                throw new IOException("Failed to move file " + tmpFile.getAbsolutePath() + " as " +
+                                      inFile.getAbsolutePath());
             }
 
             log.info("File " + inFile.getName() + " has been modified and inserted new line after " + lineToBeChecked);
@@ -160,8 +163,69 @@ public final class CodeCoverageUtils {
 
             if (out != null) {
                 out.flush();
+                out.close();
             }
+            in.close();
+        }
+    }
+
+
+    /**
+     * Insert Jacoco agent configuration into server startup bat file. Specific to windows
+     *
+     * @param inFile           - File to be modified
+     * @param tmpFile          - Temporary file to hold modified file
+     * @param lineToBeChecked  - File will be modified after this line
+     * @param lineToBeInserted - New line to be inserted into the file
+     * @throws IOException - Throws IO exception if file modification fails
+     */
+    public static void insertJacocoAgentToStartupBat(File inFile, File tmpFile,
+                                                     String lineToBeChecked,
+                                                     String lineToBeInserted) throws IOException {
+
+        FileInputStream fis = new FileInputStream(inFile);
+        BufferedReader in = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8));
+        FileOutputStream fos;
+        PrintWriter out = null;
+
+        try {
+            //create temporary out file to hold file content
+            fos = new FileOutputStream(tmpFile);
+            out = new PrintWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), true);
+
+            String thisLine = "";
+            while ((thisLine = in.readLine()) != null) {
+                if (thisLine.contains(lineToBeChecked)) {
+                    out.println(thisLine + " " + lineToBeInserted);
+                } else {
+                    out.println(thisLine);
+                }
+            }
+
+            //Need to close streams explicitly otherwise file move will not work on windows
+            in.close();
+            out.close();
+
+            Files.move(tmpFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            if (tmpFile.exists()) {
+                throw new IOException("Failed to move file " + tmpFile.getAbsolutePath() + " as " +
+                                      inFile.getAbsolutePath());
+            }
+
+            log.info("File " + inFile.getName() + " has been modified and inserted new line after " + lineToBeChecked);
+            log.info("New line inserted into : " + inFile.getName());
+            log.info("Content of the line inserted : " + lineToBeInserted);
+
+        } finally {
+            if (tmpFile.exists()) {
+                if (!tmpFile.delete()) {
+                    log.warn("Failed to delete temporary file - " + tmpFile.getAbsolutePath());
+                }
+            }
+
             if (out != null) {
+                out.flush();
                 out.close();
             }
             in.close();

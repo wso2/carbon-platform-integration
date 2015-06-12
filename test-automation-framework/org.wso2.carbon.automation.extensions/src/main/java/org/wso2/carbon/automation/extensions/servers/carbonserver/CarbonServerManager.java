@@ -225,12 +225,12 @@ public class CarbonServerManager {
         String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
         coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
 
-        CodeCoverageUtils.insertStringToFile(
+        CodeCoverageUtils.insertJacocoAgentToStartupBat(
                 new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
                 new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
                 ":runJava",
                 "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":"));
     }
 
     private String[] mergePropertiesToCommandArray(String[] parameters, String[] cmdArray) {
