@@ -80,7 +80,7 @@ public class JMeterInstallationProvider {
                 jmeterPropertyFileTemp.createNewFile();
             } catch (IOException e) {
                 log.error("Error creating a file " + e.getMessage(), e);
-                throw new RuntimeException("Error creating a file " + e.getMessage());
+                throw new RuntimeException("Error creating a file " + e.getMessage(), e);
             }
         }
 
