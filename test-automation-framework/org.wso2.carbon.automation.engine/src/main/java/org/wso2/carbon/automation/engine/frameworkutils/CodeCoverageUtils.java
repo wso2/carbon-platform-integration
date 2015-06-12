@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.logging.Log;
+import java.nio.file.Files;
 import org.apache.commons.logging.LogFactory;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
@@ -29,6 +30,7 @@ import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
@@ -135,27 +137,23 @@ public final class CodeCoverageUtils {
                 out.println(thisLine);
             }
 
-            if (!FileUtils.deleteQuietly(inFile)) { //delete original server startup file
-                throw new IOException("Failed to delete startup file " + inFile.getAbsolutePath());
-            }
-
-            FileUtils.moveFile(tmpFile, inFile);
+            Files.move(tmpFile.toPath(), inFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             if (tmpFile.exists()) {
                 throw new IOException("Failed to move file " + tmpFile.getAbsolutePath() + " as " + inFile.getAbsolutePath());
             }
 
+            log.info("File " + inFile.getName() + " has been modified and inserted new line after " + lineToBeChecked);
+            log.info("New line inserted into : " + inFile.getName());
+            log.info("Content of the line inserted : " + lineToBeInserted);
+
+        } finally {
             if (tmpFile.exists()) {
                 if (!tmpFile.delete()) {
                     log.warn("Failed to delete temporary file - " + tmpFile.getAbsolutePath());
                 }
             }
 
-            log.info("File " + inFile.getName() + " has been modified and inserted new line after " + lineToBeChecked);
-            log.info("New line inserted in to : " + inFile.getName());
-            log.info("New line inserted : " + lineToBeInserted);
-
-        } finally {
             if (out != null) {
                 out.flush();
             }
