@@ -175,6 +175,35 @@ public class UrlGenerationUtil {
     }
 
     /**
+     * getting https url of a web application
+     * @param tenant
+     * @param instance
+     * @return
+     * @throws XPathExpressionException
+     */
+    public static String getWebAppURLHttps(Tenant tenant, Instance instance) throws XPathExpressionException {
+        String webAppURL = null;
+        String httpsPort = instance.getPorts().get(ContextXpathConstants.PRODUCT_GROUP_PORT_HTTPS);
+        String tenantDomain = tenant.getDomain();
+        String hostName = getWorkerHost(instance);
+        if(!tenant.getDomain().equals(AutomationConfiguration.
+                getConfigurationValue(ContextXpathConstants.SUPER_TENANT_DOMAIN))) {
+            if(httpsPort != null) {
+                webAppURL = "https://" + hostName + ":" + httpsPort + "/t/" + tenantDomain;
+            } else {
+                webAppURL = "https://" + hostName + "/t/" + tenantDomain;
+            }
+        } else {
+            if(httpsPort != null) {
+                webAppURL = "https://" + hostName + ":" + httpsPort;
+            } else {
+                webAppURL = "https://" + hostName;
+            }
+        }
+        return webAppURL;
+    }
+
+    /**
      * Return remote registry URL - This URL is required to access remote registry API
      *
      * @param instance - default instance bound to the context, environment where test case is running
