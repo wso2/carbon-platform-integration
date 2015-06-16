@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import java.nio.file.Files;
 
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.jacoco.core.tools.ExecFileLoader;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
@@ -34,6 +35,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.jar.JarFile;
 
 /**
  * This util class provides functionality for computing code coverage.
@@ -67,6 +69,7 @@ public final class CodeCoverageUtils {
         }
         return directoryLists;
     }
+
 
     /**
      * Method to get jacoco agent file location
@@ -411,5 +414,62 @@ public final class CodeCoverageUtils {
         );
     }
 
+    /**
+     * Method to scan given directory for include and exclude patterns.
+     *
+     * @param jarExtractedDir - Patch to check for given include/exclude pattern
+     * @param includes        - Include pattern array
+     * @param excludes        - Exclude class pattern array
+     * @return - Included files
+     * @throws IOException - Throws if given directory patch cannot be found.
+     */
+    public static String[] scanDirectory(String jarExtractedDir, String[] includes,
+                                         String[] excludes) throws IOException {
+        DirectoryScanner ds = new DirectoryScanner();
 
+        ds.setIncludes(includes);
+        ds.setExcludes(excludes);
+        ds.setBasedir(new File(jarExtractedDir));
+        ds.setCaseSensitive(true);
+
+        ds.scan();
+        return ds.getIncludedFiles();
+    }
+
+    /**
+     * Extract jar files given at jar file path
+     *
+     * @param jarFilePath - Jar file patch
+     * @return - Jar file extracted directory.
+     * @throws IOException - Throws if jar extraction fails
+     */
+    public synchronized static String extractJarFile(String jarFilePath)
+            throws IOException {
+
+        if (!jarFilePath.endsWith(".jar")) {
+            throw new IllegalArgumentException("Jar file should have the extension .jar. " +
+                                               jarFilePath + " is invalid");
+        }
+        JarFile jarFile = new JarFile(jarFilePath);
+
+        String fileSeparator = (File.separatorChar == '\\') ? "\\" : File.separator;
+        String jarFileName = jarFilePath;
+
+        if (jarFilePath.lastIndexOf(fileSeparator) != -1) {
+            jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf(fileSeparator) + 1);
+        }
+
+        String tempExtractedDir = null;
+        try {
+            tempExtractedDir = FrameworkPathUtil.getJarExtractedFilePath() + File.separator +
+                               jarFileName.substring(0, jarFileName.lastIndexOf('.'));
+
+            ArchiveExtractorUtil.extractFile(jarFilePath, tempExtractedDir);
+        } catch (IOException e) {
+            log.warn("Could not extract the file " + jarFileName);
+        } finally {
+            jarFile.close();
+        }
+        return tempExtractedDir;
+    }
 }

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.FileUtils;
@@ -38,6 +37,7 @@ import org.jacoco.report.MultiReportVisitor;
 import org.jacoco.report.csv.CSVFormatter;
 import org.jacoco.report.html.HTMLFormatter;
 import org.jacoco.report.xml.XMLFormatter;
+import org.wso2.carbon.automation.engine.FrameworkConstants;
 
 /**
  * Jacoco Report generator class. Provides HTML, CSV and XML report
@@ -102,7 +102,7 @@ public class ReportGenerator {
     IReportVisitor createVisitor(final Locale locale) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<IReportVisitor>();
 
-        if (getOutputDirectoryFile().exists()){
+        if (getOutputDirectoryFile().exists()) {
             //delete coverage directory if it already exists. To avoid report generation
             // conflicts when two carbon servers are shutting down
             FileUtils.deleteDirectory(new File(getOutputDirectoryFile().getAbsolutePath()));
@@ -143,18 +143,27 @@ public class ReportGenerator {
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(execFileLoader.getExecutionDataStore(), coverageBuilder);
 
+        String[] includes = {FrameworkConstants.CLASS_FILE_PATTERN}; //class file patten to be include
+        String exclusionList = CodeCoverageUtils.getExclusionJarsPattern(",");
+        String[] excludes = exclusionList.split(",");
+
         final List<File> filesToAnalyze =
                 FileUtils.getFiles(classesDirectory,
                                    CodeCoverageUtils.getInclusionJarsPattern(","),
-                                   CodeCoverageUtils.getExclusionJarsPattern(","));
+                                   exclusionList);
 
         for (final File file : filesToAnalyze) {
-            analyzer.analyzeAll(file);
-            log.info("File analyzed for coverage : " + file.getName());
+
+            String extractedDir = CodeCoverageUtils.extractJarFile(file.getAbsolutePath());
+            log.info("Jar file analyzed for coverage : " + file.getName());
+            String[] classFiles = CodeCoverageUtils.scanDirectory(extractedDir, includes, excludes);
+
+            for (String classFile : classFiles) {
+                analyzer.analyzeAll(new File(extractedDir + File.separator + classFile));
+            }
+            FileUtils.forceDelete(new File(extractedDir));
         }
         return coverageBuilder.getBundle("Overall Coverage Summary");
     }
-
-
 }
 

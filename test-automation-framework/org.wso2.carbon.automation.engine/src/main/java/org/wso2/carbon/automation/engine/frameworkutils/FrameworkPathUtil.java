@@ -108,6 +108,10 @@ public class FrameworkPathUtil {
         return getJacocoCoverageHome() + File.separator + "jacoco-data-merge" + ".exec";
     }
 
+    public static String getJarExtractedFilePath() {
+        return System.getProperty("basedir") + File.separator + "target" + File.separator + "jar";
+    }
+
     public static String getCarbonHome() {
         if (System.getProperty("user.dir") != null) {
             return System.getProperty("user.dir");
