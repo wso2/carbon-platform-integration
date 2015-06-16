@@ -480,6 +480,8 @@ public class AutomationContext {
                     this.getInstance(), true));
             contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getContextTenant(),
                     this.getInstance()));
+            contextUrls.setWebAppURLHttps(UrlGenerationUtil.getWebAppURLHttps(this.getContextTenant(),
+                                                                    this.getInstance()));
         } catch (XPathExpressionException e) {
             throw new XPathExpressionException("configuration retrieve failed");
         }

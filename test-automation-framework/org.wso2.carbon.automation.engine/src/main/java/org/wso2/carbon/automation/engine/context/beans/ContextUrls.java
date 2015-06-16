@@ -22,6 +22,7 @@ public class ContextUrls {
     private String serviceUrl;
     private String secureServiceUrl;
     private String webAppURL;
+    private String webAppURLHttps;
 
     public String getBackEndUrl() {
         return backEndUrl;
@@ -53,5 +54,13 @@ public class ContextUrls {
 
     public void setWebAppURL(String webAppURL) {
         this.webAppURL = webAppURL;
+    }
+
+    public void setWebAppURLHttps(String webAppURLHttps){
+        this.webAppURLHttps = webAppURLHttps;
+    }
+
+    public String getWebAppURLHttps() {
+        return this.webAppURLHttps;
     }
 }
