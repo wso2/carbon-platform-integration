@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
-import org.apache.bcel.classfile.Code;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -23,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.ArchiveExtractorUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.ReportGenerator;
@@ -31,7 +29,6 @@ import org.wso2.carbon.automation.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
 import org.wso2.carbon.automation.extensions.servers.utils.ClientConnectionUtil;
 import org.wso2.carbon.automation.extensions.servers.utils.FileManipulator;
-import org.wso2.carbon.automation.extensions.servers.utils.InputStreamHandler;
 import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -51,6 +48,7 @@ public class CarbonServerManager {
     private AutomationContext automationContext;
     private String  coverageDumpFilePath;
     private ServerLogReader inputStreamHandler;
+    private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
@@ -132,8 +130,8 @@ public class CarbonServerManager {
                 tempProcess = Runtime.getRuntime().exec(cmdArray, null, commandDir);
             }
 
-            InputStreamHandler errorStreamHandler =
-                    new InputStreamHandler("errorStream", tempProcess.getErrorStream());
+            errorStreamHandler =
+                    new ServerLogReader("errorStream", tempProcess.getErrorStream());
             inputStreamHandler = new ServerLogReader("inputStream", tempProcess.getInputStream());
             // start the stream readers
             inputStreamHandler.start();
@@ -300,6 +298,7 @@ public class CarbonServerManager {
                 }
                 log.info("Server stopped successfully...");
                 inputStreamHandler.stop();
+                errorStreamHandler.stop();
                 process.destroy();
                 process = null;
                 //generate coverage report
