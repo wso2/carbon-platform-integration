@@ -46,7 +46,7 @@ public class CarbonServerManager {
     private Process process;
     private String carbonHome;
     private AutomationContext automationContext;
-    private String  coverageDumpFilePath;
+    private String coverageDumpFilePath;
     private ServerLogReader inputStreamHandler;
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
@@ -296,27 +296,28 @@ public class CarbonServerManager {
                     // wait until server shutdown is completed
                 }
                 log.info("Server stopped successfully...");
-                inputStreamHandler.stop();
-                errorStreamHandler.stop();
-                process.destroy();
-                process = null;
-                //generate coverage report
-                if (isCoverageEnable) {
-                    try {
-                        log.info("Generating Jacoco code coverage...");
-                        generateCoverageReport(
-                                new File(carbonHome + File.separator + "repository" +
-                                         File.separator + "components" + File.separator + "plugins" + File.separator));
-                    } catch (IOException e) {
-                        log.error("Failed to generate code coverage ", e);
-                        throw new AutomationFrameworkException("Failed to generate code coverage ", e);
-                    }
-                }
-                if (portOffset == 0) {
-                    System.clearProperty(ExtensionConstants.CARBON_HOME);
+            }
+            inputStreamHandler.stop();
+            errorStreamHandler.stop();
+            process.destroy();
+            process = null;
+            //generate coverage report
+            if (isCoverageEnable) {
+                try {
+                    log.info("Generating Jacoco code coverage...");
+                    generateCoverageReport(
+                            new File(carbonHome + File.separator + "repository" +
+                                     File.separator + "components" + File.separator + "plugins" + File.separator));
+                } catch (IOException e) {
+                    log.error("Failed to generate code coverage ", e);
+                    throw new AutomationFrameworkException("Failed to generate code coverage ", e);
                 }
             }
+            if (portOffset == 0) {
+                System.clearProperty(ExtensionConstants.CARBON_HOME);
+            }
         }
+
     }
 
     private void generateCoverageReport(File classesDir)

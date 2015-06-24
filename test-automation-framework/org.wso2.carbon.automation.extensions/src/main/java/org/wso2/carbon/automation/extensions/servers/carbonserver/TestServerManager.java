@@ -106,6 +106,11 @@ public class TestServerManager {
             configureServer();
         }
         log.info("Carbon Home - " + carbonHome);
+        if (commandMap.get(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND) != null) {
+            this.portOffset = Integer.parseInt(commandMap.get(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND));
+        } else {
+            this.portOffset = 0;
+        }
         carbonServer.startServerUsingCarbonHome(carbonHome, commandMap);
         return carbonHome;
     }
