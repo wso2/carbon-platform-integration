@@ -80,7 +80,6 @@ public class CarbonServerManager {
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
                     System.setProperty(ExtensionConstants.CARBON_HOME, carbonHome);
-                    System.setProperty("user.dir", carbonHome);
                 }
             }
             File commandDir = new File(carbonHome);
