@@ -19,6 +19,7 @@ package org.wso2.carbon.automation.engine.frameworkutils;
 
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.logging.Log;
@@ -36,6 +37,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
+import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
 /**
  * This util class provides functionality for computing code coverage.
@@ -471,5 +474,21 @@ public final class CodeCoverageUtils {
             jarFile.close();
         }
         return tempExtractedDir;
+    }
+
+
+
+    public static String[] getMatches(String[] classFiles, String[] regexArray) {
+        List<String> matches = null;
+        for (String regex : regexArray) {
+            Pattern p = Pattern.compile(regex);
+            matches = new ArrayList<String>();
+            for (String s : classFiles) {
+                if (!p.matcher(s).matches()) {
+                    matches.add(s);
+                }
+            }
+        }
+        return (String[]) matches.toArray();
     }
 }

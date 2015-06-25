@@ -17,11 +17,15 @@
 */
 package org.wso2.carbon.automation.engine.frameworkutils;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
 import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * This class contain util methods which can be used inside test framework and test cases
@@ -52,5 +56,27 @@ public class TestFrameworkUtils {
             log.debug("javax.net.ssl.trustStorePassword :" + System.getProperty("javax.net.ssl.trustStorePassword"));
             log.debug("javax.net.ssl.trustStoreType :" + System.getProperty("javax.net.ssl.trustStoreType"));
         }
+    }
+
+    /**
+     * Filter start up script name from extracted distribution.
+     */
+    public static String getStartupScriptFileName(String carbonHome) throws FileNotFoundException {
+        File[] allScripts = new File(carbonHome + File.separator + "bin").listFiles();
+        String scriptName = null;
+        if (allScripts != null) {
+            for (File scriptFileName : allScripts) {
+                if (scriptFileName.getName().contains(ExtensionConstants.SEVER_STARTUP_SCRIPT_NAME)) {
+                    scriptName = scriptFileName.getAbsoluteFile().getName();
+                    break;
+                } else if (scriptFileName.getName().contains("server")) {
+                    scriptName = scriptFileName.getName();
+                    break;
+                }
+            }
+        } else {
+            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
+        }
+        return FilenameUtils.removeExtension(scriptName);
     }
 }

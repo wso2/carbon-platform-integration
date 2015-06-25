@@ -38,4 +38,5 @@ public class ExtensionConstants {
     public static final String TRANSFORM_LISTENER_TRANSFORM = "transform";
     public static final String CLASS_NAME = "name";
     public static final String LISTENER_EXTENSION = "//listenerExtensions";
+    public static final String SEVER_STARTUP_SCRIPT_NAME = "wso2server";
 }
