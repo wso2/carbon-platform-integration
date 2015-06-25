@@ -113,8 +113,8 @@ public class FrameworkPathUtil {
     }
 
     public static String getCarbonHome() {
-        if (System.getProperty("user.dir") != null) {
-            return System.getProperty("user.dir");
+        if (System.getProperty(FrameworkConstants.CARBON_HOME) != null) {
+            return System.getProperty(FrameworkConstants.CARBON_HOME);
         } else {
             log.error("Cannot read carbon.home property ");
             return null;
