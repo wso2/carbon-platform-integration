@@ -15,7 +15,7 @@
  */
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
-import org.apache.commons.io.FilenameUtils;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +25,7 @@ import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.ReportGenerator;
+import org.wso2.carbon.automation.engine.frameworkutils.TestFrameworkUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
 import org.wso2.carbon.automation.extensions.servers.utils.ClientConnectionUtil;
@@ -33,7 +34,6 @@ import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +46,6 @@ public class CarbonServerManager {
     private Process process;
     private String carbonHome;
     private AutomationContext automationContext;
-    private String coverageDumpFilePath;
     private ServerLogReader inputStreamHandler;
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
@@ -85,47 +84,19 @@ public class CarbonServerManager {
             File commandDir = new File(carbonHome);
 
             log.info("Starting carbon server............. ");
-            String scriptName = getStartupScriptFileName();
+            String scriptName = TestFrameworkUtils.getStartupScriptFileName(carbonHome);
             String[] parameters = expandServerStartupCommandList(commandMap);
+            String[] cmdArray;
 
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                 commandDir = new File(carbonHome + File.separator + "bin");
-                String[] cmdArray;
-
-                if (isCoverageEnable) {
-                    cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
-                    //insert Jacoco agent configuration to carbon server startup script. This configuration
-                    //cannot be directly pass as server startup command due to script limitation.
-                    insertJacocoAgentToBatScript(carbonHome, scriptName);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
-                        log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
-                    }
-                    cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
-                } else {
-                    cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
-                    cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
-                }
+                cmdArray = new String[]{"cmd.exe", "/c", scriptName + ".bat"};
+                cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
                 tempProcess = Runtime.getRuntime().exec(cmdArray, null, commandDir);
 
             } else {
-                String[] cmdArray;
-                if (isCoverageEnable) {
-                    //insert Jacoco agent configuration to carbon server startup script. This configuration
-                    //cannot be directly pass as server startup command due to script limitation.
-                    insertJacocoAgentToShellScript(carbonHome, scriptName);
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
-                        log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
-                    }
-                    cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
-                    cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
-
-                } else {
-                    cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
-                    cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
-                }
+                cmdArray = new String[]{"sh", "bin/" + scriptName + ".sh"};
+                cmdArray = mergePropertiesToCommandArray(parameters, cmdArray);
                 tempProcess = Runtime.getRuntime().exec(cmdArray, null, commandDir);
             }
 
@@ -187,48 +158,6 @@ public class CarbonServerManager {
         return portOffset;
     }
 
-    /**
-     * This methods will insert jacoco agent settings into startup script under JAVA_OPTS
-     *
-     * @param carbonHome - carbonHome
-     * @param scriptName - Name of the startup script
-     * @throws IOException - throws if shell script edit fails
-     */
-    private void insertJacocoAgentToShellScript(String carbonHome, String scriptName)
-            throws IOException {
-
-        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
-
-        CodeCoverageUtils.insertStringToFile(
-                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
-                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
-                "-Dwso2.server.standalone=true",
-                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
-    }
-
-
-    /**
-     * This methods will insert jacoco agent settings into windows bat script
-     *
-     * @param carbonHome - carbonHome
-     * @param scriptName - Name of the startup script
-     * @throws IOException - throws if shell script edit fails
-     */
-    private void insertJacocoAgentToBatScript(String carbonHome, String scriptName)
-            throws IOException {
-
-        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
-
-        CodeCoverageUtils.insertJacocoAgentToStartupBat(
-                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
-                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
-                "-Dcatalina.base",
-                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":"));
-    }
 
     private String[] mergePropertiesToCommandArray(String[] parameters, String[] cmdArray) {
         if (parameters != null) {
@@ -331,7 +260,7 @@ public class CarbonServerManager {
                                     null);
         reportGenerator.create();
 
-        log.info("Jacoco coverage dump file path : " + coverageDumpFilePath);
+        log.info("Jacoco coverage dump file path : " + FrameworkPathUtil.getCoverageDumpFilePath());
         log.info("Jacoco class file path : " + classesDir);
         log.info("Jacoco coverage HTML report path : " + FrameworkPathUtil.getCoverageDirPath() + File.separator + "index.html");
     }
@@ -420,27 +349,4 @@ public class CarbonServerManager {
     private String[] mergerArrays(String[] array1, String[] array2) {
         return ArrayUtils.addAll(array1, array2);
     }
-
-    /**
-     * Filter start up script name from extracted distribution.
-     */
-    private String getStartupScriptFileName() throws FileNotFoundException {
-        File[] allScripts = new File(carbonHome + File.separator + "bin").listFiles();
-        String scriptName = null;
-        if (allScripts != null) {
-            for (File scriptFileName : allScripts) {
-                if (scriptFileName.getName().contains(ExtensionConstants.SEVER_STARTUP_SCRIPT_NAME)) {
-                    scriptName = scriptFileName.getAbsoluteFile().getName();
-                    break;
-                } else if (scriptFileName.getName().contains("server")) {
-                    scriptName = scriptFileName.getName();
-                    break;
-                }
-            }
-        } else {
-            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
-        }
-        return FilenameUtils.removeExtension(scriptName);
-    }
-
 }

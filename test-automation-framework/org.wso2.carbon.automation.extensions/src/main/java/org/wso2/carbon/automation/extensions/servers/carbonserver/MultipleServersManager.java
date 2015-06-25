@@ -20,6 +20,7 @@ package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,8 @@ public class MultipleServersManager {
      * @param serverManagers vararg which specifies a TestServerManager instance per Carbon server
      * @throws AutomationFrameworkException If an error occurs while copying deployment artifacts into Carbon servers
      */
-    public void startServers(TestServerManager... serverManagers) throws AutomationFrameworkException {
+    public void startServers(TestServerManager... serverManagers)
+            throws AutomationFrameworkException {
         for (TestServerManager zip : serverManagers) {
             String carbonHome = null;
             try {
@@ -52,6 +54,8 @@ public class MultipleServersManager {
             } catch (IOException e) {
                 throw new AutomationFrameworkException("Server start failed", e);
             } catch (AutomationFrameworkException e) {
+                throw new AutomationFrameworkException("Server start failed", e);
+            } catch (XPathExpressionException e) {
                 throw new AutomationFrameworkException("Server start failed", e);
             }
             servers.put(carbonHome, zip);
