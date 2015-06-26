@@ -49,6 +49,7 @@ public class CarbonServerManager {
     private ServerLogReader inputStreamHandler;
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
+    private String coverageDumpFilePath;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
@@ -70,11 +71,6 @@ public class CarbonServerManager {
         final int portOffset = checkPortAvailability(commandMap);
         Process tempProcess = null;
 
-        try {
-            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
-        } catch (XPathExpressionException e) {
-            throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
-        }
         try {
             if (!commandMap.isEmpty()) {
                 if (getPortOffsetFromCommandMap(commandMap) == 0) {
@@ -166,8 +162,16 @@ public class CarbonServerManager {
         return cmdArray;
     }
 
+    /**
+     * Unzip carbon zip file and return the carbon home. Based on the coverage configuration in automation.xml
+     * This method will inject jacoco agent to the carbon server startup scripts.
+     *
+     * @param carbonServerZipFile - Carbon zip file, which should be specified in test module pom
+     * @return - carbonHome - carbon home
+     * @throws IOException - If pack extraction fails
+     */
     public synchronized String setUpCarbonHome(String carbonServerZipFile)
-            throws IOException {
+            throws IOException, AutomationFrameworkException {
         if (process != null) { // An instance of the server is running
             return carbonHome;
         }
@@ -186,10 +190,25 @@ public class CarbonServerManager {
         String extractDir = "carbontmp" + System.currentTimeMillis();
         String baseDir = (System.getProperty("basedir", ".")) + File.separator + "target";
         log.info("Extracting carbon zip file.. ");
+
         new ArchiveExtractor().extractFile(carbonServerZipFile, baseDir + File.separator + extractDir);
-        return carbonHome =
-                new File(baseDir).getAbsolutePath() + File.separator + extractDir + File.separator +
-                extractedCarbonDir;
+        carbonHome = new File(baseDir).getAbsolutePath() + File.separator + extractDir + File.separator +
+                     extractedCarbonDir;
+
+        try {
+            //read coverage status from automation.xml
+            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+        } catch (XPathExpressionException e) {
+            throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
+        }
+
+        //insert Jacoco agent configuration to carbon server startup script. This configuration
+        //cannot be directly pass as server startup command due to script limitation.
+        if (isCoverageEnable) {
+            instrumentForCoverage();
+        }
+
+        return carbonHome;
     }
 
 
@@ -348,5 +367,67 @@ public class CarbonServerManager {
 
     private String[] mergerArrays(String[] array1, String[] array2) {
         return ArrayUtils.addAll(array1, array2);
+    }
+
+    /**
+     * This methods will insert jacoco agent settings into startup script under JAVA_OPTS
+     *
+     * @param scriptName - Name of the startup script
+     * @throws IOException - throws if shell script edit fails
+     */
+    private void insertJacocoAgentToShellScript(String scriptName)
+            throws IOException {
+
+        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
+        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
+
+        CodeCoverageUtils.insertStringToFile(
+                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
+                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
+                "-Dwso2.server.standalone=true",
+                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
+    }
+
+
+    /**
+     * This methods will insert jacoco agent settings into windows bat script
+     *
+     * @param scriptName - Name of the startup script
+     * @throws IOException - throws if shell script edit fails
+     */
+    private void insertJacocoAgentToBatScript(String scriptName)
+            throws IOException {
+
+        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
+        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
+
+        CodeCoverageUtils.insertJacocoAgentToStartupBat(
+                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
+                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
+                "-Dcatalina.base",
+                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
+                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":"));
+    }
+
+
+    /**
+     * This method will check the OS and edit server startup script to inject jacoco agent
+     *
+     * @throws IOException - If agent insertion fails.
+     */
+    private void instrumentForCoverage() throws IOException, AutomationFrameworkException {
+        String scriptName = TestFrameworkUtils.getStartupScriptFileName(carbonHome);
+
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            insertJacocoAgentToBatScript(scriptName);
+            if (log.isDebugEnabled()) {
+                log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
+                log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
+            }
+        } else {
+            insertJacocoAgentToShellScript(scriptName);
+        }
+
     }
 }

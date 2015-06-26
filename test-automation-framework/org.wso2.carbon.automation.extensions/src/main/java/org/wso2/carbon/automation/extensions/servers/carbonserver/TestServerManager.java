@@ -42,22 +42,17 @@ public class TestServerManager {
     protected Map<String, String> commandMap = new HashMap<String, String>();
     private static final Log log = LogFactory.getLog(TestServerManager.class);
     protected String carbonHome;
-    protected String coverageDumpFilePath;
-    protected AutomationContext context;
 
     public TestServerManager(AutomationContext context) {
-        this.context = context;
         carbonServer = new CarbonServerManager(context);
     }
 
     public TestServerManager(AutomationContext context, String carbonZip) {
-        this.context = context;
         carbonServer = new CarbonServerManager(context);
         this.carbonZip = carbonZip;
     }
 
     public TestServerManager(AutomationContext context, int portOffset) {
-        this.context = context;
         carbonServer = new CarbonServerManager(context);
         this.portOffset = portOffset;
         commandMap.put(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND, String.valueOf(portOffset));
@@ -65,7 +60,6 @@ public class TestServerManager {
 
     public TestServerManager(AutomationContext context, String carbonZip,
                              Map<String, String> commandMap) {
-        this.context = context;
         carbonServer = new CarbonServerManager(context);
         this.carbonZip = carbonZip;
         if (commandMap.get(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND) != null) {
@@ -117,10 +111,6 @@ public class TestServerManager {
                 throw new IllegalArgumentException("carbon zip file cannot find in the given location");
             }
             carbonHome = carbonServer.setUpCarbonHome(carbonZip);
-            //insert Jacoco agent configuration to carbon server startup script. This configuration
-            //cannot be directly pass as server startup command due to script limitation.
-            instrumentForCoverage(context);
-            System.out.println("GENERATING COVERAGE");
             configureServer();
         }
         log.info("Carbon Home - " + carbonHome);
@@ -158,72 +148,5 @@ public class TestServerManager {
 
 
 
-    /**
-     * This methods will insert jacoco agent settings into startup script under JAVA_OPTS
-     *
-     * @param carbonHome - carbonHome
-     * @param scriptName - Name of the startup script
-     * @throws IOException - throws if shell script edit fails
-     */
-    private void insertJacocoAgentToShellScript(String carbonHome, String scriptName)
-            throws IOException {
 
-        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
-
-        CodeCoverageUtils.insertStringToFile(
-                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".sh"),
-                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".sh"),
-                "-Dwso2.server.standalone=true",
-                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":") + " \\");
-    }
-
-
-    /**
-     * This methods will insert jacoco agent settings into windows bat script
-     *
-     * @param carbonHome - carbonHome
-     * @param scriptName - Name of the startup script
-     * @throws IOException - throws if shell script edit fails
-     */
-    private void insertJacocoAgentToBatScript(String carbonHome, String scriptName)
-            throws IOException {
-
-        String jacocoAgentFile = CodeCoverageUtils.getJacocoAgentJarLocation();
-        coverageDumpFilePath = FrameworkPathUtil.getCoverageDumpFilePath();
-
-        CodeCoverageUtils.insertJacocoAgentToStartupBat(
-                new File(carbonHome + File.separator + "bin" + File.separator + scriptName + ".bat"),
-                new File(carbonHome + File.separator + "tmp" + File.separator + scriptName + ".bat"),
-                "-Dcatalina.base",
-                "-javaagent:" + jacocoAgentFile + "=destfile=" + coverageDumpFilePath + "" +
-                ",append=true,includes=" + CodeCoverageUtils.getInclusionJarsPattern(":"));
-    }
-
-
-    /**
-     * This method will check the OS and edit server startup script to inject jacoco agent
-     * @param autoCtx - Automation context of the provided
-     * @throws XPathExpressionException - If automation context cannot be retrieved
-     * @throws IOException - If agent insertion fails.
-     *
-     */
-    private void instrumentForCoverage(AutomationContext autoCtx)
-            throws XPathExpressionException, IOException {
-        Boolean isCoverageEnable = Boolean.parseBoolean(autoCtx.getConfigurationValue("//coverage"));
-        String scriptName = TestFrameworkUtils.getStartupScriptFileName(carbonHome);
-        if (isCoverageEnable) {
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-
-                insertJacocoAgentToBatScript(carbonHome, scriptName);
-                if (log.isDebugEnabled()) {
-                    log.debug("Included files " + CodeCoverageUtils.getInclusionJarsPattern(":"));
-                    log.debug("Excluded files " + CodeCoverageUtils.getExclusionJarsPattern(":"));
-                }
-            } else {
-                insertJacocoAgentToShellScript(carbonHome, scriptName);
-            }
-        }
-    }
 }
