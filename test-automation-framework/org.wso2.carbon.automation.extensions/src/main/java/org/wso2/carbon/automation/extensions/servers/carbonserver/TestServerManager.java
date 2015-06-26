@@ -17,20 +17,14 @@
 */
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-import org.wso2.carbon.automation.engine.frameworkutils.TestFrameworkUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
