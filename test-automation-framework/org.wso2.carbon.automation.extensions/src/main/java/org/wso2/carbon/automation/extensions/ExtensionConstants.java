@@ -28,6 +28,9 @@ public class ExtensionConstants {
     public static final String SERVICE_FILE_SEC_VERIFIER = "SecVerifier.aar";
     public static final String SEVER_STARTUP_SCRIPT_NAME = "wso2server";
     public static final String SERVER_STARTUP_PORT_OFFSET_COMMAND = "-DportOffset";
+    public static final String COVERAGE_SERVER_STARTUP_PORT = "coverageServerPort";
+    public static final String DEFAULT_COVERAGE_SERVER_STARTUP_PORT = "6300";
+    public static final String COVERAGE_DUMP_FILE_PATH = "coverageDumpFilePath";
     public static final String SERVER_DEFAULT_HTTPS_PORT = "9443";
     public static final String SERVER_DEFAULT_HTTP_PORT = "9763";
     public static final String SUPER_TENANT_DOMAIN_NAME = "carbon.super";
