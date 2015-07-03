@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.context.beans.User;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.CodeCoverageUtils;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
@@ -50,6 +51,7 @@ public class CarbonServerManager {
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
     private String coverageDumpFilePath;
+    private int portOffset = 0;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final String SERVER_STARTUP_MESSAGE = "Mgt Console URL";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
@@ -68,7 +70,7 @@ public class CarbonServerManager {
         if (process != null) { // An instance of the server is running
             return;
         }
-        final int portOffset = checkPortAvailability(commandMap);
+        portOffset = checkPortAvailability(commandMap);
         Process tempProcess = null;
 
         try {
@@ -126,7 +128,11 @@ public class CarbonServerManager {
                 // wait until server startup is completed
             }
 
-            ClientConnectionUtil.waitForLogin(automationContext);
+            int httpsPort = defaultHttpsPort + portOffset;
+            //considering the port offset
+            String backendURL = automationContext.getContextUrls().getSecureServiceUrl().replaceAll("(:\\d+)", ":" + httpsPort);
+            User superUser =  automationContext.getSuperTenant().getTenantAdmin();
+            ClientConnectionUtil.waitForLogin(backendURL, superUser);
             log.info("Server started successfully.");
 
         } catch (IOException e) {
@@ -287,10 +293,12 @@ public class CarbonServerManager {
     public synchronized void restartGracefully() throws AutomationFrameworkException {
 
         try {
-            ClientConnectionUtil.sendGraceFullRestartRequest(
-                    automationContext.getContextUrls().getSecureServiceUrl(),
-                    automationContext.getSuperTenant().getContextUser().getUserName(),
-                    automationContext.getSuperTenant().getContextUser().getPassword());
+            int httpsPort = defaultHttpsPort + portOffset;
+            //considering the port offset
+            String backendURL = automationContext.getContextUrls().getSecureServiceUrl().replaceAll("(:\\d+)", ":" + httpsPort);
+            User superUser =  automationContext.getSuperTenant().getTenantAdmin();
+            ClientConnectionUtil.sendGraceFullRestartRequest(backendURL, superUser.getUserName()
+                    , superUser.getPassword());
         } catch (XPathExpressionException e) {
             throw new AutomationFrameworkException("restart failed", e);
         }
