@@ -35,6 +35,7 @@
         <module>test-automation-framework/org.wso2.carbon.automation.engine</module>
         <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
+        <module>test-automation-framework/org.wso2.carbon.automation.artifacts</module>
     </modules>
 
     <scm>
