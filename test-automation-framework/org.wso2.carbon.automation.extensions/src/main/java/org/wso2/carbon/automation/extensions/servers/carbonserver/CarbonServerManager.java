@@ -281,13 +281,13 @@ public class CarbonServerManager {
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
                                     classesDir,
-                                    new File(FrameworkPathUtil.getCoverageDirPath()),
+                                    new File(CodeCoverageUtils.getJacocoReportDirectory()),
                                     null);
         reportGenerator.create();
 
         log.info("Jacoco coverage dump file path : " + FrameworkPathUtil.getCoverageDumpFilePath());
         log.info("Jacoco class file path : " + classesDir);
-        log.info("Jacoco coverage HTML report path : " + FrameworkPathUtil.getCoverageDirPath() + File.separator + "index.html");
+        log.info("Jacoco coverage HTML report path : " + CodeCoverageUtils.getJacocoReportDirectory() + File.separator + "index.html");
     }
 
     public synchronized void restartGracefully() throws AutomationFrameworkException {

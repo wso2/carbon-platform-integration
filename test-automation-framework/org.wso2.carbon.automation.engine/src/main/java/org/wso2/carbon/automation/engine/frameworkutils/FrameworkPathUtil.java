@@ -100,6 +100,10 @@ public class FrameworkPathUtil {
                "jacoco";
     }
 
+    public static String getTargetDirectory() {
+        return System.getProperty("basedir") + File.separator + "target";
+    }
+
     public static String getCoverageDumpFilePath() {
         return getJacocoCoverageHome() + File.separator + "jacoco" + System.currentTimeMillis() + ".exec";
     }

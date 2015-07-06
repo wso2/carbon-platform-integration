@@ -38,6 +38,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
 /**
@@ -336,6 +337,18 @@ public final class CodeCoverageUtils {
     }
 
     /**
+     * Get report creation location
+     */
+    public static String getJacocoReportDirectory() {
+        String jacocoReportDir = System.getProperty("report.dir");
+        if (jacocoReportDir == null) {
+            jacocoReportDir = FrameworkPathUtil.getCoverageDirPath();
+        }
+
+        return jacocoReportDir;
+    }
+
+    /**
      * Merge coverage data files
      *
      * @param dataFilePath - path to coverage data file
@@ -475,7 +488,6 @@ public final class CodeCoverageUtils {
         }
         return tempExtractedDir;
     }
-
 
 
     public static String[] getMatches(String[] classFiles, String[] regexArray) {
