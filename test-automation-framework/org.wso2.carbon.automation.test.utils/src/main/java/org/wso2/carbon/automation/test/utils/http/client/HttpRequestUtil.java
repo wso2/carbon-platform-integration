@@ -427,6 +427,40 @@ public class HttpRequestUtil {
     }
 
     /**
+     * Sends an HTTP DELETE request to a url
+     *
+     * @param endpoint    - The URL of the server. (Example: " http://www.yahoo.com/search")
+     * @param contentType - content type of the message
+     * @return            - The response code from the endpoint
+     * @throws java.io.IOException If an error occurs while sending the DELETE request
+     */
+    public static int sendDeleteRequest(URL endpoint, String contentType) throws AutomationFrameworkException {
+
+        HttpURLConnection urlConnection = null;
+        int responseCode;
+        try {
+            urlConnection = (HttpURLConnection)endpoint.openConnection();
+            try {
+                urlConnection.setRequestMethod("DELETE");
+            } catch (ProtocolException var33) {
+                throw new AutomationFrameworkException(
+                        "Shouldn\'t happen: HttpURLConnection doesn\'t support DELETE?? " + var33.getMessage(), var33);
+            }
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-type", contentType);
+            responseCode = urlConnection.getResponseCode();
+        } catch (IOException var36) {
+            throw new AutomationFrameworkException(
+                    "Connection error (is server running at " + endpoint + " ?): " + var36.getMessage(), var36);
+        } finally {
+            if(urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return responseCode;
+    }
+
+    /**
      * Pipes everything from the reader to the writer via a buffer
      *
      * @param reader Reader
