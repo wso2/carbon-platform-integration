@@ -17,6 +17,8 @@
 */
 package org.wso2.carbon.automation.engine.context.beans;
 
+import org.wso2.carbon.automation.engine.FrameworkConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,14 @@ public class User {
     public String getUserNameWithoutDomain() {
         String[] result = userName.split("@");
         return result[0];
+    }
+
+    public String getUserDomain() {
+        if(userName.contains("@")) {
+            return userName.substring(userName.lastIndexOf("@"));
+        } else {
+            return FrameworkConstants.SUPER_TENANT_DOMAIN_NAME;
+        }
     }
 
     public List<String> getRoles() {
