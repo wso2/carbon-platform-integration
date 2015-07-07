@@ -59,7 +59,7 @@ public class User {
 
     public String getUserDomain() {
         if(userName.contains("@")) {
-            return userName.substring(userName.lastIndexOf("@"));
+            return userName.substring(userName.lastIndexOf("@") + 1);
         } else {
             return FrameworkConstants.SUPER_TENANT_DOMAIN_NAME;
         }
