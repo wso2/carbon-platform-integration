@@ -17,6 +17,7 @@
 */
 package org.wso2.carbon.automation.engine.frameworkutils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
@@ -33,7 +34,6 @@ public class TestCoverageGenerator {
 
     private static final Log log = LogFactory.getLog(TestCoverageGenerator.class);
     private static String carbonZip;
-    private static String carbonHome;
 
     public static void main(String[] args) throws AutomationFrameworkException, IOException {
 
@@ -45,7 +45,7 @@ public class TestCoverageGenerator {
             throw new IllegalArgumentException("carbon zip file cannot find in the given location " +
                                                FrameworkPathUtil.getCarbonZipLocation());
         }
-        carbonHome = ArchiveExtractorUtil.setUpCarbonHome(carbonZip);
+        String carbonHome = ArchiveExtractorUtil.setUpCarbonHome(carbonZip);
         File parentDirectory = new File(System.getProperty("basedir")).getParentFile();
 
         CodeCoverageUtils.executeMerge(parentDirectory.getAbsolutePath());
@@ -55,14 +55,18 @@ public class TestCoverageGenerator {
                          File.separator + "components" + File.separator + "plugins" + File.separator);
 
 
-
-
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
                                     carbonPluginDir,
                                     new File(CodeCoverageUtils.getJacocoReportDirectory()),
                                     null);
         reportGenerator.create();
+
+        File carbonHomeDir = new File(carbonHome);
+
+        if (carbonHomeDir.exists()) {
+            FileUtils.deleteQuietly(new File(carbonHome)); //delete extracted dir
+        }
 
         log.info("Jacoco coverage merged file : " + FrameworkPathUtil.getCoverageMergeFilePath());
         log.info("Jacoco class file path : " + carbonPluginDir.getAbsolutePath());

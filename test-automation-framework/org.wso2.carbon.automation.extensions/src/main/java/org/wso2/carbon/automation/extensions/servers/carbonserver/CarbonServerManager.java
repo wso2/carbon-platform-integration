@@ -135,9 +135,7 @@ public class CarbonServerManager {
             ClientConnectionUtil.waitForLogin(backendURL, superUser);
             log.info("Server started successfully.");
 
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to start server", e);
-        } catch (XPathExpressionException e) {
+        } catch (IOException | XPathExpressionException e) {
             throw new IllegalStateException("Unable to start server", e);
         }
         process = tempProcess;

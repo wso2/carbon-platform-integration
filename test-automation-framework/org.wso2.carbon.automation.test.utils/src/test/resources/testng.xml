@@ -22,7 +22,8 @@
     <test name="Automation Engine Unit tests" preserve-order="true" parallel="false">
 
         <classes>
-            <class name="org.wso2.carbon.automation.test.utils.tests.EmailServerTestCase"/>
+            <!-- test case disabled temporary due to jenkins failure - https://wso2.org/jira/browse/TA-988 -->
+            <!--<class name="org.wso2.carbon.automation.test.utils.tests.EmailServerTestCase"/>-->
         </classes>
     </test>
 </suite>
