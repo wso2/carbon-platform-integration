@@ -42,14 +42,15 @@ public class HttpRequestUtil {
      * @return - The response from the end point
      * @throws java.io.IOException If an error occurs while sending the GET request
      */
-    public static HttpResponse sendGetRequest(String endpoint,
-                                              String requestParameters) throws IOException {
+    public static HttpResponse sendGetRequest(String endpoint, String requestParameters) throws IOException {
+        HttpURLConnection conn = null;
+        try {
             String urlStr = endpoint;
             if (requestParameters != null && requestParameters.length() > 0) {
                 urlStr += "?" + requestParameters;
             }
             URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setDoOutput(true);
             conn.setReadTimeout(10000);
@@ -70,6 +71,11 @@ public class HttpRequestUtil {
                 }
             }
             return new HttpResponse(sb.toString(), conn.getResponseCode());
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
     }
 
     /**
@@ -262,13 +268,15 @@ public class HttpRequestUtil {
 
     public static HttpResponse doGet(String endpoint, Map<String, String> headers) throws IOException {
         HttpResponse httpResponse;
+        HttpURLConnection conn = null;
+        try {
             URL url = new URL(endpoint);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setDoOutput(true);
             conn.setReadTimeout(30000);
             //setting headers
-            for (Map.Entry<String,String> e : headers.entrySet()) {
+            for (Map.Entry<String, String> e : headers.entrySet()) {
                 conn.setRequestProperty(e.getKey(), e.getValue());
             }
 
@@ -298,6 +306,11 @@ public class HttpRequestUtil {
                 }
             }
             return httpResponse;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
     }
 
     /**
