@@ -39,6 +39,7 @@ public class InputStreamHandler implements Runnable {
     private StringBuilder stringBuilder;
     private static final String STREAM_TYPE_IN = "inputStream";
     private static final String STREAM_TYPE_ERROR = "errorStream";
+    private volatile boolean running = true;
 
 
     private static final Log log = LogFactory.getLog(InputStreamHandler.class);
@@ -54,6 +55,10 @@ public class InputStreamHandler implements Runnable {
         thread.start();
     }
 
+    public void stop() {
+        running = false;
+    }
+
     public void run() {
         InputStreamReader inputStreamReader = null;
         try {
@@ -61,7 +66,7 @@ public class InputStreamHandler implements Runnable {
             inputStreamReader = new InputStreamReader(inputStream, "ISO-8859-1");
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-            while (true) {
+            while (running) {
                 if (bufferedReader.ready()) {
                     String s = bufferedReader.readLine();
                     stringBuilder.setLength(0);
