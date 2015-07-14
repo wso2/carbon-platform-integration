@@ -354,10 +354,11 @@ public final class CodeCoverageUtils {
      * @param dataFilePath - path to coverage data file
      * @throws AutomationFrameworkException - Throws if coverage data files cannot be merged.
      */
-    public static void executeMerge(String dataFilePath) throws AutomationFrameworkException {
+    public static void executeMerge(String dataFilePath, String coverageMergeFilePath)
+            throws AutomationFrameworkException {
         final ExecFileLoader loader = new ExecFileLoader();
         load(loader, dataFilePath);
-        save(loader);
+        save(loader, coverageMergeFilePath);
     }
 
     /**
@@ -375,7 +376,7 @@ public final class CodeCoverageUtils {
         //if no files found
         if (fileSetsCollection.size() == 0) {
             throw new AutomationFrameworkException("Couldn't find coverage data files at " +
-                                                   FrameworkPathUtil.getJacocoCoverageHome());
+                                                   dataFilePath);
         }
 
         for (File inputFile : fileSetsCollection) {
@@ -398,8 +399,16 @@ public final class CodeCoverageUtils {
      * @param loader - coverage data file loader
      * @throws AutomationFrameworkException - Throws if coverage data files cannot be created
      */
-    private static void save(final ExecFileLoader loader) throws AutomationFrameworkException {
-        File destinationFile = new File(FrameworkPathUtil.getCoverageMergeFilePath());
+    private static void save(final ExecFileLoader loader, String coverageMergeFilePath)
+            throws AutomationFrameworkException {
+        File destinationFile;
+        if (coverageMergeFilePath == null || coverageMergeFilePath.isEmpty()) {
+            destinationFile = new File(FrameworkPathUtil.getCoverageMergeFilePath());
+
+        } else {
+            destinationFile = new File(coverageMergeFilePath);
+        }
+
 
         if (loader.getExecutionDataStore().getContents().isEmpty()) {
             log.warn("Execution data is empty skipping coverage generation");
@@ -409,7 +418,7 @@ public final class CodeCoverageUtils {
         log.info("Writing merged execution data to " + destinationFile.getAbsolutePath());
 
         try {
-            loader.save(destinationFile, false);
+            loader.save(destinationFile, true);
         } catch (IOException e) {
             throw new AutomationFrameworkException("Unable to write merged file " +
                                                    destinationFile.getAbsolutePath(), e);

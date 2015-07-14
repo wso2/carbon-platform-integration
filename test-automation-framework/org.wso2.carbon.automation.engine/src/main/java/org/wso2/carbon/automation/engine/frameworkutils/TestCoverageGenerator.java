@@ -48,7 +48,7 @@ public class TestCoverageGenerator {
         String carbonHome = ArchiveExtractorUtil.setUpCarbonHome(carbonZip);
         File parentDirectory = new File(System.getProperty("basedir")).getParentFile();
 
-        CodeCoverageUtils.executeMerge(parentDirectory.getAbsolutePath());
+        CodeCoverageUtils.executeMerge(parentDirectory.getAbsolutePath(), FrameworkPathUtil.getCoverageMergeFilePath());
 
         File carbonPluginDir =
                 new File(carbonHome + File.separator + "repository" +

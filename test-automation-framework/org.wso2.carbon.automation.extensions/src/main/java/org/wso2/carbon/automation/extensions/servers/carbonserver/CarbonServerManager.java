@@ -275,7 +275,8 @@ public class CarbonServerManager {
     private void generateCoverageReport(File classesDir)
             throws IOException, AutomationFrameworkException {
 
-        CodeCoverageUtils.executeMerge(FrameworkPathUtil.getJacocoCoverageHome());
+        CodeCoverageUtils.executeMerge(FrameworkPathUtil.getJacocoCoverageHome(),
+                                       FrameworkPathUtil.getCoverageMergeFilePath());
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
                                     classesDir,
