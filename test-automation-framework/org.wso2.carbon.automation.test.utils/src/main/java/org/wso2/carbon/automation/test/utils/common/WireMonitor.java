@@ -36,6 +36,8 @@ class WireMonitor extends Thread {
     private WireMonitorServer trigger;
 
     public void run() {
+        InputStream in = null;
+        OutputStream out = null;
         try {
 
             // creating a server socket
@@ -45,13 +47,14 @@ class WireMonitor extends Thread {
             connection = providerSocket.accept();
             log.info("Connection received from " +
                      connection.getInetAddress().getHostName());
-            InputStream in = connection.getInputStream();
+            in = connection.getInputStream();
             int ch;
             StringBuffer buffer = new StringBuffer();
             StringBuffer headerBuffer = new StringBuffer();
             Long time = System.currentTimeMillis();
             int contentLength = -1;
-            while ((ch = in.read()) != 1) {
+            while ((ch = in.read()) != -1) {
+                log.debug("Character > " + (char) ch);
                 buffer.append((char) ch);
                 //message headers end with
                 if (contentLength == -1 && buffer.toString().endsWith("\r\n\r\n")) {
@@ -62,6 +65,7 @@ class WireMonitor extends Thread {
                         String contentLengthHeader = headers.substring(headers.indexOf("Content-Length:"));
                         contentLengthHeader = contentLengthHeader.substring(0, contentLengthHeader.indexOf("\r\n"));
                         contentLength = Integer.parseInt(contentLengthHeader.split(":")[1].trim());
+                        log.debug("Content-Length > " + contentLength);
                         //clear the buffer
                         buffer.setLength(0);
                     }
@@ -72,28 +76,34 @@ class WireMonitor extends Thread {
                     break;
                 }
                 // In this case no need of reading more than timeout value
-                if ( (System.currentTimeMillis() > (time + trigger.READ_TIME_OUT) ) || buffer.toString().contains("</soapenv:Envelope>")) {
+                if ((System.currentTimeMillis() > (time + trigger.READ_TIME_OUT)) || buffer.toString().contains("</soapenv:Envelope>")) {
                     break;
                 }
             }
 
             // Signaling Main thread to continue
             trigger.response = headerBuffer.toString() + buffer.toString();
+            log.info("Wire Message received");
+            log.info("Wire Message > " + trigger.response);
             trigger.setFinished(true);
-            OutputStream out = connection.getOutputStream();
+            out = connection.getOutputStream();
             out.write(("HTTP/1.1 202 Accepted" + "\r\n\r\n").getBytes(Charset.defaultCharset()));
             out.flush();
-            out.close();
-            in.close();
 
         } catch (IOException ioException) {
-
+            log.error(ioException);
         } finally {
             try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
                 connection.close();
                 providerSocket.close();
             } catch (Exception e) {
-
+                log.warn("Error while closing the connections" + e.getMessage());
             }
         }
 
