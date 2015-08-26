@@ -70,7 +70,18 @@ public class HttpRequestUtil {
                     rd.close();
                 }
             }
-            return new HttpResponse(sb.toString(), conn.getResponseCode());
+
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL(endpoint).openConnection();
+            Iterator<String> itr = urlConnection.getHeaderFields().keySet().iterator();
+            Map<String, String> headers = new HashMap();
+            while (itr.hasNext()) {
+                String key = itr.next();
+                if (key != null) {
+                    headers.put(key, urlConnection.getHeaderField(key));
+                }
+            }
+            return new HttpResponse(sb.toString(), urlConnection.getResponseCode(), headers);
+
         } finally {
             if (conn != null) {
                 conn.disconnect();
