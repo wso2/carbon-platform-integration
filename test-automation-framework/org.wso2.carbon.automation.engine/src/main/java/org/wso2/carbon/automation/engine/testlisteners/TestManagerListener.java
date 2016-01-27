@@ -48,18 +48,26 @@ public class TestManagerListener implements ITestListener {
             handleException("Error while running tests", e);
         }
         log.info("=================== On test success " + iTestResult.getTestClass().getName() + "."
-                 + iTestResult.getMethod().getMethodName() + " ===================");
+                + iTestResult.getMethod().getMethodName() + " ===================");
     }
 
     public void onTestFailure(ITestResult iTestResult) {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_FAILURE, false);
+
+            if (iTestResult.getThrowable() != null) {
+                StackTraceElement[] stArr = iTestResult.getThrowable().getStackTrace();
+                for (int x = 0; x < stArr.length; x++) {
+                    log.error(stArr[x].toString());
+                }
+            }
+
         } catch (Exception e) {
             handleException("Error while running tests", e);
         }
         log.info("=================== On test failure " + iTestResult.getTestClass().getName() + "."
-                 + iTestResult.getMethod().getMethodName() + " ===================");
+                + iTestResult.getMethod().getMethodName() + " ===================");
     }
 
     public void onTestSkipped(ITestResult iTestResult) {
