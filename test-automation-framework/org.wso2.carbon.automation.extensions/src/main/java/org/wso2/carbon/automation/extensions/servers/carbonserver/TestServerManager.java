@@ -72,6 +72,10 @@ public class TestServerManager {
         return carbonHome;
     }
 
+    public String getCarbonHomeWithPortOffSet(int portOffsetValue) {
+        return System.getProperty("carbon." + portOffset + ".home", carbonHome);
+    }
+
     public int getPortOffset() {
         return portOffset;
     }
@@ -114,6 +118,11 @@ public class TestServerManager {
             this.portOffset = 0;
         }
         carbonServer.startServerUsingCarbonHome(carbonHome, commandMap);
+
+        log.info("Adding a new " + " carbon." + portOffset + ".home" +
+                " property for new server started with port-offset value " + portOffset);
+        System.setProperty("carbon." + portOffset + ".home", carbonHome);
+
         return carbonHome;
     }
 
