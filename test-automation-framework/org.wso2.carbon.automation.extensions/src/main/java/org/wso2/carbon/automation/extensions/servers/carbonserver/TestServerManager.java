@@ -72,8 +72,8 @@ public class TestServerManager {
         return carbonHome;
     }
 
-    public String getCarbonHomeWithPortOffSet(int portOffsetValue) {
-        return System.getProperty("carbon." + portOffset + ".home", carbonHome);
+    public String getCarbonHomeWithPortOffSet(int portOffSetValue) {
+        return System.getProperty("carbon." + portOffSetValue + ".home");
     }
 
     public int getPortOffset() {
