@@ -71,16 +71,16 @@ public class HttpRequestUtil {
                 }
             }
 
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(endpoint).openConnection();
-            Iterator<String> itr = urlConnection.getHeaderFields().keySet().iterator();
+
+            Iterator<String> itr = conn.getHeaderFields().keySet().iterator();
             Map<String, String> headers = new HashMap();
             while (itr.hasNext()) {
                 String key = itr.next();
                 if (key != null) {
-                    headers.put(key, urlConnection.getHeaderField(key));
+                    headers.put(key, conn.getHeaderField(key));
                 }
             }
-            return new HttpResponse(sb.toString(), urlConnection.getResponseCode(), headers);
+            return new HttpResponse(sb.toString(), conn.getResponseCode(), headers);
 
         } finally {
             if (conn != null) {

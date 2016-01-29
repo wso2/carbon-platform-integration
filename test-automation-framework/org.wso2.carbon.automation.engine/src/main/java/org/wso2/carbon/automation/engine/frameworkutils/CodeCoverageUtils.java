@@ -48,6 +48,7 @@ public final class CodeCoverageUtils {
     private static final Log log = LogFactory.getLog(CodeCoverageUtils.class);
     private static final String DEFAULT_INCLUDES = "**";
     private static final String DEFAULT_EXCLUDES = "";
+    private static final long COVERAGE_DUMP_WAIT_TIME = 10 * 1000;
 
     private CodeCoverageUtils() {
     }
@@ -380,13 +381,16 @@ public final class CodeCoverageUtils {
         }
 
         for (File inputFile : fileSetsCollection) {
-
             if (inputFile.isDirectory()) {
                 continue;
             }
             try {
+                //retry to check whether exec data file is non empty.
+                waitForCoverageDumpFileCreation(inputFile);
+
                 log.info("Loading execution data file " + inputFile.getAbsolutePath());
                 loader.load(inputFile);
+
             } catch (IOException e) {
                 throw new AutomationFrameworkException("Unable to read " + inputFile.getAbsolutePath(), e);
             }
@@ -408,7 +412,6 @@ public final class CodeCoverageUtils {
         } else {
             destinationFile = new File(coverageMergeFilePath);
         }
-
 
         if (loader.getExecutionDataStore().getContents().isEmpty()) {
             log.warn("Execution data is empty skipping coverage generation");
@@ -511,5 +514,30 @@ public final class CodeCoverageUtils {
             }
         }
         return (String[]) matches.toArray();
+    }
+
+    private static boolean waitForCoverageDumpFileCreation(File file) {
+        long currentTime = System.currentTimeMillis();
+        long waitTime = currentTime + COVERAGE_DUMP_WAIT_TIME;
+        boolean status = false;
+
+        while (waitTime > System.currentTimeMillis()) {
+            if (file.length() > 0) {
+                status = true;
+                log.info("Execution data file non empty file size in KB : " + file.length() / 1024);
+                break;
+            } else {
+
+                try {
+                    status = false;
+                    log.warn("Execution data file is empty file size in KB : " + file.length() / 1024);
+                    Thread.sleep(500);
+                } catch (InterruptedException ignored) {
+                    log.warn("Sleep interrupted ", ignored);
+                }
+
+            }
+        }
+        return status;
     }
 }
