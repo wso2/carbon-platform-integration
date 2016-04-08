@@ -20,10 +20,13 @@ package org.wso2.carbon.automation.test.utils.dbutils;
 import com.sun.rowset.CachedRowSetImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.wso2.carbon.automation.test.utils.common.FileManager;
 
 import javax.sql.rowset.CachedRowSet;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
@@ -160,6 +163,18 @@ public class MySqlDatabaseManager implements DatabaseManager {
             throw new SQLException("Error while disconnecting from database");
         }
         super.finalize();
+    }
+
+    /**
+     * This executes a given script
+     * @param scriptPath - Path to sql script file
+     * @throws IOException
+     * @throws SQLException
+     */
+    public void executeDBScript(String scriptPath) throws IOException, SQLException {
+
+        ScriptRunner runner = new ScriptRunner(connection);
+        runner.runScript(new BufferedReader(new FileReader(scriptPath)));
     }
 }
 

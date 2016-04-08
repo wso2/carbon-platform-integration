@@ -33,8 +33,8 @@
 
     <modules>
         <module>test-automation-framework/org.wso2.carbon.automation.engine</module>
-        <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.test.utils</module>
+        <module>test-automation-framework/org.wso2.carbon.automation.extensions</module>
         <module>test-automation-framework/org.wso2.carbon.automation.artifacts</module>
     </modules>
 
@@ -150,6 +150,11 @@
             <dependency>
                 <groupId>org.wso2.carbon.automation</groupId>
                 <artifactId>org.wso2.carbon.automation.extensions</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.automation</groupId>
+                <artifactId>org.wso2.carbon.automation.test.utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -360,6 +365,42 @@
                 <artifactId>activemq-mqtt</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.wink</groupId>
+                <artifactId>wink-client</artifactId>
+                <version>${wink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-client</artifactId>
+                <version>${fabric8.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${jgit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json.wso2</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.googlecode.json-simple</groupId>
+                <artifactId>json-simple</artifactId>
+                <version>${googlecode.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${javax.ws.rs-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ibatis</groupId>
+                <artifactId>ibatis-sqlmap</artifactId>
+                <version>${ibatis.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <properties>
@@ -391,6 +432,13 @@
         <greenmail.version>1.3.1b</greenmail.version>
         <project.scm.id>scm-server</project.scm.id>
         <sshd.version>0.13.0</sshd.version>
+        <fabric8.version>1.0.10</fabric8.version>
+        <jgit.version>4.1.1.201511131810-r</jgit.version>
+        <googlecode.version>1.1</googlecode.version>
+        <json.version>2.0.0.wso2v1</json.version>
+        <wink.version>1.4</wink.version>
+        <ibatis.version>3.0-beta-10</ibatis.version>
+        <javax.ws.rs-api.version>2.0.1</javax.ws.rs-api.version>
     </properties>
 </project>
 
