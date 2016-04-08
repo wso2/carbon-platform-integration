@@ -53,8 +53,7 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
     @Override
     public void onExecutionStart() throws AutomationFrameworkException {
 
-
-        // build docker containers
+        // build & run docker containers
 
         try {
             baseManager.dockerContainerRunner();

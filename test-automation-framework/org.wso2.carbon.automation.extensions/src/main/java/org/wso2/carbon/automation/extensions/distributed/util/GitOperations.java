@@ -32,6 +32,7 @@ import static org.testng.Assert.assertEquals;
  * This class can be used for git related operations
  */
 public class GitOperations {
+
     /**
      * This methods clones specified git repo
      *

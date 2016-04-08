@@ -21,6 +21,7 @@ package org.wso2.carbon.automation.extensions.distributed.util;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.test.utils.dbutils.MySqlDatabaseManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -35,23 +36,25 @@ public class DataBaseManager {
 
         Thread.sleep(40000);
 
-        MySqlDatabaseManager dbs = new MySqlDatabaseManager("jdbc:mysql://" + mysqlContainerIP + ":3306/?zeroDateTimeBehavior=convertToNull",
-                PropertyFileReader.databaseUserName, PropertyFileReader.databaseUserPassword);
+        MySqlDatabaseManager dbs = new MySqlDatabaseManager("jdbc:mysql://" + mysqlContainerIP +
+                ":3306/?zeroDateTimeBehavior=convertToNull",
+                PropertyFileReader.databaseUserName, PropertyFileReader.databaseUserPassword
+        );
 
         // create DBs
-        dbs.executeDBScript(resourceLocation + "/scripts/createdatabases.sql");
+        dbs.executeDBScript(resourceLocation + File.separator + "scripts" + File.separator + "createdatabases.sql");
 
         //create Tables - wso2_config_DB
         dbs.execute("USE WSO2_CONFIG_DB");
-        dbs.executeDBScript(resourceLocation + "/scripts/mysql.sql");
+        dbs.executeDBScript(resourceLocation + File.separator + "scripts" + File.separator + "mysql.sql");
 
         //create Tables - wso2_gov_DB
         dbs.execute("USE WSO2_GOV_DB");
-        dbs.executeDBScript(resourceLocation + "/scripts/mysql.sql");
+        dbs.executeDBScript(resourceLocation + File.separator + "scripts" + File.separator + "mysql.sql");
 
         //create Tables - wso2_user_DB
         dbs.execute("USE WSO2_USER_DB");
-        dbs.executeDBScript(resourceLocation + "/scripts/mysql.sql");
+        dbs.executeDBScript(resourceLocation + File.separator + "scripts" + File.separator + "mysql.sql");
 
     }
 }

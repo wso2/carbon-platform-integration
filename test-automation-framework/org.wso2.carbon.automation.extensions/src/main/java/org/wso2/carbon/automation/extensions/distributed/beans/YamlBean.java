@@ -98,25 +98,5 @@ public class YamlBean {
 
     }
 
-
-
-
-
-
-
-
-
-    /*
-        Yaml yaml = new Yaml();
-
-        InputStream ios = new FileInputStream(new File(fileName));
-
-    *//*  Configuration config = yaml.loadAs( in, Configuration.class );
-      System.out.println( config.toString() );*//*
-        // Parse the YAML file and return the output as a series of Maps and Lists
-        Map<String, Object> result = (Map<String, Object>) yaml.load(ios);
-        System.out.println(result.toString());*/
-
-
 }
 
