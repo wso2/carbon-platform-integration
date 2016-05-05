@@ -1,0 +1,69 @@
+deployments:
+  -
+    deployment:
+      id: APIM001
+      instances:
+       -
+        dockerFileLocation: xzxxzx
+        distributionName: zxzxzx
+        targetDockerImageName: zxzxzx
+        isCarbonInstance: true
+        id: APIMSTOREWM01
+        parameters:
+          test: test123
+          erer: rererer
+          ererer: ererer
+       -
+        dockerFileLocation: xzxxzxjj
+        distributionName: zxzxzx
+        targetDockerImageName: zxzxzx
+        isCarbonInstance: true
+        id: APIMSTOREWM01
+        parameters:
+          test: test123
+          erer: rererer
+          ererer: ererer
+       -
+        dockerFileLocation: xzxxjzx
+        distributionName: zxzxzx
+        targetDockerImageName: zxzxzx
+        isCarbonInstance: false
+        id: APIMSTOREWM01
+        parameters:
+          test: test123
+          erer: rererer
+          ererer: ererer
+  -
+    deployment:
+          id: ESB001
+          instances:
+           -
+            dockerFileLocation: xzxxzx
+            distributionName: zxzxzx
+            targetDockerImageName: zxzxzx
+            isCarbonInstance: true
+            id: ESBSTOREWM01
+            parameters:
+              test: test123
+              erer: rererer
+              ererer: ererer
+           -
+            dockerFileLocation: xzxxzxjj
+            distributionName: zxzxzx
+            targetDockerImageName: zxzxzx
+            isCarbonInstance: true
+            id: ESB0001
+            parameters:
+              test: test123
+              erer: rererer
+              ererer: ererer
+           -
+            dockerFileLocation: xzxxjzx
+            distributionName: zxzxzx
+            targetDockerImageName: zxzxzx
+            isCarbonInstance: false
+            id: Mysql0001
+            parameters:
+              test: test123
+              erer: rererer
+              ererer: ererer
