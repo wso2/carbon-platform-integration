@@ -32,13 +32,7 @@
 //import org.json.simple.parser.ParseException;
 //import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 //import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-//import org.wso2.carbon.automation.extensions.distributed.beans.As0001;
-//import org.wso2.carbon.automation.extensions.distributed.beans.Esb0001;
-//import org.wso2.carbon.automation.extensions.distributed.beans.Mysql0001;
-//import org.wso2.carbon.automation.extensions.distributed.beans.YamlBean;
-//import org.wso2.carbon.automation.extensions.distributed.util.DataBaseManager;
-//import org.wso2.carbon.automation.extensions.distributed.util.GitOperations;
-//import org.wso2.carbon.automation.extensions.distributed.util.PropertyFileReader;
+//
 //
 //import javax.ws.rs.core.MediaType;
 //import java.io.File;
