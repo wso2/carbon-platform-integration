@@ -17,8 +17,16 @@
 */
 package org.wso2.carbon.automation.engine.context.beans;
 
-import java.util.*;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Tenant bean for automation Context.
+ */
 public class Tenant {
     private String domain;
     private User tenantAdmin;

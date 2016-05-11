@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.automation.engine.exceptions;
 
+/**
+ * Framework Exception Class.
+ */
 public class AutomationFrameworkException extends Exception {
     public AutomationFrameworkException(String message) {
         super(message);

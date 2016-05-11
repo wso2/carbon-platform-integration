@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.annotations;
 
+/**
+ * ExecutionEnvironment.
+ */
 public enum ExecutionEnvironment {
     STANDALONE,
     PLATFORM,

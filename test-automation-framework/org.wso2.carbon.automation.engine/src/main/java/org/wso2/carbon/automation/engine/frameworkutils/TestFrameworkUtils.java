@@ -32,7 +32,7 @@ import javax.xml.xpath.XPathExpressionException;
  * This class contain util methods which can be used inside test framework and test cases.
  */
 public class TestFrameworkUtils {
-    private static final Log log = LogFactory.getLog(ArchiveExtractorUtil.class);
+    private static final Log log = LogFactory.getLog(TestFrameworkUtils.class);
 
     /**
      * Set SSL properties,trust store files should be available at the patch returned by.

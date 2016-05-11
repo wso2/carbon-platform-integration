@@ -34,11 +34,17 @@ import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import javax.xml.xpath.XPathExpressionException;
 
+
+
+/**
+ * Transformation TesNg listener.
+ */
 public class TestTransformerListener implements IAnnotationTransformer, IAnnotationTransformer2 {
 
     private static final Log log = LogFactory.getLog(TestTransformerListener.class);
@@ -58,12 +64,14 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
                         if (method != null) {
                             iTestAnnotation.setEnabled(false);
                             log.info("Skipped test Class method <" + method.getName() + "> on " +
-                                    "annotation <" + annotation.toString() + ">");
+                                     "annotation <" + annotation.toString() + ">");
                         }
                     }
                 }
-            } catch (Exception e) {
-                handleException("Error transform custom annotations ", e);
+            } catch (XPathExpressionException e) {
+                handleException("Error while running tests", e);
+            } catch (AutomationFrameworkException e) {
+                handleException("Error while running tests", e);
             }
         }
 
@@ -78,19 +86,27 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
                     if (!annotationComparator(classAnnotation.toString())) {
                         iTestAnnotation.setEnabled(false);
                         log.info("Skipped test method <" + method.getName() + "> on " +
-                                "annotation <" + classAnnotation.toString() + ">");
+                                 "annotation <" + classAnnotation.toString() + ">");
                     }
                 } else if (methodAnnotation != null) {
                     if (!annotationComparator(methodAnnotation.toString())) {
                         iTestAnnotation.setEnabled(false);
                         log.info("Skipped test method <" + method.getName() + "> on " +
-                                "annotation <" + methodAnnotation.toString() + ">");
+                                 "annotation <" + methodAnnotation.toString() + ">");
                     }
                 }
                 TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TRANSFORM_LISTENER,
-                        ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM, false);
-            } catch (Exception e) {
-                handleException("Error transform custom annotations ", e);
+                                                          ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM, false);
+            }  catch (NoSuchMethodException e) {
+                handleException("Error while running tests", e);
+            } catch (IllegalAccessException e) {
+                handleException("Error while running tests", e);
+            } catch (InvocationTargetException e) {
+                handleException("Error while running tests", e);
+            } catch (XPathExpressionException e) {
+                handleException("Error while running tests", e);
+            } catch (AutomationFrameworkException e) {
+                handleException("Error while running tests", e);;
             }
         }
     }
@@ -103,14 +119,19 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
         } else {
             try {
                 if (annotation.contains(ExecutionEnvironment.STANDALONE.name()) &&
-                        annotation.toLowerCase().contains(context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT))) {
+                    annotation
+                            .contains(context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT))) {
                     compSetup = true;
                 } else if (annotation.contains(ExecutionEnvironment.PLATFORM.name()) &&
-                        annotation.toLowerCase().contains(context.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT))) {
+                           annotation
+                                   .contains(context.getConfigurationValue(ContextXpathConstants
+                                                                                   .EXECUTION_ENVIRONMENT))) {
                     compSetup = true;
                 }
             } catch (XPathExpressionException e) {
-                throw new AutomationFrameworkException("Error while reading" + ContextXpathConstants.EXECUTION_ENVIRONMENT + " from automation.xml ", e);
+                throw new AutomationFrameworkException("Error while reading"
+                                                       + ContextXpathConstants.EXECUTION_ENVIRONMENT
+                                                       + " from automation.xml ", e);
             }
         }
         return compSetup;
@@ -130,18 +151,20 @@ public class TestTransformerListener implements IAnnotationTransformer, IAnnotat
                     if (!annotationComparator(classAnnotation.toString())) {
                         iConfigurationAnnotation.setEnabled(false);
                         log.info("Skipped Configuration method <" + method.getName() + "> on " +
-                                "annotation <" + classAnnotation.toString() + ">");
+                                 "annotation <" + classAnnotation.toString() + ">");
                     }
                     //skip configuration methods if configuration method level custom annotation is set.
                 } else if (methodAnnotation != null) {
                     if (!annotationComparator(methodAnnotation.toString())) {
                         iConfigurationAnnotation.setEnabled(false);
                         log.info("Skipped Configuration method <" + method.getName() + "> on " +
-                                "annotation <" + methodAnnotation.toString() + ">");
+                                 "annotation <" + methodAnnotation.toString() + ">");
                     }
                 }
-            } catch (Exception e) {
-                handleException("Error transform custom annotations ", e);
+            } catch (XPathExpressionException e) {
+                handleException("Error while running tests", e);
+            } catch (AutomationFrameworkException e) {
+                handleException("Error while running tests", e);
             }
         }
     }

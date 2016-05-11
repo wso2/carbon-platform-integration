@@ -23,9 +23,13 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * Listener for Suite Listener.
+ */
 public abstract class SuiteListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformSuiteManager/extentionClasses/class/name";
+    private static final String XPATH_TO_CLASS =
+            "//listenerExtensions/PlatformSuiteManager/extentionClasses/class/name";
 
     public SuiteListenerExtension() {
         super();

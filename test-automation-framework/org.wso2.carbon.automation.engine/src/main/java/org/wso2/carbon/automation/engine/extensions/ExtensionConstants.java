@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.extensions;
 
+/**
+ * ExtensionConstants.
+ */
 public class ExtensionConstants {
     public static final String EXECUTION_LISTENER = "platformExecutionManager";
     public static final String EXECUTION_LISTENER_ON_START = "onExecutionStart";

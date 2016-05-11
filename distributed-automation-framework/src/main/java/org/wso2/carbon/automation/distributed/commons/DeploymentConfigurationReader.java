@@ -1,58 +1,57 @@
 /*
-*Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-*
-*WSO2 Inc. licenses this file to you under the Apache License,
-*Version 2.0 (the "License"); you may not use this file except
-*in compliance with the License.
-*You may obtain a copy of the License at
-*
-*http://www.apache.org/licenses/LICENSE-2.0
-*
-*Unless required by applicable law or agreed to in writing,
-*software distributed under the License is distributed on an
-*"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-*KIND, either express or implied.  See the License for the
-*specific language governing permissions and limitations
-*under the License.
-*/
+ *  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.wso2.carbon.automation.distributed.commons;
 
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.Instances;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Reader for deployment.yaml forl for deployment information
+ */
 public class DeploymentConfigurationReader {
-    public static Map<String, Object> map;
 
-    private static DeploymentConfigurationReader instance;
-
-    private DeploymentConfigurationReader() {
-    }
+    private DeploymentConfigurationReader deploymentConfigurationReader = null;
+    private HashMap<String, Deployment> deploymentHashMap;
 
     //Get the only object available
-
-    public static synchronized DeploymentConfigurationReader getInstance(String filePath) throws FileNotFoundException {
-        if (instance == null) {
-            instance = new DeploymentConfigurationReader();
-            Reader input = new FileReader(new File(filePath));
-            Yaml yaml = new Yaml();
-            map = (Map<String, Object>) yaml.load(input);
-        }
-        return instance;
+    public DeploymentConfigurationReader() {
     }
 
-    public static HashMap<String, Deployment> build() throws FileNotFoundException {
+    public DeploymentConfigurationReader readConfiguration() throws IOException {
+        synchronized (DeploymentConfigurationReader.class) {
+            if (deploymentConfigurationReader == null) {
+                deploymentConfigurationReader = new DeploymentConfigurationReader();
+                deploymentHashMap = readConfigurationYaml();
+            }
+        }
+        return deploymentConfigurationReader;
+    }
 
-
+    private static HashMap<String, Deployment> readConfigurationYaml() throws
+                                                                       IOException {
+        Map<String, Object> map = getDeploymentObjectMap();
         HashMap<String, Deployment> deploymentHashMap = new HashMap<>();
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
         for (Object deployment : deploymentList) {
@@ -102,4 +101,30 @@ public class DeploymentConfigurationReader {
 
         return deploymentHashMap;
     }
+
+    public HashMap<String, Deployment> getDeploymentHashMap() throws IOException {
+        if (deploymentConfigurationReader == null) {
+            readConfiguration();
+        }
+        return deploymentHashMap;
+    }
+
+    private static Map<String, Object> getDeploymentObjectMap() throws IOException {
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(FrameworkPathUtil.
+                    getSystemResourceLocation() + DeploymentYamlConstants.DEPLYMENT_YAML_FILE_NAME);
+
+            Yaml yaml = new Yaml();
+            return (Map<String, Object>) yaml.load(fis);
+        } finally {
+
+            if (fis != null) {
+                fis.close();
+            }
+        }
+    }
 }
+
+

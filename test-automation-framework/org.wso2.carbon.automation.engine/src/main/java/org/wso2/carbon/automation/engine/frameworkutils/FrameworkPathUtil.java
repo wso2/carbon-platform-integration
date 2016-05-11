@@ -34,7 +34,7 @@ public class FrameworkPathUtil {
     public static String getSystemResourceLocation() {
         String resourceLocation;
         if (System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_OS_NAME)
-                .toLowerCase().contains(OperatingSystems.WINDOWS.name().toLowerCase())) {
+                .contains(OperatingSystems.WINDOWS.name())) {
             resourceLocation = System.getProperty
                     (SYSTEM_ARTIFACT_RESOURCE_LOCATION).replace("/", "\\");
         } else {
@@ -49,7 +49,7 @@ public class FrameworkPathUtil {
         if (System.getProperty
                 (FrameworkConstants.SYSTEM_PROPERTY_SETTINGS_LOCATION) != null) {
             if (System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_OS_NAME)
-                    .toLowerCase().contains(OperatingSystems.WINDOWS.name().toLowerCase())) {
+                    .contains(OperatingSystems.WINDOWS.name())) {
                 settingsLocation = System.getProperty
                         (FrameworkConstants.SYSTEM_PROPERTY_SETTINGS_LOCATION).replace("/", "\\");
             } else {

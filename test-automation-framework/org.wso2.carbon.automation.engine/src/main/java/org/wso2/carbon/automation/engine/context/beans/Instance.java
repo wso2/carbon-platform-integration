@@ -19,8 +19,8 @@ package org.wso2.carbon.automation.engine.context.beans;
 
 import java.util.HashMap;
 
-/*
- * Represents the data structure for Instance node in automation.xml
+/**
+ * Represents the data structure for Instance node in automation.xml.
  */
 public class Instance {
     private String name;

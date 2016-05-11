@@ -22,9 +22,13 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * ReportListenerExtension.
+ */
 public abstract class ReportListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformReportManager/extentionClasses/class/name";
+    private static final String XPATH_TO_CLASS
+            = "//listenerExtensions/PlatformReportManager/extentionClasses/class/name";
 
 
     public ReportListenerExtension() {
