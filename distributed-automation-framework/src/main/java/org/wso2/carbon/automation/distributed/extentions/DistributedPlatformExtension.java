@@ -47,10 +47,5 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
 
 
     }
-
-    private static void handleException(String msg, Exception e) {
-        log.error(msg, e);
-        throw new RuntimeException(msg, e);
-    }
 }
 

@@ -1,7 +1,4 @@
 deployments:
-  dockerFileRepository: ddfdfdfdf
-  puppetModuleRepository: 09090909090
-  privateDockerRegistry: ddfdffdffdfdfdfdfdf
   -
     deployment:
       id: APIM001
