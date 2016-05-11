@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.frameworkutils.enums;
 
+/**
+ * OperatingSystems enum.
+ */
 public enum OperatingSystems {
     WINDOWS,
     MAC,

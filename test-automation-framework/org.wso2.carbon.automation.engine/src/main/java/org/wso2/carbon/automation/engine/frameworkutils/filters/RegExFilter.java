@@ -17,13 +17,12 @@
 */
 package org.wso2.carbon.automation.engine.frameworkutils.filters;
 
-/*
-* accepts files that match a given pattern and type
-*/
-
 import java.io.File;
 import java.io.FileFilter;
 
+/**
+ * accepts files that match a given pattern and type.
+ */
 public class RegExFilter implements FileFilter {
     private final TypeFilter type;
     private final String pattern;

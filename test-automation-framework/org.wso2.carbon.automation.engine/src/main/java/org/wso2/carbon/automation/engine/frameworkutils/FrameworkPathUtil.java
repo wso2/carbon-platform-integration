@@ -24,6 +24,9 @@ import org.wso2.carbon.automation.engine.frameworkutils.enums.OperatingSystems;
 
 import java.io.File;
 
+/**
+ * FrameworkPathUtil.
+ */
 public class FrameworkPathUtil {
     public static final String SYSTEM_ARTIFACT_RESOURCE_LOCATION = "framework.resource.location";
     private static final Log log = LogFactory.getLog(FrameworkPathUtil.class);
