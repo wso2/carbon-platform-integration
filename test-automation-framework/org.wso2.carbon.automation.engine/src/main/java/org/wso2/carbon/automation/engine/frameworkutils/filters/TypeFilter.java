@@ -20,6 +20,9 @@ package org.wso2.carbon.automation.engine.frameworkutils.filters;
 import java.io.File;
 import java.io.FileFilter;
 
+/**
+ * Enum for all file types.
+ */
 public enum TypeFilter implements FileFilter {
     FILE, DIR, ALL;
 

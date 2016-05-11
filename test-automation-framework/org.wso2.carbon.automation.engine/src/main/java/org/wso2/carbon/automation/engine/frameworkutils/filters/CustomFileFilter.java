@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * CustomFileFilter.
+ */
 public class CustomFileFilter {
     public static List<File> getFilesRecursive(final File basedir, final FileFilter filter) {
         List<File> files = new ArrayList<File>();

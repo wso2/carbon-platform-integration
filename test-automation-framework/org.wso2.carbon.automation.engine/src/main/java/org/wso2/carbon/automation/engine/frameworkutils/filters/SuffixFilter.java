@@ -19,9 +19,9 @@ package org.wso2.carbon.automation.engine.frameworkutils.filters;
 
 import java.util.regex.Pattern;
 
-/*
-* accepts files that match a given suffix and type
-*/
+/**
+ * accepts files that match a given suffix and type.
+ **/
 public class SuffixFilter extends RegExFilter {
     public SuffixFilter(final TypeFilter type, final String suffix) {
         super(type, "^.*" + Pattern.quote(suffix) + "$");
