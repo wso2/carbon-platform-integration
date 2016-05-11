@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.context;
 
+/**
+ * Test User Bean.
+ */
 public enum TestUserMode {
     SUPER_TENANT_ADMIN,
     SUPER_TENANT_USER,

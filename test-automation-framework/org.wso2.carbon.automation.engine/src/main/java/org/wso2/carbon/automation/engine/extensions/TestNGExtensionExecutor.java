@@ -5,21 +5,24 @@ import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * TestNg Listener executor class.
+ */
 public class TestNGExtensionExecutor {
-    private static HashMap<String, List<ExtensibleClass>> extensionClassObjectMap = new HashMap<String, List<ExtensibleClass>>();
-
-    public static void executeExtensible(String LISTENER, String LISTENERMethod,
+    private static HashMap<String, List<ExtensibleClass>> extensionClassObjectMap =
+            new HashMap<String, List<ExtensibleClass>>();
+    public static void executeExtensible(String listener, String listenerMethod,
                                          boolean reverseOrder) throws InvocationTargetException,
                                                                       IllegalAccessException,
                                                                       NoSuchMethodException {
-        List<ExtensibleClass> extensionObjList = extensionClassObjectMap.get(LISTENER);
+        List<ExtensibleClass> extensionObjList = extensionClassObjectMap.get(listener);
         List<ExtensibleClass> orderedObjList = new ArrayList<ExtensibleClass>();
         if (reverseOrder) {
             for (int index = extensionObjList.size() - 1; index >= 0; index--) {
@@ -30,43 +33,43 @@ public class TestNGExtensionExecutor {
         }
         for (ExtensibleClass extensibleClass : orderedObjList) {
             Method execMethod;
-            if (LISTENERMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_START)) {
+            if (listenerMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_START)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_START);
-            } else if (LISTENERMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH)) {
+            } else if (listenerMethod.equals(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.EXECUTION_LISTENER_ON_FINISH);
-            } else if (LISTENERMethod.equals(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT)) {
+            } else if (listenerMethod.equals(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.REPORT_LISTENER_GENERATE_REPORT);
-            } else if (LISTENERMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_START)) {
+            } else if (listenerMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_START)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_START);
-            } else if (LISTENERMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_FINISH)) {
+            } else if (listenerMethod.equals(ExtensionConstants.SUITE_LISTENER_ON_FINISH)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.SUITE_LISTENER_ON_FINISH);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_TEST_START)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_TEST_START)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_TEST_START);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SUCCESS)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SUCCESS)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SUCCESS);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILURE)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILURE)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILURE);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SKIPPED)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_SKIPPED)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_SKIPPED);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_START)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_START)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_START);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FINISH)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TEST_LISTENER_ON_FINISH)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TEST_LISTENER_ON_FINISH);
-            } else if (LISTENERMethod.equals(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM)) {
+            } else if (listenerMethod.equals(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM)) {
                 Class<?> clazz = extensibleClass.getClazz();
                 execMethod = clazz.getDeclaredMethod(ExtensionConstants.TRANSFORM_LISTENER_TRANSFORM);
             } else {
@@ -84,7 +87,7 @@ public class TestNGExtensionExecutor {
         for (int nodeNo = 0; nodeNo < extensionNodeList.getLength(); nodeNo++) {
             List<ExtensibleClass> extensionObjList = new ArrayList<ExtensibleClass>();
             Node extensionNode = extensionNodeList.item(nodeNo);
-            String LISTENERName = extensionNode.getNodeName();
+            String listenerName = extensionNode.getNodeName();
             NodeList extensionsList = extensionNode.getChildNodes().item(0).getChildNodes();
             for (int extNo = 0; extNo < extensionsList.getLength(); extNo++) {
                 NodeList classList = extensionsList.item(extNo).getChildNodes();
@@ -101,14 +104,14 @@ public class TestNGExtensionExecutor {
                             extension.setClassInstance(object);
                             extension.setInitiated(true);
                             extension.setClazz(cls);
-                            extension.setListener(LISTENERName);
+                            extension.setListener(listenerName);
                             extension.setClassName(className);
                             extensionObjList.add(extension);
                         }
                     }
                 }
             }
-            extensionClassObjectMap.put(LISTENERName, extensionObjList);
+            extensionClassObjectMap.put(listenerName, extensionObjList);
         }
     }
 }

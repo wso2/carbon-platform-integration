@@ -15,6 +15,7 @@
 *specific language governing permissions and limitations
 *under the License.
 */
+
 package org.wso2.carbon.automation.engine.context.beans;
 
 import org.wso2.carbon.automation.engine.FrameworkConstants;
@@ -22,11 +23,14 @@ import org.wso2.carbon.automation.engine.FrameworkConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User bean for Automation context.
+ */
 public class User {
     private String key;
-    private String userName;
-    private String password;
-	private List<String> roles;
+    private String userName = null;
+    private String password = null;
+    private List<String> roles;
 
     public void setKey(String key) {
         this.key = key;
@@ -58,7 +62,7 @@ public class User {
     }
 
     public String getUserDomain() {
-        if(userName.contains("@")) {
+        if (userName.contains("@")) {
             return userName.substring(userName.lastIndexOf("@") + 1);
         } else {
             return FrameworkConstants.SUPER_TENANT_DOMAIN_NAME;

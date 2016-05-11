@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.extensions;
 
+/**
+ * ExtensibleClass.
+ */
 public class ExtensibleClass {
     private String listener;
     private boolean initiated;

@@ -11,8 +11,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+/**
+ * Automation Configuration derrives form automation.xml.
+ */
 public class AutomationConfiguration {
-    static final Log log = LogFactory.getLog(AutomationConfiguration.class);
+    private static final Log log = LogFactory.getLog(AutomationConfiguration.class);
     private static Document configurationDocument;
 
     static {
@@ -21,8 +24,8 @@ public class AutomationConfiguration {
             configurationReader.readAutomationConfigurations();
             configurationDocument = configurationReader.getConfigurationXmlDocument();
         } catch (Exception e) {
-            log.error("Error While reading configurations ",  e);
-            throw new IllegalArgumentException("Error While reading configurations" ,
+            log.error("Error While reading configurations ", e);
+            throw new IllegalArgumentException("Error While reading configurations",
                                                e);
         }
     }
@@ -31,9 +34,9 @@ public class AutomationConfiguration {
         return configurationDocument;
     }
 
-	public static void setConfigurationDocument(Document configurationDocument) {
-		AutomationConfiguration.configurationDocument = configurationDocument;
-	}
+    public static void setConfigurationDocument(Document configurationDocument) {
+        AutomationConfiguration.configurationDocument = configurationDocument;
+    }
 
     public static String getConfigurationValue(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();

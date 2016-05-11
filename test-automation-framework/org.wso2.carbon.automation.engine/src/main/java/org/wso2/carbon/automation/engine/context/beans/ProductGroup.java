@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ProductGroup bean for context.
+ */
 public class ProductGroup {
 
     private boolean isClusterEnabled;

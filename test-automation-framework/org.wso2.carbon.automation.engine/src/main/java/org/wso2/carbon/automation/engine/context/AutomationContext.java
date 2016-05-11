@@ -23,19 +23,25 @@ import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 import org.wso2.carbon.automation.engine.configurations.UrlGenerationUtil;
-import org.wso2.carbon.automation.engine.context.beans.*;
+import org.wso2.carbon.automation.engine.context.beans.ContextUrls;
+import org.wso2.carbon.automation.engine.context.beans.Instance;
+import org.wso2.carbon.automation.engine.context.beans.ProductGroup;
+import org.wso2.carbon.automation.engine.context.beans.Tenant;
+import org.wso2.carbon.automation.engine.context.beans.User;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+
 
 /**
- * This Class provides context providing interface for the test
+ * This Class provides context providing interface for the test.
  */
 public class AutomationContext {
     private String productGroupName;
@@ -46,11 +52,11 @@ public class AutomationContext {
     private boolean isAdminUser;
     private String tenantDomain;
     private String userKey;
-    private Tenant superTenant ;
-    private Tenant contextTenant ;
+    private Tenant superTenant;
+    private Tenant contextTenant;
 
     /**
-     * The context constructor for where to use with exact instance
+     * The context constructor for where to use with exact instance.
      *
      * @param productGroupName - ProductGroup name specified in test framework configuration
      * @param instanceName     - Instance name specified in test framework configuration
@@ -83,8 +89,8 @@ public class AutomationContext {
     }
 
     /**
-     * This constructor is used to create automation context for the combination of given product group, given instance
-     * and user
+     * This constructor is used to create automation context for the combination of given product group, given instance.
+     * and user.
      *
      * @param productGroupName product group
      * @param instanceName     name of the instance
@@ -99,19 +105,17 @@ public class AutomationContext {
         } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER)) {
             //user of the super tenant
             assignParameters(productGroupName, instanceName, true, false);
-        }
-        //admin user of tenant other than super tenant
-        else if (userMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
+        } else if (userMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
+            //admin user of tenant other than super tenant
             assignParameters(productGroupName, instanceName, false, true);
-        }
-        //user of a tenant other than super tenant
-        else if (userMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+        } else if (userMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+            //user of a tenant other than super tenant
             assignParameters(productGroupName, instanceName, false, false);
         }
     }
 
     /**
-     * This constructor is used to create automation context for the combination of given product group and user
+     * This constructor is used to create automation context for the combination of given product group and user.
      *
      * @param productGroupName product group
      * @param testUserMode     can give the combination of the tenant and the user of that tenant
@@ -129,9 +133,8 @@ public class AutomationContext {
             //admin user of tenant other than super tenant
         } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
             assignParameters(productGroupName, null, false, true);
-        }
-        //user of a tenant other than super tenant
-        else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+        } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER)) {
+            //user of a tenant other than super tenant
             assignParameters(productGroupName, null, false, false);
         }
     }
@@ -151,7 +154,7 @@ public class AutomationContext {
     }
 
     /**
-     * This method redirect the call to the constructor
+     * This method redirect the call to the constructor.
      *
      * @param productGroupName Product Group name
      * @param instanceName     Instance name
@@ -179,13 +182,8 @@ public class AutomationContext {
         }
     }
 
-    private boolean getIsClustered() throws XPathExpressionException {
-        return Boolean.parseBoolean(getConfigurationValue(
-                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
-    }
-
     /**
-     * Provides a Instance applicable for the selected product group instance and tenant
+     * Provides a Instance applicable for the selected product group instance and tenant.
      *
      * @return Instance
      * @throws XPathExpressionException
@@ -265,14 +263,14 @@ public class AutomationContext {
     }
 
     /**
-     * Return the super tenant with the tenant domain
+     * Return the super tenant with the tenant domain.
      *
      * @return Tenant
      * @throws XPathExpressionException
      */
     public Tenant getSuperTenant() throws XPathExpressionException {
         //if tenant already set , return current value
-        if(superTenant != null) {
+        if (superTenant != null) {
             return superTenant;
         }
         superTenant = new Tenant();
@@ -325,7 +323,7 @@ public class AutomationContext {
     }
 
     /**
-     * Return the tenant with the tenant domain
+     * Return the tenant with the tenant domain.
      *
      * @return Tenant
      * @throws XPathExpressionException
@@ -341,7 +339,7 @@ public class AutomationContext {
     }
 
     private Tenant getNonSuperTenant() throws XPathExpressionException {
-        if(contextTenant != null) {
+        if (contextTenant != null) {
             return contextTenant;
         }
         contextTenant = new Tenant();
@@ -370,7 +368,7 @@ public class AutomationContext {
     }
 
     /**
-     * Returns applicable Product group
+     * Returns applicable Product group.
      *
      * @return ProductGroup
      * @throws XPathExpressionException
@@ -379,9 +377,11 @@ public class AutomationContext {
         ProductGroup productGroup = new ProductGroup();
         Node productGroupNode = this.getConfigurationNode(String.
                 format(ContextXpathConstants.PRODUCT_GROUP_NAME, productGroupName));
-        productGroup.setGroupName(productGroupNode.getAttributes().getNamedItem(ContextXpathConstants.NAME).getNodeValue());
+        productGroup.setGroupName(productGroupNode.getAttributes().getNamedItem(ContextXpathConstants.NAME)
+                                          .getNodeValue());
         productGroup.setClusterEnabled(Boolean.valueOf(productGroupNode.getAttributes()
-                                                               .getNamedItem(ContextXpathConstants.CLUSTERING_ENABLED).getNodeValue()));
+                                                               .getNamedItem(ContextXpathConstants.CLUSTERING_ENABLED)
+                                                               .getNodeValue()));
         NodeList childProductGroupList = productGroupNode.getChildNodes();
         for (int nodeNo = 0; nodeNo <= childProductGroupList.getLength() - 1; nodeNo++) {
             if (childProductGroupList.item(nodeNo).getNodeName().equals(ContextXpathConstants.INSTANCE)) {
@@ -396,7 +396,7 @@ public class AutomationContext {
     }
 
     /**
-     * Applicable tenant USer
+     * Applicable tenant USer.
      *
      * @return User
      * @throws XPathExpressionException
@@ -420,9 +420,11 @@ public class AutomationContext {
         Node tenantUserNode = this.getConfigurationNode(String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_USER,
                                                                       superUserReplacement, tenantDomain, userKey));
         String userName = this.getConfigurationValue(String.format(ContextXpathConstants.
-                                                                           USER_MANAGEMENT_TENANT_USER_NAME, superUserReplacement, tenantDomain, userKey));
+                                                                           USER_MANAGEMENT_TENANT_USER_NAME,
+                                                                   superUserReplacement, tenantDomain, userKey));
         String password = this.getConfigurationValue(String.format(ContextXpathConstants.
-                                                                           USER_MANAGEMENT_TENANT_USER_PASSWORD, superUserReplacement, tenantDomain, userKey));
+                                                                           USER_MANAGEMENT_TENANT_USER_PASSWORD,
+                                                                   superUserReplacement, tenantDomain, userKey));
         tenantUser.setUserName(userName + "@" + tenantDomain);
         tenantUser.setPassword(password);
         tenantUser.setKey(tenantUserNode.getAttributes().getNamedItem(ContextXpathConstants.KEY).getNodeValue());
@@ -438,7 +440,7 @@ public class AutomationContext {
     }
 
     /**
-     * Applicable tenant admin User
+     * Applicable tenant admin User.
      *
      * @return User
      * @throws XPathExpressionException
@@ -451,9 +453,11 @@ public class AutomationContext {
         }
         User tenantUser = new User();
         String userName = this.getConfigurationValue(String.format(ContextXpathConstants.
-                                                                           USER_MANAGEMENT_TENANT_ADMIN_USERNAME, superUserReplacement, tenantDomain, userKey));
+                                                                           USER_MANAGEMENT_TENANT_ADMIN_USERNAME,
+                                                                   superUserReplacement, tenantDomain, userKey));
         String password = this.getConfigurationValue(String.format(ContextXpathConstants.
-                                                                           USER_MANAGEMENT_TENANT_ADMIN_PASSWORD, superUserReplacement, tenantDomain, userKey));
+                                                                           USER_MANAGEMENT_TENANT_ADMIN_PASSWORD,
+                                                                   superUserReplacement, tenantDomain, userKey));
         if (isSuperTenant) {
             tenantUser.setUserName(userName);
         } else {
@@ -465,7 +469,7 @@ public class AutomationContext {
     }
 
     /**
-     * Returns all URLS needed for the test built upon the configuration
+     * Returns all URLS needed for the test built upon the configuration.
      *
      * @return ContextUrls
      * @throws XPathExpressionException
@@ -475,13 +479,13 @@ public class AutomationContext {
         try {
             contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
             contextUrls.setServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
-                    this.getInstance(), false));
+                                                                      this.getInstance(), false));
             contextUrls.setSecureServiceUrl(UrlGenerationUtil.getServiceURL(this.getContextTenant(),
-                    this.getInstance(), true));
+                                                                            this.getInstance(), true));
             contextUrls.setWebAppURL(UrlGenerationUtil.getWebAppURL(this.getContextTenant(),
-                    this.getInstance()));
-            contextUrls.setWebAppURLHttps(UrlGenerationUtil.getWebAppURLHttps(this.getContextTenant(),
                                                                     this.getInstance()));
+            contextUrls.setWebAppURLHttps(UrlGenerationUtil.getWebAppURLHttps(this.getContextTenant(),
+                                                                              this.getInstance()));
         } catch (XPathExpressionException e) {
             throw new XPathExpressionException("configuration retrieve failed");
         }
@@ -563,7 +567,7 @@ public class AutomationContext {
     }
 
     /**
-     * Provides configuration value
+     * Provides configuration value.
      *
      * @param expression xpath for expected element
      * @return String
@@ -576,7 +580,7 @@ public class AutomationContext {
     }
 
     /**
-     * Provides DOM Node
+     * Provides DOM Node.
      *
      * @param expression xpath for expected element
      * @return Node
@@ -589,7 +593,7 @@ public class AutomationContext {
     }
 
     /**
-     * Provides DOM NodeList
+     * Provides DOM NodeList.
      *
      * @param expression xpath for expected element
      * @return Node List
@@ -602,7 +606,7 @@ public class AutomationContext {
     }
 
     /**
-     * Replace value in document object
+     * Replace value in document object.
      *
      * @param expression xpath to locate the value
      * @param replaceBy  value to replace
@@ -621,7 +625,8 @@ public class AutomationContext {
     }
 
     /**
-     * This is implemented to get tenant list described in automation.xml
+     * This is implemented to get tenant list described in automation.xml..
+     *
      * @return - list of tenant names
      * @throws XPathExpressionException
      */
@@ -645,7 +650,8 @@ public class AutomationContext {
     }
 
     /**
-     * This is to get user list of given tenant in automation.xml
+     * This is to get user list of given tenant in automation.xml.
+     *
      * @param tenantDomain - tenant name
      * @return - user name list
      * @throws XPathExpressionException
@@ -662,7 +668,7 @@ public class AutomationContext {
         NodeList userNodeList = this
                 .getConfigurationNodeList(
                         String.format(ContextXpathConstants.USER_NODE, tenantType,
-                                tenantDomain));
+                                      tenantDomain));
 
         for (int i = 0; i < userNodeList.getLength(); i++) {
             userList.add(userNodeList.item(i).getAttributes().getNamedItem("key").getNodeValue());
