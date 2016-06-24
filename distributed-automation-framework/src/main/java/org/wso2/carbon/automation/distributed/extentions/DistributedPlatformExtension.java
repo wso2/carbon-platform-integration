@@ -33,7 +33,6 @@ import java.io.IOException;
 public class DistributedPlatformExtension extends ExecutionListenerExtension {
 
     private static final Log log = LogFactory.getLog(DistributedPlatformExtension.class);
-    private BaseManager baseManager;
 
     @Override
     public void initiate() throws AutomationFrameworkException {
@@ -41,8 +40,8 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
         log.info("Executing DistributedPlatformExtension pluggable module - FIRST PHASE");
 
         try {
-            baseManager = new BaseManager();
-        } catch (IOException | GitAPIException |InterruptedException e) {
+            new BaseManager();
+        } catch (IOException | GitAPIException | InterruptedException e) {
             log.error("Error found while initiating DistributedPlatformExtensio " + e.getMessage());
         }
     }
@@ -57,4 +56,5 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
 
     }
 }
+
 

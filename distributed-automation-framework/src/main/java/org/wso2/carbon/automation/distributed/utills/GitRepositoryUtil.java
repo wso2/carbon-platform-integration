@@ -29,6 +29,7 @@ import java.io.IOException;
  * GitRepositoryUtil - Handles basic ops relates to git related operations
  */
 public class GitRepositoryUtil {
+
     private static final Log log = LogFactory.getLog(GitRepositoryUtil.class);
 
     public static boolean gitCloneRepository(String repositoryUrl, String localDirectory) throws GitAPIException {
@@ -39,7 +40,7 @@ public class GitRepositoryUtil {
             try {
                 FileUtils.forceDelete(dirLocation);
             } catch (IOException e) {
-               log.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
 
@@ -51,4 +52,5 @@ public class GitRepositoryUtil {
         return true;
     }
 }
+
 

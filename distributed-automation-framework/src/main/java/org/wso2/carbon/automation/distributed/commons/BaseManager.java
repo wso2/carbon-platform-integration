@@ -37,15 +37,16 @@ import java.util.*;
  */
 public class BaseManager {
 
-    private Log log = LogFactory.getLog(BaseManager.class);
-
     public BaseManager() throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException {
+
+        Log log = LogFactory.getLog(BaseManager.class);
 
         repoBeansInitializer(new GenericYamlParser().yamlInitializer(FrameworkPathUtil.getSystemResourceLocation()
                 + "deployment.yaml"));
 
         // step 01
         // git clone - dockerfile repo
+
         log.info("Performing git clone - dockerfile");
 
         String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
@@ -75,9 +76,9 @@ public class BaseManager {
 
     private void repoBeansInitializer(Map deploymentMap) {
 
-        for (Object o : deploymentMap.entrySet()) {
+        for (Object object : deploymentMap.entrySet()) {
 
-            Map.Entry mEntry = (Map.Entry) o;
+            Map.Entry mEntry = (Map.Entry) object;
             HashMap hashMap = (HashMap) mEntry.getValue();
 
             RepositoryInfoBeans.setPuppetRepoLocation(hashMap.get("puppetModuleRepository").toString());
@@ -88,3 +89,4 @@ public class BaseManager {
     }
 
 }
+

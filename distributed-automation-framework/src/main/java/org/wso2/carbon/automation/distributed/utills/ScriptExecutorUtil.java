@@ -20,17 +20,19 @@ package org.wso2.carbon.automation.distributed.utills;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.EnvironmentInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
-import org.wso2.carbon.automation.distributed.commons.GenericYamlParser;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 
 /**
- * This class serves as the automation script runner
+ * This class serves as the automation script runner and related operations
  */
 public class ScriptExecutorUtil {
 
@@ -57,14 +59,15 @@ public class ScriptExecutorUtil {
                     instanceBeans.getPatternName(), instanceBeans.getDatabaseName(), instanceBeans.getJdkVersion(),
                     FrameworkPathUtil.getSystemResourceLocation()};
         } else {
-            String connectorJarName;
             command = new String[]{"/bin/bash", distributedSetupScriptLocation
-                    + File.separator + "distributedsetup.sh",  RepositoryInfoBeans.getDockerRegistryLocation(),
-                    instanceBeans.getPatternName(),instanceBeans.getDatabaseName(), instanceBeans.getJdkVersion(),
+                    + File.separator + "distributedsetup.sh", RepositoryInfoBeans.getDockerRegistryLocation(),
+                    instanceBeans.getPatternName(), instanceBeans.getDatabaseName(), instanceBeans.getJdkVersion(),
                     FrameworkPathUtil.getSystemResourceLocation()};
         }
 
         processOutputGenerator(command);
+
+        scriptValueReader();
 
     }
 
@@ -92,67 +95,28 @@ public class ScriptExecutorUtil {
     }
 
 
+    private void scriptValueReader() throws IOException {
 
-    public static void main(String[] args) throws IOException {
+        DockerImageInfoBeans dockerImageInfoUtil = new DockerImageInfoBeans();
+        HashMap<String, HashMap> hashMap = dockerImageInfoUtil.getDockerImagesMap();
 
-      /*  String param01 = "45";
+        List<String> lines = FileUtils.readLines(new File(FrameworkPathUtil.getSystemResourceLocation() +
+                "/artifacts" + File.separator + "AM" + File.separator + "scripts" + File.separator
+                + "bashscripts" + File.separator + "images.txt"));
 
-        Process p1=Runtime.getRuntime().exec("/home/dimuthu/Desktop/Test.sh" +" "+param01);
+        for (String line : lines) {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(p1.getInputStream()));
-        String line;
+            log.info(line);
+            HashMap<String, String> hm = new HashMap<String, String>();
 
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }*/
+            if (!line.equals("")) {
+                String key = line.split(":", 2)[0].trim();
+                hm.put("image", line.split(":", 2)[1].trim().split("tag:")[0].split("image:")[1]);
+                hm.put("tag", line.split(":", 2)[1].trim().split("tag:")[1]);
 
-
-    }
-
-
- /*   public static void main(String[] args) throws IOException {
-     *//*   ProcessBuilder pb = new ProcessBuilder("/home/dimuthu/Desktop/MySample.sh", "pattern02");
-        Process p = pb.start();*//*
-
-
-     *//*   String[] cmd = { "bash", "-c", "/home/dimuthu/Desktop/MySample.sh pattern02" };
-        Process p = Runtime.getRuntime().exec(cmd);*//*
-
-       *//* CommandLine cmd = new CommandLine("/home/dimuthu/Desktop/MySample.sh");
-        cmd.addArgument("pattern02");
-
-
-        Executor exec = new DefaultExecutor();
-        exec.setWorkingDirectory(FileUtils.getUserDirectory());
-        exec.execute(cmd);*//*
-
-
-*//*
-        Process p = new ProcessBuilder("/home/dimuthu/Desktop/MySample.sh", "pattern02").start();
-
-        InputStream is = p.getInputStream();
-        StringBuilder sb = new StringBuilder();
-
-        int i=0;
-        try {
-            while ((i=is.read())!=-1){
-                sb.append((char)i);
+                hashMap.put(key, hm);
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        System.out.println(sb);*//*
-
-
-     *//*   ProcessBuilder pb2=new ProcessBuilder("/home/dimuthu/Desktop/MySample.sh");
-        pb2.environment().put("param1", "default");
-        Process script_exec = pb2.start();
-*//*
-
-
-
-
-    }*/
-
+    }
 }
+

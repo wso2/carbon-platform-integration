@@ -17,7 +17,7 @@
 package org.wso2.carbon.automation.distributed.beans;
 
 /**
- * RThis bean class can be for initialize repositories related info.
+ * This bean class can be for initialize repositories related info.
  */
 
 public class RepositoryInfoBeans {
@@ -51,3 +51,4 @@ public class RepositoryInfoBeans {
     }
 
 }
+

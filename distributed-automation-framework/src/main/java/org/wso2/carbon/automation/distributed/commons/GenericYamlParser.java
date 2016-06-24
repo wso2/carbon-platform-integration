@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * Universal yaml parser class
+ * Universal yaml parser class - parses yaml files
  */
-public class GenericYamlParser {
+class GenericYamlParser {
 
     private Log log = LogFactory.getLog(GenericYamlParser.class);
 
-    public Map<String, String> yamlInitializer(String fileName) {
+    Map<String, String> yamlInitializer(String fileName) {
 
         Yaml yaml = new Yaml();
         Map<String, String> map = null;
@@ -49,5 +49,6 @@ public class GenericYamlParser {
         return map;
     }
 }
+
 
 
