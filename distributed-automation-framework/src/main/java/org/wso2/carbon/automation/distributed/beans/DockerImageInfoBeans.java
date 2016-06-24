@@ -25,9 +25,10 @@ import java.util.HashMap;
  */
 public class DockerImageInfoBeans {
 
-    private  HashMap<String, HashMap> dockerImagesMap = new HashMap<>();
+    private static HashMap<String, HashMap> dockerImagesMap = new HashMap<>();
 
-    public HashMap<String, HashMap> getDockerImagesMap() {
+    public static HashMap<String, HashMap> getDockerImagesMap() {
         return dockerImagesMap;
     }
 }
+

@@ -97,8 +97,7 @@ public class ScriptExecutorUtil {
 
     private void scriptValueReader() throws IOException {
 
-        DockerImageInfoBeans dockerImageInfoUtil = new DockerImageInfoBeans();
-        HashMap<String, HashMap> hashMap = dockerImageInfoUtil.getDockerImagesMap();
+        HashMap<String, HashMap> hashMap =  DockerImageInfoBeans.getDockerImagesMap();
 
         List<String> lines = FileUtils.readLines(new File(FrameworkPathUtil.getSystemResourceLocation() +
                 "/artifacts" + File.separator + "AM" + File.separator + "scripts" + File.separator
