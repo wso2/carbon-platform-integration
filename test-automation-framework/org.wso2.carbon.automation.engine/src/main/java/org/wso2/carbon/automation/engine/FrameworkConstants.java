@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine;
 
+/**
+ * FrameworkConstants.
+ */
 public class FrameworkConstants {
     public static final String SYSTEM_PROPERTY_SETTINGS_LOCATION = "automation.settings.location";
     public static final String SYSTEM_PROPERTY_BASEDIR_LOCATION = "basedir";

@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.context.beans;
 
+/**
+ * ContextUrls.
+ */
 public class ContextUrls {
     private String backEndUrl;
     private String serviceUrl;
@@ -56,7 +59,7 @@ public class ContextUrls {
         this.webAppURL = webAppURL;
     }
 
-    public void setWebAppURLHttps(String webAppURLHttps){
+    public void setWebAppURLHttps(String webAppURLHttps) {
         this.webAppURLHttps = webAppURLHttps;
     }
 

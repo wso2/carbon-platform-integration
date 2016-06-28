@@ -27,6 +27,9 @@ import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
 
 import java.util.List;
 
+/**
+ * TestNg report listener.
+ */
 public class TestReportListener implements IReporter {
     private static final Log log = LogFactory.getLog(TestReportListener.class);
     private TestNGExtensionExecutor testNGExtensionExecutor;

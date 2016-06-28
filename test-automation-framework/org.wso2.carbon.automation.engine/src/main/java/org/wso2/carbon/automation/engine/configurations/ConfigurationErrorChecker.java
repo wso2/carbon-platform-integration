@@ -20,7 +20,7 @@ package org.wso2.carbon.automation.engine.configurations;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
@@ -33,13 +33,13 @@ import javax.xml.xpath.XPathFactory;
 
 
 /**
- * Checks the automation.xml configuration file for possible semantic errors
+ * Checks the automation.xml configuration file for possible semantic errors.
  */
 public class ConfigurationErrorChecker {
     private static final Log log = LogFactory.getLog(ConfigurationErrorChecker.class);
 
     /**
-     * check all kinds of semantic errors
+     * check all kinds of semantic errors.
      *
      * @throws org.wso2.carbon.automation.engine.exceptions.ConfigurationMismatchException
      */
@@ -50,7 +50,7 @@ public class ConfigurationErrorChecker {
     }
 
     /**
-     * checks errors in platform configurations
+     * checks errors in platform configurations.
      *
      * @throws ConfigurationMismatchException
      * @throws XPathExpressionException
@@ -84,7 +84,7 @@ public class ConfigurationErrorChecker {
     }
 
     /**
-     * checks for errors in user management configurations
+     * checks for errors in user management configurations.
      *
      * @throws ConfigurationMismatchException
      */
@@ -94,7 +94,7 @@ public class ConfigurationErrorChecker {
     }
 
     /**
-     * get value from the configurations
+     * get value from the configurations.
      *
      * @param xmlDocument
      * @param expression
@@ -108,21 +108,7 @@ public class ConfigurationErrorChecker {
     }
 
     /**
-     * get Node from the configurations
-     *
-     * @param xmlDocument
-     * @param expression
-     * @return
-     * @throws XPathExpressionException
-     */
-    private static Node getConfigurationNode(Document xmlDocument, String expression)
-            throws XPathExpressionException {
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
-    }
-
-    /**
-     * get nodeList from the configurations
+     * get nodeList from the configurations.
      *
      * @param xmlDocument
      * @param expression

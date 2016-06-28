@@ -18,8 +18,4 @@
 package org.wso2.carbon.automation.engine.test;
 
 public class UnitBaseTest {
-           public void initBase()
-           {
-
-           }
 }

@@ -25,6 +25,11 @@ import org.testng.ITestResult;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
 
+import java.lang.reflect.InvocationTargetException;
+
+/**
+ * Test manager listener for TestNg.
+ */
 public class TestManagerListener implements ITestListener {
     private static final Log log = LogFactory.getLog(TestManagerListener.class);
 
@@ -34,7 +39,11 @@ public class TestManagerListener implements ITestListener {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_TEST_START, false);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
     }
@@ -44,11 +53,15 @@ public class TestManagerListener implements ITestListener {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_SUCCESS, false);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
         log.info("=================== On test success " + iTestResult.getTestClass().getName() + "."
-                + iTestResult.getMethod().getMethodName() + " ===================");
+                 + iTestResult.getMethod().getMethodName() + " ===================");
     }
 
     public void onTestFailure(ITestResult iTestResult) {
@@ -63,18 +76,26 @@ public class TestManagerListener implements ITestListener {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
         log.info("=================== On test failure " + iTestResult.getTestClass().getName() + "."
-                + iTestResult.getMethod().getMethodName() + " ===================");
+                 + iTestResult.getMethod().getMethodName() + " ===================");
     }
 
     public void onTestSkipped(ITestResult iTestResult) {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_SKIPPED, false);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
         log.info("=================== On test skipped " + iTestResult.getTestClass().getName() + "."
@@ -86,7 +107,11 @@ public class TestManagerListener implements ITestListener {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_FAILED_BUT_PASSED, false);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
 
@@ -96,7 +121,11 @@ public class TestManagerListener implements ITestListener {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_START, false);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
     }
@@ -105,13 +134,20 @@ public class TestManagerListener implements ITestListener {
         try {
             TestNGExtensionExecutor.executeExtensible(ExtensionConstants.TEST_LISTENER,
                                                       ExtensionConstants.TEST_LISTENER_ON_FINISH, true);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            handleException("Error while running tests", e);
+        } catch (IllegalAccessException e) {
+            handleException("Error while running tests", e);
+        } catch (InvocationTargetException e) {
             handleException("Error while running tests", e);
         }
     }
 
     private void handleException(String msg, Exception e) {
-        log.error("Execution error occurred in TestManagerListener:-" , e);
+        log.error("Execution error occurred in TestManagerListener:-", e);
         throw new RuntimeException(msg, e);
     }
 }
+
+
+

@@ -23,9 +23,14 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * Listner for TestNg Transformation Listner.
+ */
 public abstract class TransformListenerExtension extends ListenerExtension {
+    private static final String XPATH_TO_CLASS =
+            "//PlatformAnnotationTransferManager/extentionClasses/class/name";
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformAnnotationTransferManager/extentionClasses/class/name";
+
 
     public TransformListenerExtension() {
         super();
@@ -36,6 +41,7 @@ public abstract class TransformListenerExtension extends ListenerExtension {
             log.error("Error initializing the Automation Context", e);
         }
     }
+
     public abstract void initiate();
 
     public abstract void transform();

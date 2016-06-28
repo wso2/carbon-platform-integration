@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.context;
 
+/**
+ * InstanceType.
+ */
 public enum InstanceType {
     standalone,
     worker,

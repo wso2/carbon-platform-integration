@@ -21,9 +21,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
+/**
+ * ExecutionListenerExtension listner for TestNg.
+ */
 public abstract class ExecutionListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/platformExecutionManager/extentionClasses/class/name";
+    private static final String XPATH_TO_CLASS =
+            "//listenerExtensions/platformExecutionManager/extentionClasses/class/name";
 
     public ExecutionListenerExtension() {
         super();

@@ -27,6 +27,8 @@ import org.wso2.carbon.automation.engine.exceptions.ConfigurationMismatchExcepti
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,19 +36,19 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.IOException;
+
 
 /**
- * read automation configuration from automation.xml
+ * read automation configuration from automation.xml.
  */
 public class AutomationConfigurationReader {
     private static final Log log = LogFactory.getLog(AutomationConfigurationReader.class);
     private static AutomationConfigurationReader sessionAutomationConfiguration;
-    private static Document document;
+    private  Document document;
 
     /**
-     * read automation configuration from xml file
+     * read automation configuration from xml file.
+     *
      * @return Automation configuration reader object
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -66,12 +68,13 @@ public class AutomationConfigurationReader {
     }
 
     /**
-     * get configuration as a document
+     * get configuration as a document.
+     *
      * @return document object
      */
-	public Document getConfigurationDocument() {
-		return document;
-	}
+    public Document getConfigurationDocument() {
+        return document;
+    }
 
     private static Document readConfigurationXmlDocument()
             throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
@@ -107,7 +110,7 @@ public class AutomationConfigurationReader {
         }
     }
 
-    protected static Document getConfigurationXmlDocument() throws ConfigurationMismatchException,
+    protected Document getConfigurationXmlDocument() throws ConfigurationMismatchException,
                                                                    XPathExpressionException {
         //check for semantics errors in configuration file
         ConfigurationErrorChecker.checkPlatformErrors(document);

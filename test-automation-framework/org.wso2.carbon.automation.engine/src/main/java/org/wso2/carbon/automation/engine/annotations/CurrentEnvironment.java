@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.engine.annotations;
 
+/**
+ * CurrentEnvironment.
+ */
 public class CurrentEnvironment {
     private static String environment;
 

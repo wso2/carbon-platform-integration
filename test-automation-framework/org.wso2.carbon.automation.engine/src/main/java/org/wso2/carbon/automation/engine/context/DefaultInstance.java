@@ -24,6 +24,9 @@ import org.wso2.carbon.automation.engine.configurations.AutomationConfiguration;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * Selecting default instance out of instances registered in automation.xml.
+ */
 public class DefaultInstance extends AutomationConfiguration {
     private static final Log log = LogFactory.getLog(DefaultInstance.class);
 

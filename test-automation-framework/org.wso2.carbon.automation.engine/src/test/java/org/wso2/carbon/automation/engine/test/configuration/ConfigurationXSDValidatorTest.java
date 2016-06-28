@@ -27,18 +27,20 @@ import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+
 
 public class ConfigurationXSDValidatorTest {
-    static final Log log = LogFactory.getLog(ConfigurationXSDValidatorTest.class);
+    private static final Log log = LogFactory.getLog(ConfigurationXSDValidatorTest.class);
 
     File validateXsdFile;
     File configXmlFile;
@@ -53,7 +55,7 @@ public class ConfigurationXSDValidatorTest {
 
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void validateAutomationXml() throws IOException, SAXException {
-        boolean validated=false;
+        boolean validated = false;
         URL schemaFile = validateXsdFile.toURI().toURL();
         Source xmlFile = new StreamSource(configXmlFile);
         SchemaFactory schemaFactory = SchemaFactory
@@ -62,7 +64,7 @@ public class ConfigurationXSDValidatorTest {
         Validator validator = schema.newValidator();
         try {
             validator.validate(xmlFile);
-            validated=true;
+            validated = true;
 
         } catch (SAXException e) {
             log.error(e.getStackTrace());

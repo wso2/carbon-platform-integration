@@ -20,9 +20,14 @@ package org.wso2.carbon.automation.engine.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * ExecutionEnvironment.
+ */
 @Retention(RUNTIME)
 @Target({METHOD, TYPE, CONSTRUCTOR})
 public @interface SetEnvironment {

@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.automation.engine.test.context;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
@@ -69,20 +69,26 @@ public class AutomationContextTestCase {
 
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetConfigValue() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationValue("//datasources/datasource[@name='dataService']/password/text()").contains("wso2carbon"));
+        Assert.assertTrue(context.getConfigurationValue("//datasources/datasource[@name='dataService']/password/text()")
+                                  .contains("wso2carbon"));
     }
+
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetConfigNode() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNode("//datasources/datasource[@name='dataService']").getChildNodes().item(2).getNodeName().equals("password"));
+        Assert.assertTrue(context.getConfigurationNode("//datasources/datasource[@name='dataService']").getChildNodes()
+                                  .item(2).getNodeName().equals("password"));
     }
+
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetCofigNodeList() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNodeList("//datasources/datasource").getLength()==2);
+        Assert.assertTrue(context.getConfigurationNodeList("//datasources/datasource").getLength() == 2);
     }
+
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetDefaultInstance() throws XPathExpressionException {
         Assert.assertTrue(context.getDefaultInstance().getName().contains("00"));
     }
+
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetIsClustered() throws XPathExpressionException {
         Assert.assertFalse(context.getProductGroup().isClusterEnabled());
@@ -97,12 +103,12 @@ public class AutomationContextTestCase {
                 new AutomationContext[]{new AutomationContext("ESB", TestUserMode.SUPER_TENANT_ADMIN)},
                 new AutomationContext[]{new AutomationContext("ESB", TestUserMode.TENANT_USER)},
                 new AutomationContext[]{new AutomationContext("ESB", TestUserMode.TENANT_ADMIN)},
-                new AutomationContext[]{new AutomationContext("ESB","esbm001",TestUserMode.SUPER_TENANT_USER)},
-                new AutomationContext[]{new AutomationContext("ESB","esbm001",TestUserMode.SUPER_TENANT_ADMIN)},
-                new AutomationContext[]{new AutomationContext("ESB","esbm001",TestUserMode.TENANT_USER)},
-                new AutomationContext[]{new AutomationContext("ESB","esbm001",TestUserMode.TENANT_ADMIN)},
-                new AutomationContext[]{new AutomationContext("ESB","esbm001","wso2","user1")},
-        };
+                new AutomationContext[]{new AutomationContext("ESB", "esbm001", TestUserMode.SUPER_TENANT_USER)},
+                new AutomationContext[]{new AutomationContext("ESB", "esbm001", TestUserMode.SUPER_TENANT_ADMIN)},
+                new AutomationContext[]{new AutomationContext("ESB", "esbm001", TestUserMode.TENANT_USER)},
+                new AutomationContext[]{new AutomationContext("ESB", "esbm001", TestUserMode.TENANT_ADMIN)},
+                new AutomationContext[]{new AutomationContext("ESB", "esbm001", "wso2", "user1")},
+                };
     }
 
 }

@@ -23,18 +23,19 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import javax.xml.xpath.XPathExpressionException;
+
 
 /**
- * This class contain util methods which can be used inside test framework and test cases
+ * This class contain util methods which can be used inside test framework and test cases.
  */
 public class TestFrameworkUtils {
-    private static final Log log = LogFactory.getLog(ArchiveExtractorUtil.class);
+    private static final Log log = LogFactory.getLog(TestFrameworkUtils.class);
 
     /**
-     * Set SSL properties,trust store files should be available at the patch returned by
+     * Set SSL properties,trust store files should be available at the patch returned by.
      * FrameworkPathUtil.getSystemResourceLocation()
      *
      * @param context - Automation Context
@@ -75,7 +76,8 @@ public class TestFrameworkUtils {
                 }
             }
         } else {
-            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
+            throw new FileNotFoundException("Server startup script not found at "
+                                            + carbonHome + File.separator + "bin");
         }
         return FilenameUtils.removeExtension(scriptName);
     }

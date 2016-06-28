@@ -24,6 +24,9 @@ import org.testng.ISuiteListener;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 import org.wso2.carbon.automation.engine.extensions.TestNGExtensionExecutor;
 
+/**
+ * Listener for Suite Listener.
+ */
 public class TestSuiteListener implements ISuiteListener {
     private static final Log log = LogFactory.getLog(TestSuiteListener.class);
     private TestNGExtensionExecutor testNGExtensionExecutor;

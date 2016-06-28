@@ -24,18 +24,22 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
-
-import javax.xml.xpath.XPathExpressionException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.xpath.XPathExpressionException;
 
+
+/**
+ * ListenerExtension.
+ */
 public class ListenerExtension {
-    private final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(ListenerExtension.class);
+    private static final String LISTENER_NAME = "name";
+    private static final String LISTENER_PARAMETER = "parameter";
+    private static final String LISTENER_VALUE = "value";
+
     private Map<String, String> parameterMap;
     private AutomationContext automationContext;
-    private final static String PARAMETER = "parameter";
-    private final static String VALUE = "value";
-    private final static String NAME = "name";
 
     public ListenerExtension() {
         parameterMap = new HashMap<String, String>();
@@ -54,11 +58,11 @@ public class ListenerExtension {
         NodeList extensionClassChildNodes = extensionClass.getChildNodes();
         if (extensionClassChildNodes != null) {
             for (int i = 0; i < extensionClassChildNodes.getLength(); i++) {
-                if (PARAMETER.equalsIgnoreCase(extensionClassChildNodes.item(i).getNodeName())) {
+                if (LISTENER_PARAMETER.equalsIgnoreCase(extensionClassChildNodes.item(i).getNodeName())) {
                     NamedNodeMap attributes = extensionClassChildNodes.item(i).getAttributes();
 
-                    parameterMap.put(attributes.getNamedItem(NAME).getTextContent()
-                            , attributes.getNamedItem(VALUE).getTextContent());
+                    parameterMap.put(attributes.getNamedItem(LISTENER_NAME).getTextContent()
+                            , attributes.getNamedItem(LISTENER_VALUE).getTextContent());
                 }
             }
         }

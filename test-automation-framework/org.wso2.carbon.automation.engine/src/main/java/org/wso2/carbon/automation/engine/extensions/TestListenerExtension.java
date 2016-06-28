@@ -23,9 +23,12 @@ import org.testng.ITestContext;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * Extension for listener execution.
+ */
 public abstract class TestListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformTestManager/extentionClasses/class/name";
+    private static final String XPATH_TO_CLASS = "//listenerExtensions/PlatformTestManager/extentionClasses/class/name";
 
     public TestListenerExtension() {
         super();

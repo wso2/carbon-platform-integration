@@ -17,12 +17,15 @@
 */
 package org.wso2.carbon.automation.engine.context;
 
+/**
+ * constants for product group element.
+ */
 public class ContextXpathConstants {
-    //constants for product group element
     public static final String PRODUCT_GROUP_NAME = "//productGroup[@name='%s']";
-    public static final String PRODUCT_GROUP_PARENT="//platform/productGroup";
-    public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE="//platform/productGroup/instance[@type='standalone']";
-    
+    public static final String PRODUCT_GROUP_PARENT = "//platform/productGroup";
+    public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE
+            = "//platform/productGroup/instance[@type='standalone']";
+
     public static final String PRODUCT_GROUP_STANDALONE_INSTANCE =
             "//productGroup[@default='true']/instance[@type='standalone']";
     public static final String PRODUCT_GROUP_CLUSTERING_ENABLED = "//productGroup[@name='%s']/@clusteringEnabled";
@@ -35,8 +38,8 @@ public class ContextXpathConstants {
             "//productGroup[@name='%s']/instance[@name='%s']/hosts/host";
     public static final String PRODUCT_GROUP_INSTANCE_PROPERTY =
             "//productGroup[@name='%s']/instance[@name='%s']/properties/property";
-    public static final String PRODUCT_GROUP_DEFAULT_STANDALONE_INSTANCE = "" +
-            "//productGroup[@default='true']/instance[@type='standalone']";
+    public static final String PRODUCT_GROUP_DEFAULT_STANDALONE_INSTANCE
+            = "//productGroup[@default='true']/instance[@type='standalone']";
     public static final String PRODUCT_GROUP_INSTANCE = "//productGroup[@name='%s']/instance[ @name='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_PORTS =
             "//productGroup[@name='%s']/instance[@name='%s']/ports/port";
@@ -45,15 +48,20 @@ public class ContextXpathConstants {
     public static final String PRODUCT_GROUP_INSTANCE_PROPERTIES =
             "//productGroup[@name='%s']/instance[@name='%s']/properties/property";
     //constants for user management element
-    public static final String USER_MANAGEMENT_SUPER_TENANT_KEY ="//userManagement/superTenant/tenant/@key";
-    public static final String SUPER_TENANT_ADMIN_USERNAME ="//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/userName";
-    public static final String SUPER_TENANT_ADMIN_PASSWORD ="//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/password";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_KEY = "//userManagement/superTenant/tenant/@key";
+    public static final String SUPER_TENANT_ADMIN_USERNAME
+            = "//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/userName";
+    public static final String SUPER_TENANT_ADMIN_PASSWORD
+            = "//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/password";
     public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN = "//superTenant/tenant/admin";
     public static final String USER_MANAGEMENT_SUPER_TENANT_USER_KEY = "//superTenant/tenant/%s/user/@key";
     public static final String USER_MANAGEMENT_SUPER_TENANT_DOMAIN = "//superTenant/tenant/@domain";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/userName";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/password";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN_USER = "//superTenant/tenant/admin/user";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME
+            = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/userName";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD
+            = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/password";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN_USER
+            = "//superTenant/tenant/admin/user";
     public static final String USER_MANAGEMENT_SUPER_TENANT_USERS = "//superTenant/tenant/users";
     public static final String USER_MANAGEMENT_TENANT_DOMAIN = "//%s/tenant[@key='%s']/@domain";
     public static final String TENANT_DOMAIN = "//tenants/tenant/@domain";
@@ -95,9 +103,9 @@ public class ContextXpathConstants {
     public static final String EXECUTION_ENVIRONMENT = "//executionEnvironment/text()";
 
 
-	public static final String ROLES = "roles";
-	public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
-			"//%s/tenant[@domain='%s']/users/user[@key='%s']/roles/role";
+    public static final String ROLES = "roles";
+    public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
+            "//%s/tenant[@domain='%s']/users/user[@key='%s']/roles/role";
 
     public static final String USER_NODE = "//%s/tenant[@domain='%s']/users/user";
     public static final String TENANTS_NODE = "//tenants";
