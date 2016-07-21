@@ -15,63 +15,54 @@
  */
 package org.wso2.carbon.automation.distributed.beans;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Instances distributed configuration.
  */
 public class Instances {
 
-    private String distributionName;
+    private boolean isCarbonInstance;
 
-    private String isCarbonInstance;
-
-    private String id;
-
-    private String dockerFileLocation;
+    private String label;
 
     private String targetDockerImageName;
 
-    public HashMap<String, String> getParameterMap() {
-        return parameterMap;
+    private String tag;
+
+    private int priority;
+
+    private String namespace;
+
+    private Map<String, String> envVariableMap = new HashMap<>();
+
+    private int replicas;
+
+    List<Port> portList = new ArrayList<>();
+
+    private String imagePullSecrets;
+
+    private String serviceSelector;
+
+    public Instances() {
     }
 
-    public void setParameterMap(HashMap<String, String> parameterMap) {
-        this.parameterMap = parameterMap;
+
+    public Instances(int priority, String targetDockerImageName, String tag) {
+        this.priority = priority;
+        this.targetDockerImageName = targetDockerImageName;
+        this.tag = tag;
     }
 
-    private HashMap<String, String> parameterMap;
-
-    public String getDistributionName() {
-        return distributionName;
+    public String getLabel() {
+        return label;
     }
 
-    public void setDistributionName(String distributionName) {
-        this.distributionName = distributionName;
-    }
-
-    public String getIsCarbonInstance() {
-        return isCarbonInstance;
-    }
-
-    public void setIsCarbonInstance(String isCarbonInstance) {
-        this.isCarbonInstance = isCarbonInstance;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDockerFileLocation() {
-        return dockerFileLocation;
-    }
-
-    public void setDockerFileLocation(String dockerFileLocation) {
-        this.dockerFileLocation = dockerFileLocation;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getTargetDockerImageName() {
@@ -82,4 +73,75 @@ public class Instances {
         this.targetDockerImageName = targetDockerImageName;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public boolean isCarbonInstance() {
+        return isCarbonInstance;
+    }
+
+    public void setCarbonInstance(boolean isCarbonInstance) {
+        this.isCarbonInstance = isCarbonInstance;
+    }
+
+    public int getReplicas() {
+        return replicas;
+    }
+
+    public void setReplicas(int replicas) {
+        this.replicas = replicas;
+    }
+
+    public List<Port> getPortList() {
+        return portList;
+    }
+
+    public void setPortList(List<Port> portList) {
+        this.portList = portList;
+    }
+
+    public String getImagePullSecrets() {
+        return imagePullSecrets;
+    }
+
+    public void setImagePullSecrets(String imagePullSecrets) {
+        this.imagePullSecrets = imagePullSecrets;
+    }
+
+    public Map<String, String> getEnvVariableMap() {
+        return envVariableMap;
+    }
+
+    public void setEnvVariableMap(Map<String, String> envVariableMap) {
+        this.envVariableMap = envVariableMap;
+    }
+
+    public String getServiceSelector() {
+        return serviceSelector;
+    }
+
+    public void setServiceSelector(String serviceSelector) {
+        this.serviceSelector = serviceSelector;
+    }
 }

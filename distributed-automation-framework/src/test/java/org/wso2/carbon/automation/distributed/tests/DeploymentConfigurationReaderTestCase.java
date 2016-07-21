@@ -35,9 +35,8 @@ public class DeploymentConfigurationReaderTestCase {
 
     @BeforeClass
     public void init() throws IOException {
-        System.setProperty(FrameworkPathUtil.SYSTEM_ARTIFACT_RESOURCE_LOCATION, new File("src/test/resources/")
-                                                                                        .getAbsolutePath()
-                                                                                + File.separator);
+        System.setProperty(FrameworkPathUtil.SYSTEM_ARTIFACT_RESOURCE_LOCATION,
+                           new File("src/test/resources/").getAbsolutePath() + File.separator);
         deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
     }
 
