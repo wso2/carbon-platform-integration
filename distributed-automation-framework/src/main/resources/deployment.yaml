@@ -1,72 +1,293 @@
+---
 deployments:
-  dockerFileRepository: ddfdfdfdf
-  puppetModuleRepository: 09090909090
-  privateDockerRegistry: ddfdffdffdfdfdfdfdf
+  -
+    deployment:
+      id: db
+      instances:
+        -
+          targetDockerImageName: mysql
+          label: mysql-govdb
+          targetDockerTagName: 5.5
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: mysql-govdb
+          envVariableMap:
+            -
+              MYSQL_ROOT_PASSWORD : root
+              MYSQL_DATABASE : WSO2_GOV_DB
+              MYSQL_USER : wso2carbon
+              MYSQL_PASSWORD : wso2carbon
+          ports:
+            -
+              name: mysql-port
+              port: 3306
+              protocol: TCP
+        -
+          targetDockerImageName: mysql
+          label: mysql-apim-db
+          targetDockerTagName: 5.5
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: mysql-apim-db
+          envVariableMap:
+            -
+              MYSQL_ROOT_PASSWORD : root
+              MYSQL_DATABASE : APIM_DB
+              MYSQL_USER : wso2carbon
+              MYSQL_PASSWORD : wso2carbon
+          ports:
+            -
+              name: mysql-port
+              port: 3306
+              protocol: TCP
+        -
+          targetDockerImageName: mysql
+          label: mysql-userdb
+          targetDockerTagName: 5.5
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: mysql-userdb
+          envVariableMap:
+            -
+              MYSQL_ROOT_PASSWORD : root
+              MYSQL_DATABASE : WSO2_USER_DB
+              MYSQL_USER : wso2carbon
+              MYSQL_PASSWORD : wso2carbon
+          ports:
+            -
+              name: mysql-port
+              port: 3306
+              protocol: TCP
   -
     deployment:
       id: APIM001
       instances:
-       -
-        dockerFileLocation: xzxxzx
-        distributionName: zxzxzx
-        targetDockerTagName: zxzxzx
-        isCarbonInstance: true
-        id: APIMSTOREWM01
-        parameters:
-          test: test123
-          erer: rererer
-          ererer: ererer
-       -
-        dockerFileLocation: /apim/
-        distributionName: wso2am.4.0.0.zip
-        targetDockerTagName: apimworker:1.0.0
-        isCarbonInstance: true
-        id: APIMSTOREWM01
-        parameters:
-          test: test123
-          erer: rererer
-          ererer: ererer
-       -
-        dockerFileLocation: xzxxjzx
-        distributionName: zxzxzx
-        targetDockerTagName: zxzxzx
-        isCarbonInstance: false
-        id: APIMSTOREWM01
-        parameters:
-          test: test123
-          erer: rererer
-          ererer: ererer
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-keymanager
+          label: wso2am-api-key-manager
+          targetDockerTagName: 1.10.0
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-key-manager
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.57.23:8080
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32013
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32014
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+            -
+              name: thrift-key-mgt
+              nodePort: 32015
+              port: 10397
+              targetPort: 10397
+              protocol: TCP
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-gateway
+          label: wso2am-gateway-manager
+          targetDockerTagName: 1.10.0
+          priority: 2
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-gateway-manager
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.57.23:8080
+          ports:
+            -
+              name: pass-through-http
+              nodePort: 32005
+              port: 8280
+              targetPort: 8280
+              protocol: TCP
+            -
+              name: pass-through-https
+              nodePort: 32006
+              port: 8243
+              targetPort: 8243
+              protocol: TCP
+            -
+              name: servlet-http
+              nodePort: 32007
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32008
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-publisher
+          label: wso2am-api-publisher
+          targetDockerTagName: 1.10.0
+          priority: 3
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-publisher
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.57.23:8080
+              KUBERNETES_SERVICES : wso2am-api-publisher
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32016
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32017
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+        -
+          targetDockerImageName: dimuthud-wso2am-api-store
+          label: wso2am-api-store
+          targetDockerTagName: latest
+          priority: 4
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-store
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.57.23:8080
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32018
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32019
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
   -
     deployment:
-          id: ESB001
-          instances:
-           -
-            dockerFileLocation: xzxxzx
-            distributionName: zxzxzx
-            targetDockerTagName: zxzxzx
-            isCarbonInstance: true
-            id: ESBSTOREWM01
-            parameters:
-              test: test123
-              erer: rererer
-              ererer: ererer
-           -
-            dockerFileLocation: xzxxzxjj
-            distributionName: zxzxzx
-            targetDockerTagName: zxzxzx
-            isCarbonInstance: true
-            id: ESB0001
-            parameters:
-              test: test123
-              erer: rererer
-              ererer: ererer
-           -
-            dockerFileLocation: xzxxjzx
-            distributionName: zxzxzx
-            targetDockerTagName: zxzxzx
-            isCarbonInstance: false
-            id: Mysql0001
-            parameters:
-              test: test123
-              erer: rererer
-              ererer: ererer
+      id: ESB001
+      instances:
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-keymanager
+          label: wso2am-api-key-manager
+          targetDockerTagName: 1.0.0
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-key-manager
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.19.45:8080
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32013
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32014
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+            -
+              name: thrift-key-mgt
+              nodePort: 32015
+              port: 10397
+              targetPort: 10397
+              protocol: TCP
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-keymanager
+          label: wso2am-api-key-manager
+          targetDockerTagName: 1.0.0
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-key-manager
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.19.45:8080
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32013
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32014
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+            -
+              name: thrift-key-mgt
+              nodePort: 32015
+              port: 10397
+              targetPort: 10397
+              protocol: TCP
+        -
+          targetDockerImageName: dimuthud-wso2-am-api-keymanager
+          label: wso2am-api-key-manager
+          targetDockerTagName: 1.0.0
+          priority: 1
+          namespace : default
+          replicas : 1
+          imagePullSecrets: registrypullsecret
+          selector: wso2am-api-key-manager
+          envVariableMap:
+            -
+              KUBERNETES_MASTER_SKIP_SSL_VERIFICATION : true
+              KUBERNETES_API_SERVER : http://192.168.19.45:8080
+          ports:
+            -
+              name: servlet-http
+              nodePort: 32013
+              port: 9763
+              targetPort: 9763
+              protocol: TCP
+            -
+              name: servlet-https
+              nodePort: 32014
+              port: 9443
+              targetPort: 9443
+              protocol: TCP
+            -
+              name: thrift-key-mgt
+              nodePort: 32015
+              port: 10397
+              targetPort: 10397
+              protocol: TCP
