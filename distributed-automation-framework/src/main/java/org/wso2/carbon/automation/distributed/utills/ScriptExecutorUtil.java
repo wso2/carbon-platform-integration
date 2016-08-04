@@ -18,18 +18,28 @@
 
 package org.wso2.carbon.automation.distributed.utills;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
+import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.EnvironmentInfoBeans;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
+import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class serves as the automation script runner and related operations
@@ -40,7 +50,9 @@ public class ScriptExecutorUtil {
 
     private static EnvironmentInfoBeans instanceBeans = new EnvironmentInfoBeans();
 
-    public void scriptExecution() throws IOException, InterruptedException {
+    public void scriptExecution()
+            throws IOException, InterruptedException, AutomationFrameworkException,
+                   LoginAuthenticationExceptionException {
 
         //TODO - Calling for assigning values only ....
         tempFunction();
@@ -50,7 +62,7 @@ public class ScriptExecutorUtil {
                 + "artifacts" + File.separator + "AM" + File.separator + "scripts"
                 + File.separator + "bashscripts";
 
-        String[] command = new String[0];
+        String[] command;
 
         if (instanceBeans.getPatternName().equals("default")) {
 
@@ -95,7 +107,15 @@ public class ScriptExecutorUtil {
     }
 
 
-    private void scriptValueReader() throws IOException {
+    private void scriptValueReader()
+            throws IOException, InterruptedException, AutomationFrameworkException,
+                   LoginAuthenticationExceptionException {
+
+        Map<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        List<DockerImageInstance>  wso2InstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("wso2")
+                                                             .getInstancesMap().values());
+        List<DockerImageInstance>  dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
+                                                           .getInstancesMap().values());
 
         HashMap<String, HashMap> hashMap =  DockerImageInfoBeans.getDockerImagesMap();
 
@@ -103,19 +123,29 @@ public class ScriptExecutorUtil {
                 "/artifacts" + File.separator + "AM" + File.separator + "scripts" + File.separator
                 + "bashscripts" + File.separator + "images.txt"));
 
-        for (String line : lines) {
+        List<DockerImageInstance>  wso2InstanceListForDeployment = new ArrayList<>();
 
+        for (String line : lines) {
             log.info(line);
             HashMap<String, String> hm = new HashMap<String, String>();
-
             if (!line.equals("")) {
                 String key = line.split(":", 2)[0].trim();
                 hm.put("image", line.split(":", 2)[1].trim().split("tag:")[0].split("image:")[1]);
                 hm.put("tag", line.split(":", 2)[1].trim().split("tag:")[1]);
-
                 hashMap.put(key, hm);
+
+                // Creating instance list
+                Optional<DockerImageInstance> wso2InstancesMatchingObjects = wso2InstancesList.stream()
+                        .filter(p -> p.getLabel().equals(key)).findAny();
+                wso2InstancesMatchingObjects.get().setLabel(key.trim());
+                wso2InstancesMatchingObjects.get().setTargetDockerImageName(hm.get("image").trim());
+                wso2InstancesMatchingObjects.get().setTag(hm.get("tag").trim());
+                wso2InstanceListForDeployment.add(wso2InstancesMatchingObjects.get());
+
             }
         }
+
+        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
     }
 }
 

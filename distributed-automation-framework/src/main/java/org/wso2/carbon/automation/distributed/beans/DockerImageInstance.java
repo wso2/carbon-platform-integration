@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Instances distributed configuration.
  */
-public class Instances {
+public class DockerImageInstance {
 
     private boolean isCarbonInstance;
 
@@ -47,11 +47,11 @@ public class Instances {
 
     private String serviceSelector;
 
-    public Instances() {
+    public DockerImageInstance() {
     }
 
 
-    public Instances(int priority, String targetDockerImageName, String tag) {
+    public DockerImageInstance(int priority, String targetDockerImageName, String tag) {
         this.priority = priority;
         this.targetDockerImageName = targetDockerImageName;
         this.tag = tag;

@@ -28,7 +28,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
-import org.wso2.carbon.automation.distributed.beans.Instances;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.distributed.commons.DeploymentYamlConstants;
 import org.wso2.carbon.automation.distributed.commons.KubernetesApiClient;
@@ -56,13 +56,13 @@ public class KubernetesApiUtils {
     private static final long TIMEOUT = 120000;
 
 
-    public static void deployWSO2Images(List<Instances> instancesList)
+    public static void deployWSO2Images(List<DockerImageInstance> instancesList)
             throws InterruptedException, AutomationFrameworkException, RemoteException,
                    LoginAuthenticationExceptionException {
 
-        instancesList.sort((Instances instances1, Instances instances2) ->
+        instancesList.sort((DockerImageInstance instances1, DockerImageInstance instances2) ->
                                    instances1.getPriority() - instances2.getPriority());
-        for (Instances instances : instancesList) {
+        for (DockerImageInstance instances : instancesList) {
             kubernetesApiClient.createReplicationController(instances);
             kubernetesApiClient.createService(instances);
 
@@ -87,15 +87,15 @@ public class KubernetesApiUtils {
     }
 
 
-    public static void deployDBImages(List<Instances> instancesList)
+    public static void deployDBImages(List<DockerImageInstance> instancesList)
             throws InterruptedException, AutomationFrameworkException, RemoteException,
                    LoginAuthenticationExceptionException {
 
-        instancesList.sort((Instances instances1, Instances instances2) ->
+        instancesList.sort((DockerImageInstance instances1, DockerImageInstance instances2) ->
                                    instances1.getPriority() - instances2.getPriority());
-        for (Instances instances : instancesList) {
-            kubernetesApiClient.createReplicationController(instances);
-            kubernetesApiClient.createService(instances);
+        for (DockerImageInstance instances : instancesList) {
+//            kubernetesApiClient.createReplicationController(instances);
+//            kubernetesApiClient.createService(instances);
 
             Map<String, String> labelMap = new HashMap<>();
             labelMap.put(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES_LABEL_NAME, instances.getLabel());
@@ -110,9 +110,9 @@ public class KubernetesApiUtils {
     }
 
 
-    public static void unDeployImages(List<Instances> instancesList) {
+    public static void unDeployImages(List<DockerImageInstance> instancesList) {
         Map<String, String> labelMap = new HashMap<>();
-        for (Instances instances : instancesList) {
+        for (DockerImageInstance instances : instancesList) {
             labelMap.put(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES_LABEL_NAME, instances.getLabel());
             kubernetesApiClient.deleteService(labelMap);
             kubernetesApiClient.deleteReplicationController(labelMap);
@@ -220,11 +220,32 @@ public class KubernetesApiUtils {
         }
     }
 
+    public static void getInstanceData(List<DockerImageInstance> wso2InstancesList)
+            throws AxisFault, InterruptedException {
+
+        for (DockerImageInstance instances : wso2InstancesList) {
+
+            Map<String, String> labelMap = new HashMap<>();
+            labelMap.put("name", instances.getLabel());
+            ServiceSpec serviceSpec = kubernetesApiClient.getServiceSpec(labelMap);
+            PodStatus podStatus = waitForPod(instances.getNamespace(), labelMap);
+            int httpsPort = 0;
+            for (ServicePort servicePort : serviceSpec.getPorts()) {
+                if (servicePort.getName().equals("servlet-https")) {
+                    httpsPort = servicePort.getNodePort();
+                }
+            }
+            AuthenticatorClient authenticatorClient =
+                    new AuthenticatorClient("https://" + podStatus.getHostIP() + ":" + httpsPort + "/services/");
+
+        }
+    }
+
     public static void main(String[] args)
             throws IOException, InterruptedException, AutomationFrameworkException,
                    LoginAuthenticationExceptionException {
 
-        Instances instances = new Instances();
+        DockerImageInstance instances = new DockerImageInstance();
         instances.setCarbonInstance(true);
         instances.setLabel("wso2am-api-publisher");
 
@@ -248,7 +269,7 @@ public class KubernetesApiUtils {
         instances.setTag("1.10.0");
         instances.setTargetDockerImageName("dimuthud-wso2-am-api-publisher");
 
-        List<Instances> instancesList = new ArrayList<>();
+        List<DockerImageInstance> instancesList = new ArrayList<>();
         instancesList.add(instances);
         log.info(instancesList);
         KubernetesApiUtils kubernetesApiUtils = new KubernetesApiUtils();

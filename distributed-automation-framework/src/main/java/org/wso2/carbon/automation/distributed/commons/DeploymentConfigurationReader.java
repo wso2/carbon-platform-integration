@@ -18,7 +18,7 @@ package org.wso2.carbon.automation.distributed.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
-import org.wso2.carbon.automation.distributed.beans.Instances;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.yaml.snakeyaml.Yaml;
@@ -62,7 +62,7 @@ public class DeploymentConfigurationReader {
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
         for (Object deployment : deploymentList) {
             Deployment deploymentObj = new Deployment();
-            HashMap<String, Instances> instanceInDeployment = new HashMap<>();
+            HashMap<String, DockerImageInstance> instanceInDeployment = new HashMap<>();
 
             deploymentObj.setId(((Map<String, Object>) ((Map<String, Object>) deployment)
                     .get(DeploymentYamlConstants.YAML_DEPLOYMENT))
@@ -75,7 +75,7 @@ public class DeploymentConfigurationReader {
                             .get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES));
 
             for (Object instance : instancesArrayList) {
-                Instances instanceToMap = new Instances();
+                DockerImageInstance instanceToMap = new DockerImageInstance();
 
                 instanceToMap
                         .setTargetDockerImageName(((LinkedHashMap) instance)
@@ -160,12 +160,12 @@ public class DeploymentConfigurationReader {
                         if (portEntry.getKey().equals(DeploymentYamlConstants.YAML_DEPLOYMENT_PORT_NAME)) {
                             port.setName(portEntry.getValue());
                         } else if (portEntry.getKey().equals(DeploymentYamlConstants.YAML_DEPLOYMENT_PORT_PORT)) {
-                            port.setPort(Integer.parseInt(portEntry.getValue()));
+                            port.setPort(Integer.parseInt(String.valueOf(portEntry.getValue())));
                         } else if (portEntry.getKey().equals(DeploymentYamlConstants.YAML_DEPLOYMENT_PORT_NODE_PORT)) {
-                            port.setNodePort(Integer.parseInt(portEntry.getValue()));
+                            port.setNodePort(Integer.parseInt(String.valueOf(portEntry.getValue())));
                         } else if (portEntry.getKey()
                                 .equals(DeploymentYamlConstants.YAML_DEPLOYMENT_PORT_TARGET_PORT)) {
-                            port.setTargetPort(Integer.parseInt(portEntry.getValue()));
+                            port.setTargetPort(Integer.parseInt(String.valueOf(portEntry.getValue())));
                         } else if (portEntry.getKey().equals(DeploymentYamlConstants.YAML_DEPLOYMENT_PORT_PROTOCOL)) {
                             port.setProtocol(portEntry.getValue());
                         }

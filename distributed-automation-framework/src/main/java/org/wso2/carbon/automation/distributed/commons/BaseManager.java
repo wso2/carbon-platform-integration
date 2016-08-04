@@ -21,52 +21,52 @@ package org.wso2.carbon.automation.distributed.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
-import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
 import org.wso2.carbon.automation.distributed.utills.ScriptExecutorUtil;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class handles initiates fundamental platform required for distributed deployment.
- *
  */
 public class BaseManager {
 
-    public BaseManager() throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException {
+    public BaseManager()
+            throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException,
+                   LoginAuthenticationExceptionException {
 
         Log log = LogFactory.getLog(BaseManager.class);
 
         repoBeansInitializer(new GenericYamlParser().yamlInitializer(FrameworkPathUtil.getSystemResourceLocation()
-                + "deployment.yaml"));
+                                                                     + "deployment.yaml"));
 
         // step 01
         // git clone - dockerfile repo
 
         log.info("Performing git clone - dockerfile");
 
-        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
-        try {
-
-            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getDockerRepoLocation(), resourceLocation
-                    + File.separator + "Docker-Puppet" + File.separator + "dockerfiles");
-        } catch (GitAPIException e) {
-            throw new AutomationFrameworkException("Docker files git clone failed.", e);
-        }
-
-        // git clone - puppetmodule repo
-        log.info("Performing git clone - puppetmodule");
-
-        try {
-            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getPuppetRepoLocation(), resourceLocation
-                    + File.separator + "Docker-Puppet" + File.separator + "puppet-module");
-        } catch (GitAPIException e) {
-            throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
-        }
+//        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
+//        try {
+//
+//            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getDockerRepoLocation(), resourceLocation
+//                                                                                              + File.separator + "Docker-Puppet" + File.separator + "dockerfiles");
+//        } catch (GitAPIException e) {
+//            throw new AutomationFrameworkException("Docker files git clone failed.", e);
+//        }
+//
+//        // git clone - puppetmodule repo
+//        log.info("Performing git clone - puppetmodule");
+//
+//        try {
+//            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getPuppetRepoLocation(), resourceLocation
+//                    + File.separator + "Docker-Puppet" + File.separator + "puppet-module");
+//        } catch (GitAPIException e) {
+//            throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
+//        }
 
         // execution of automation script
         new ScriptExecutorUtil().scriptExecution();
@@ -74,18 +74,16 @@ public class BaseManager {
     }
 
 
-    private void repoBeansInitializer(Map deploymentMap) {
-
+    private void repoBeansInitializer(Map deploymentMap) throws IOException {
         for (Object object : deploymentMap.entrySet()) {
-
             Map.Entry mEntry = (Map.Entry) object;
-            HashMap hashMap = (HashMap) mEntry.getValue();
-
-            RepositoryInfoBeans.setPuppetRepoLocation(hashMap.get("puppetModuleRepository").toString());
-            RepositoryInfoBeans.setDockerRepoLocation(hashMap.get("dockerFileModuleRepository").toString());
-            RepositoryInfoBeans.setDockerRegistryLocation(hashMap.get("dockerRegistry").toString());
+            if (mEntry.getKey().equals("repositories")) {
+                HashMap hashMap = (HashMap) mEntry.getValue();
+                RepositoryInfoBeans.setPuppetRepoLocation(hashMap.get("puppetModuleRepository").toString());
+                RepositoryInfoBeans.setDockerRepoLocation(hashMap.get("dockerFileModuleRepository").toString());
+                RepositoryInfoBeans.setDockerRegistryLocation(hashMap.get("dockerRegistry").toString());
+            }
         }
-
     }
 
 }
