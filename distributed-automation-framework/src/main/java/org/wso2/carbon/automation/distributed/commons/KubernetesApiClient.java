@@ -40,7 +40,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.automation.distributed.beans.Instances;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class KubernetesApiClient {
      *
      * @throws KubernetesClientException
      */
-    public Service createService(Instances instances)
+    public Service createService(DockerImageInstance instances)
             throws KubernetesClientException {
         Service service = new Service();
         ObjectMeta objectMeta = new ObjectMeta();
@@ -78,8 +78,8 @@ public class KubernetesApiClient {
         service.setMetadata(objectMeta);
 
         ServiceSpec serviceSpec = new ServiceSpec();
-//        serviceSpec.setType("NodePort");
-//        serviceSpec.setSessionAffinity("ClientIP");
+        serviceSpec.setType("NodePort");
+        serviceSpec.setSessionAffinity("ClientIP");
 
         List<ServicePort> servicePortList = new ArrayList<>();
 
@@ -147,7 +147,7 @@ public class KubernetesApiClient {
     //String id, String namespace, int replicas, Map<String, String> controllerLabels,
     //Map<String, String> selectorLabels, String podId, String image, List<String> containerPorts,
     // Map<String, String> podLabels, String manifestId
-    public void createReplicationController(Instances instances) {
+    public void createReplicationController(DockerImageInstance instances) {
 
         ReplicationController rc = new ReplicationController();
 
@@ -183,8 +183,7 @@ public class KubernetesApiClient {
 
         Container container = new Container();
         container.setName(instances.getLabel());
-        container.setImage(KubernetesConstants.PRIVATE_DOCKER_HUB + "/" + instances.getTargetDockerImageName()
-                           + ":" + instances.getTag());
+        container.setImage(instances.getTargetDockerImageName() + ":" + instances.getTag());
 
         List<EnvVar> envVarList = new ArrayList<>();
         Iterator it = instances.getEnvVariableMap().entrySet().iterator();

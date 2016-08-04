@@ -29,7 +29,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
-import org.wso2.carbon.automation.distributed.beans.Instances;
+import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
 import org.wso2.carbon.automation.distributed.commons.KubernetesApiClient;
 import org.wso2.carbon.automation.distributed.utills.AuthenticatorClient;
@@ -48,8 +48,8 @@ public class KubernetesServiceOperationsTestCase {
 
     Map<String, Deployment> deploymentHashMap = new HashMap<>();
     KubernetesApiClient kubernetesApiClient;
-    List<Instances> wso2InstancesList;
-    List<Instances> dbInstancesList;
+    List<DockerImageInstance> wso2InstancesList;
+    List<DockerImageInstance> dbInstancesList;
 
     @BeforeClass
     public void init() throws IOException {
@@ -57,9 +57,9 @@ public class KubernetesServiceOperationsTestCase {
         System.setProperty(FrameworkPathUtil.SYSTEM_ARTIFACT_RESOURCE_LOCATION,
                            new File("src/test/resources/").getAbsolutePath() + File.separator);
         deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
-        wso2InstancesList = new ArrayList<Instances>(deploymentHashMap.get("APIM001")
+        wso2InstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("APIM001")
                                                      .getInstancesMap().values());
-        dbInstancesList = new ArrayList<Instances>(deploymentHashMap.get("db")
+        dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
                                                      .getInstancesMap().values());
     }
 
@@ -70,7 +70,7 @@ public class KubernetesServiceOperationsTestCase {
 
         KubernetesApiUtils.deployDBImages(dbInstancesList);
         KubernetesApiUtils.deployWSO2Images(wso2InstancesList);
-        for (Instances instances : wso2InstancesList) {
+        for (DockerImageInstance instances : wso2InstancesList) {
 
             Map<String, String> labelMap = new HashMap<>();
             labelMap.put("name", instances.getLabel());

@@ -25,6 +25,7 @@ package org.wso2.carbon.automation.distributed.extentions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.commons.BaseManager;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.extensions.ExecutionListenerExtension;
@@ -40,7 +41,8 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
     private static final Log log = LogFactory.getLog(DistributedPlatformExtension.class);
 
     @Override
-    public void initiate() throws AutomationFrameworkException {
+    public void initiate()
+            throws AutomationFrameworkException {
 
         log.info("Executing DistributedPlatformExtension pluggable module");
 
@@ -48,16 +50,20 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
             new BaseManager();
         } catch (IOException | GitAPIException | InterruptedException e) {
             log.error("Error found while initiating DistributedPlatformExtensio " + e.getMessage());
+        } catch (LoginAuthenticationExceptionException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void onExecutionStart() throws AutomationFrameworkException {
+        System.out.println("Test");
 
     }
 
     @Override
     public void onExecutionFinish() throws AutomationFrameworkException {
+        System.out.println("Test");
 
 
     }

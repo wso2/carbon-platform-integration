@@ -14,8 +14,11 @@ K8S_JACKSON_ANNOTATIONS_JAR=jackson-annotations-2.5.4.jar
 JDK=jdk-7u80-linux-x64.tar.gz
 FILE=$TEST_RESOURCE_LOCATION"/artifacts/AM/scripts/bashscripts/images.txt"
 
+password_encoded="Uml6bGEhMjMK"
+password_decoded=$(echo "$password_encoded" | openssl enc -d -base64)
+
 dockerRegistryLogin(){
-  docker login --username=dimuthud --email=dimuthud@wso2.com --password=xxxx dockerhub.private.wso2.com
+  docker login --username=iqbal --email=iqbal@wso2.com --password=$password_decoded dockerhub.private.wso2.com
 }
 
 # step 01
@@ -80,11 +83,14 @@ then echo "Executing default"
 
      echo writing to text file docker image details
 
+
+     #mkdir $TEST_RESOURCE_LOCATION"/artifacts/AM/scripts/bashscripts" wso2am-api-key-manager
+     touch FILE
      /bin/cat <<EOM >$FILE
-     wso2-am-api-publisher: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-publisher tag:1.10.0
-     wso2-am-api-store: image:$PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-store tag:1.10.0
-     wso2-am-api-gateway: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-gateway tag:1.10.0
-     wso2-am-api-keymanager: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-keymanager tag:1.10.0
+     wso2am-api-publisher: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-publisher tag:1.10.0
+     wso2am-api-store: image:$PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-store tag:1.10.0
+     wso2am-gateway-manager: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-gateway tag:1.10.0
+     wso2am-api-key-manager: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-keymanager tag:1.10.0
 
 
 EOM
