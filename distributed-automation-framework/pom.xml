@@ -93,6 +93,10 @@
             <artifactId>json-simple</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.wink</groupId>
             <artifactId>wink-client</artifactId>
         </dependency>
@@ -124,10 +128,6 @@
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.ant</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.automation</groupId>
-            <artifactId>org.wso2.carbon.automation.engine</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
