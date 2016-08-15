@@ -28,8 +28,8 @@ import org.wso2.carbon.automation.distributed.beans.EnvironmentInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -145,7 +145,7 @@ public class ScriptExecutorUtil {
             }
         }
 
-        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
+//        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
     }
 }
 

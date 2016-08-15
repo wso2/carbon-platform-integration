@@ -32,7 +32,7 @@ import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.distributed.commons.DeploymentYamlConstants;
 import org.wso2.carbon.automation.distributed.commons.KubernetesApiClient;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -94,8 +94,8 @@ public class KubernetesApiUtils {
         instancesList.sort((DockerImageInstance instances1, DockerImageInstance instances2) ->
                                    instances1.getPriority() - instances2.getPriority());
         for (DockerImageInstance instances : instancesList) {
-//            kubernetesApiClient.createReplicationController(instances);
-//            kubernetesApiClient.createService(instances);
+            kubernetesApiClient.createReplicationController(instances);
+            kubernetesApiClient.createService(instances);
 
             Map<String, String> labelMap = new HashMap<>();
             labelMap.put(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES_LABEL_NAME, instances.getLabel());
@@ -228,7 +228,7 @@ public class KubernetesApiUtils {
             Map<String, String> labelMap = new HashMap<>();
             labelMap.put("name", instances.getLabel());
             ServiceSpec serviceSpec = kubernetesApiClient.getServiceSpec(labelMap);
-            PodStatus podStatus = waitForPod(instances.getNamespace(), labelMap);
+            PodStatus podStatus = kubernetesApiClient.getPodStatus(instances.getNamespace(), labelMap);
             int httpsPort = 0;
             for (ServicePort servicePort : serviceSpec.getPorts()) {
                 if (servicePort.getName().equals("servlet-https")) {

@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.authenticator.stub.AuthenticationAdminStub;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.authenticator.stub.LogoutAuthenticationExceptionException;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import java.rmi.RemoteException;
 
 /**

@@ -27,9 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.commons.BaseManager;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.extensions.ExecutionListenerExtension;
-
+import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
 import java.io.IOException;
 
 
