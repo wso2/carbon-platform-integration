@@ -32,10 +32,10 @@ import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
 import org.wso2.carbon.automation.distributed.commons.KubernetesApiClient;
+import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.distributed.utills.AuthenticatorClient;
 import org.wso2.carbon.automation.distributed.utills.KubernetesApiUtils;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -64,7 +64,7 @@ public class KubernetesServiceOperationsTestCase {
     }
 
     @Test
-    public void testCreateService()
+    public void testCreateDeployment()
             throws InterruptedException, RemoteException, LoginAuthenticationExceptionException,
                    AutomationFrameworkException {
 

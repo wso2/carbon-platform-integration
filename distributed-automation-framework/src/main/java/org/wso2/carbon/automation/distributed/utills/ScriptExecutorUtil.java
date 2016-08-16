@@ -145,7 +145,7 @@ public class ScriptExecutorUtil {
             }
         }
 
-//        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
+        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
     }
 }
 

@@ -25,6 +25,7 @@ public class RepositoryInfoBeans {
     private static String dockerRepoLocation;
     private static String puppetRepoLocation;
     private static String dockerRegistryLocation;
+    private static String k8sArtifactsRepoLocation;
 
     public static String getDockerRepoLocation() {
         return dockerRepoLocation;
@@ -50,5 +51,12 @@ public class RepositoryInfoBeans {
         RepositoryInfoBeans.dockerRegistryLocation = dockerRegistryLocation;
     }
 
+    public static String getK8sArtifactsRepoLocation() {
+        return k8sArtifactsRepoLocation;
+    }
+
+    public static void setK8sArtifactsRepoLocation(String k8sArtifactsRepoLocation) {
+        RepositoryInfoBeans.k8sArtifactsRepoLocation = k8sArtifactsRepoLocation;
+    }
 }
 
