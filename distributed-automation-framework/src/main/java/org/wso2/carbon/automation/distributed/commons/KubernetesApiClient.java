@@ -218,7 +218,7 @@ public class KubernetesApiClient {
         try {
             kubernetesClient.replicationControllers().withLabels(map).delete();
         } catch (Exception e) {
-            String msg = String.format("Could not delete kubernetes service: [service-id] %s", map);
+            String msg = String.format("Could not delete kubernetes rc: map %s", map);
             log.error(msg, e);
             throw new KubernetesClientException(msg, e);
         }
@@ -228,12 +228,12 @@ public class KubernetesApiClient {
             throws KubernetesClientException {
         try {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Deleting kubernetes replication controller: [service-id] %s", map));
+                log.debug(String.format("Deleting kubernetes replication controller: map %s namespace %s", map, namespace));
             }
             Pod pod = kubernetesClient.pods().inNamespace(namespace).withLabels(map).list().getItems().get(0);
             return pod.getStatus();
         } catch (Exception e) {
-            String msg = String.format("Could not delete kubernetes service: [service-id] %s", map);
+            String msg = String.format("Could not get kubernetes pod status : map %s namespace %s", map, namespace);
             log.error(msg, e);
             throw new KubernetesClientException(msg, e);
         }

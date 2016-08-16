@@ -23,9 +23,11 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
+import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
 import org.wso2.carbon.automation.distributed.utills.ScriptExecutorUtil;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,26 +51,35 @@ public class BaseManager {
 
         log.info("Performing git clone - dockerfile");
 
-//        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
-//        try {
-//
-//            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getDockerRepoLocation(), resourceLocation
-//                                                                                              + File.separator + "Docker-Puppet" + File.separator + "dockerfiles");
-//        } catch (GitAPIException e) {
-//            throw new AutomationFrameworkException("Docker files git clone failed.", e);
-//        }
-//
-//        // git clone - puppetmodule repo
-//        log.info("Performing git clone - puppetmodule");
-//
-//        try {
-//            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getPuppetRepoLocation(), resourceLocation
-//                    + File.separator + "Docker-Puppet" + File.separator + "puppet-module");
-//        } catch (GitAPIException e) {
-//            throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
-//        }
+        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
+        try {
 
-        // execution of automation script
+            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getDockerRepoLocation(), resourceLocation
+                                                                                              + File.separator + "Docker-Puppet" + File.separator + "dockerfiles");
+        } catch (GitAPIException e) {
+            throw new AutomationFrameworkException("Docker files git clone failed.", e);
+        }
+
+        // git clone - puppetmodule repo
+        log.info("Performing git clone - puppetmodule");
+
+        try {
+            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getPuppetRepoLocation(), resourceLocation
+                                                                                              + File.separator + "Docker-Puppet" + File.separator + "puppet-module");
+        } catch (GitAPIException e) {
+            throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
+        }
+
+        log.info("Performing git clone - kubernetes-artifacts");
+
+        try {
+            GitRepositoryUtil.gitCloneRepository(RepositoryInfoBeans.getK8sArtifactsRepoLocation(), resourceLocation
+                                                                                              + File.separator + "Docker-Puppet" + File.separator + "kubernetes-artifacts");
+        } catch (GitAPIException e) {
+            throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
+        }
+
+//        execution of automation script
         new ScriptExecutorUtil().scriptExecution();
 
     }
@@ -81,6 +92,7 @@ public class BaseManager {
                 HashMap hashMap = (HashMap) mEntry.getValue();
                 RepositoryInfoBeans.setPuppetRepoLocation(hashMap.get("puppetModuleRepository").toString());
                 RepositoryInfoBeans.setDockerRepoLocation(hashMap.get("dockerFileModuleRepository").toString());
+                RepositoryInfoBeans.setK8sArtifactsRepoLocation(hashMap.get("k8sArtifactsRepository").toString());
                 RepositoryInfoBeans.setDockerRegistryLocation(hashMap.get("dockerRegistry").toString());
             }
         }
