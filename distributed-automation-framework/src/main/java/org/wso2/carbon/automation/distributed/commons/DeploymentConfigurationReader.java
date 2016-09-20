@@ -18,7 +18,6 @@ package org.wso2.carbon.automation.distributed.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
-import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import org.yaml.snakeyaml.Yaml;
@@ -60,67 +59,36 @@ public class DeploymentConfigurationReader {
         Map<String, Object> map = getDeploymentObjectMap();
         HashMap<String, Deployment> deploymentHashMap = new HashMap<>();
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
-        for (Object deployment : deploymentList) {
-            Deployment deploymentObj = new Deployment();
-            HashMap<String, DockerImageInstance> instanceInDeployment = new HashMap<>();
+        for (Object deploymentObj : deploymentList) {
 
-            deploymentObj.setId(((Map<String, Object>) ((Map<String, Object>) deployment)
-                    .get(DeploymentYamlConstants.YAML_DEPLOYMENT))
-                                        .get(DeploymentYamlConstants.YAML_DEPLOYMENT_ID)
-                                        .toString());
+            Deployment deployment = new Deployment();
+            deployment.setName(((LinkedHashMap) deploymentObj)
+                                       .get(DeploymentYamlConstants
+                                                    .YAML_DEPLOYMENT_NAME).toString());
+            deployment.setDeployScripts(((LinkedHashMap) deploymentObj)
+                                                .get(DeploymentYamlConstants
+                                                             .YAML_DEPLOYMENT_SCRIPT).toString());
+            deployment.setRepository(((LinkedHashMap) deploymentObj)
+                                                .get(DeploymentYamlConstants
+                                                             .YAML_DEPLOYMENT_REPO).toString());
 
-            ArrayList<Object> instancesArrayList =
-                    ((ArrayList<Object>) ((Map<String, Object>) ((Map<String, Object>) deployment)
-                            .get(DeploymentYamlConstants.YAML_DEPLOYMENT))
-                            .get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES));
+            deployment.setSuite(((LinkedHashMap) deploymentObj)
+                                        .get(DeploymentYamlConstants
+                                                     .YAML_DEPLOYMENT_SUITE).toString());
 
-            for (Object instance : instancesArrayList) {
-                DockerImageInstance instanceToMap = new DockerImageInstance();
+            deployment.setUnDeployScripts(((LinkedHashMap) deploymentObj)
+                                                  .get(DeploymentYamlConstants
+                                                               .YAML_UNDEPLOYMENT_SCRIPT).toString());
 
-                instanceToMap
-                        .setTargetDockerImageName(((LinkedHashMap) instance)
-                                                          .get(DeploymentYamlConstants
-                                                                       .YAML_DEPLOYMENT_INSTANCES_DOCKER_IMAGE_NAME)
-                                                          .toString());
-                instanceToMap.setNamespace(((LinkedHashMap) instance)
-                                                   .get(DeploymentYamlConstants
-                                                                .YAML_DEPLOYMENT_INSTANCES_NAMESPACE)
-                                                   .toString());
-                instanceToMap.setLabel(((LinkedHashMap) instance)
-                                               .get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCES_LABEL)
-                                               .toString());
-                instanceToMap.setServiceSelector(((LinkedHashMap) instance)
-                                                         .get(DeploymentYamlConstants
-                                                                      .YAML_DEPLOYMENT_NODE_SELECTOR)
-                                                         .toString());
-                instanceToMap.setReplicas(Integer.parseInt(((LinkedHashMap) instance)
-                                                                   .get(DeploymentYamlConstants
-                                                                                .YAML_DEPLOYMENT_NODE_REPLICAS)
-                                                                   .toString()));
-                instanceToMap.setPriority(Integer.parseInt(((LinkedHashMap) instance)
-                                                                   .get(DeploymentYamlConstants
-                                                                                .YAML_DEPLOYMENT_INSTANCE_PRIORITY)
-                                                                   .toString()));
+            deployment.setEnable(Boolean.parseBoolean(((LinkedHashMap) deploymentObj)
+                                         .get(DeploymentYamlConstants
+                                                      .YAML_UNDEPLOYMENT_SCRIPT).toString()));
 
-                instanceToMap.setTag(((LinkedHashMap) instance)
-                                             .get(DeploymentYamlConstants
-                                                          .YAML_DEPLOYMENT_INSTANCES_DOCKER_TAG_NAME)
-                                             .toString());
-                instanceToMap.setImagePullSecrets(((LinkedHashMap) instance)
-                                                          .get(DeploymentYamlConstants
-                                                                       .YAML_DEPLOYMENT_INSTANCES_DOCKER_HUB_SECRETS)
-                                                          .toString());
+            deployment.setFilePath(((LinkedHashMap) deploymentObj)
+                                           .get(DeploymentYamlConstants
+                                                        .YAML_DEPLOYMENT_URL_FILE_PATH).toString());
 
-                instanceToMap.setPortList(portList((LinkedHashMap) instance));
-                instanceToMap.setEnvVariableMap(envVariableMap((LinkedHashMap) instance));
-
-                instanceInDeployment.put(((LinkedHashMap) instance)
-                                                 .get(DeploymentYamlConstants
-                                                              .YAML_DEPLOYMENT_INSTANCES_LABEL).toString(),
-                                         instanceToMap);
-            }
-            deploymentObj.setInstancesMap(instanceInDeployment);
-            deploymentHashMap.put(deploymentObj.getId(), deploymentObj);
+            deploymentHashMap.put(deployment.getName(), deployment);
         }
 
         return deploymentHashMap;

@@ -16,29 +16,71 @@
 package org.wso2.carbon.automation.distributed.beans;
 
 
-import java.util.HashMap;
-
 /**
  * Deployment bean for deployment.yaml.
  */
 public class Deployment {
-    String id;
-    HashMap<String, DockerImageInstance> instancesMap = new HashMap<>();
+    private String deployScripts;
+    private String name;
+    private String repository;
+    private String suite;
+    private String unDeployScripts;
+    private boolean enable;
+    private String filePath;
 
-    public String getId() {
-        return id;
+    public String getDeployScripts() {
+        return deployScripts;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDeployScripts(String deployScripts) {
+        this.deployScripts = deployScripts;
     }
 
-    public HashMap<String, DockerImageInstance> getInstancesMap() {
-        return instancesMap;
+    public String getName() {
+        return name;
     }
 
-    public void setInstancesMap(
-            HashMap<String, DockerImageInstance> instancesMap) {
-        this.instancesMap = instancesMap;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRepository() {
+        return repository;
+    }
+
+    public void setRepository(String repository) {
+        this.repository = repository;
+    }
+
+    public String getSuite() {
+        return suite;
+    }
+
+    public void setSuite(String suite) {
+        this.suite = suite;
+    }
+
+    public String getUnDeployScripts() {
+        return unDeployScripts;
+    }
+
+    public void setUnDeployScripts(String unDeployScripts) {
+        this.unDeployScripts = unDeployScripts;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

@@ -39,7 +39,6 @@ import org.wso2.carbon.automation.distributed.utills.KubernetesApiUtils;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +56,10 @@ public class KubernetesServiceOperationsTestCase {
         System.setProperty(FrameworkPathUtil.SYSTEM_ARTIFACT_RESOURCE_LOCATION,
                            new File("src/test/resources/").getAbsolutePath() + File.separator);
         deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
-        wso2InstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("APIM001")
-                                                     .getInstancesMap().values());
-        dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
-                                                     .getInstancesMap().values());
+//        wso2InstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("APIM001")
+//                                                     .getInstancesMap().values());
+//        dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
+//                                                     .getInstancesMap().values());
     }
 
     @Test

@@ -48,4 +48,13 @@ public class DeploymentYamlConstants {
     protected static final String YAML_DEPLOYMENT_INSTANCES_DOCKER_TAG_NAME = "targetDockerTagName";
     protected static final String YAML_DEPLOYMENT_INSTANCES_DOCKER_HUB_SECRETS = "imagePullSecrets";
     protected static final String YAML_DEPLOYMENT_INSTANCES_PARAMETERS = "parameters";
+
+    protected static final String YAML_DEPLOYMENT_SCRIPT = "deployscripts";
+    protected static final String YAML_DEPLOYMENT_NAME = "name";
+    protected static final String YAML_DEPLOYMENT_REPO = "repository";
+    protected static final String YAML_DEPLOYMENT_SUITE = "suite";
+    protected static final String YAML_UNDEPLOYMENT_SCRIPT = "undeployscripts";
+    protected static final String YAML_DEPLOYMENT_URL_FILE_PATH = "filePath";
+
+
 }
