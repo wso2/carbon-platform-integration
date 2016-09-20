@@ -23,7 +23,7 @@ import java.util.HashMap;
  */
 public class Deployment {
     String id;
-    HashMap<String, Instances> instancesMap = new HashMap<>();
+    HashMap<String, DockerImageInstance> instancesMap = new HashMap<>();
 
     public String getId() {
         return id;
@@ -33,12 +33,12 @@ public class Deployment {
         this.id = id;
     }
 
-    public HashMap<String, Instances> getInstancesMap() {
+    public HashMap<String, DockerImageInstance> getInstancesMap() {
         return instancesMap;
     }
 
     public void setInstancesMap(
-            HashMap<String, Instances> instancesMap) {
+            HashMap<String, DockerImageInstance> instancesMap) {
         this.instancesMap = instancesMap;
     }
 }

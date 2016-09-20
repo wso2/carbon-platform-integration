@@ -15,26 +15,41 @@
  */
 package org.wso2.carbon.automation.distributed.utills;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
+import java.io.IOException;
+
 
 /**
- * GitRepositoryUtil.
+ * GitRepositoryUtil - Handles basic ops relates to git related operations
  */
-public class GitRepositoryUtil {
-    private static final Log log = LogFactory.getLog(GitRepositoryUtil.class);
+        public class GitRepositoryUtil {
 
-    public static boolean gitCloneRepository(String repositoryUrl, String localDirectory) throws GitAPIException {
-        Git.cloneRepository()
-                .setURI(repositoryUrl)
-                .setDirectory(new File(localDirectory))
-                .setCloneAllBranches(true)
-                .call();
-        return true;
-    }
-}
+            private static final Log log = LogFactory.getLog(GitRepositoryUtil.class);
+
+            public static boolean gitCloneRepository(String repositoryUrl, String localDirectory) throws GitAPIException {
+
+                File dirLocation = new File(localDirectory);
+
+                if (dirLocation.exists()) {
+                    try {
+                        FileUtils.forceDelete(dirLocation);
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    }
+                }
+
+                Git.cloneRepository()
+                        .setURI(repositoryUrl)
+                        .setDirectory(new File(localDirectory))
+                        .setCloneAllBranches(true)
+                        .call();
+                return true;
+            }
+        }
 

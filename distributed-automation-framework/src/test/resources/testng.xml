@@ -4,6 +4,7 @@
     <test name="ConfigurationTests">
         <classes>
             <class name="org.wso2.carbon.automation.distributed.tests.DeploymentConfigurationReaderTestCase"/>
+            <class name="org.wso2.carbon.automation.distributed.tests.KubernetesServiceOperationsTestCase"/>
         </classes>
     </test>
 </suite>
