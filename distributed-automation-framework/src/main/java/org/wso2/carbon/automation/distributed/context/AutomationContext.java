@@ -19,29 +19,32 @@
  */
 package org.wso2.carbon.automation.distributed.context;
 
-import io.fabric8.kubernetes.api.model.PodStatus;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wso2.carbon.automation.distributed.commons.KubernetesApiClient;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.configurations.AutomationConfiguration;
 import org.wso2.carbon.automation.distributed.configurations.UrlGenerationUtil;
 import org.wso2.carbon.automation.distributed.context.beans.ContextUrls;
 import org.wso2.carbon.automation.distributed.context.beans.Instance;
+import org.wso2.carbon.automation.distributed.context.beans.InstanceUrls;
 import org.wso2.carbon.automation.distributed.context.beans.ProductGroup;
 import org.wso2.carbon.automation.distributed.context.beans.Tenant;
 import org.wso2.carbon.automation.distributed.context.beans.User;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 
 
 /**
@@ -58,7 +61,7 @@ public class AutomationContext {
     private String userKey;
     private Tenant superTenant;
     private Tenant contextTenant;
-    private KubernetesApiClient kubernetesApiClient;
+    private List<InstanceUrls> instanceUrlsList;
 
     /**
      * The context constructor for where to use with exact instance.
@@ -91,6 +94,8 @@ public class AutomationContext {
         this.tenantDomain = getConfigurationValue(String.format(ContextXpathConstants.USER_MANAGEMENT_TENANT_DOMAIN,
                                                                 superTenantReplacement, tenantDomainKey));
         this.userKey = userKey;
+        setInstanceUrlsList();
+
     }
 
     /**
@@ -117,6 +122,7 @@ public class AutomationContext {
             //user of a tenant other than super tenant
             assignParameters(productGroupName, instanceName, false, false);
         }
+        setInstanceUrlsList();
     }
 
     /**
@@ -142,6 +148,7 @@ public class AutomationContext {
             //user of a tenant other than super tenant
             assignParameters(productGroupName, null, false, false);
         }
+        setInstanceUrlsList();
     }
 
     public AutomationContext() throws XPathExpressionException {
@@ -156,6 +163,7 @@ public class AutomationContext {
         this.managerInstanceName = defaultInstance.getDefaultManager(productGroupName);
         this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);
         System.setProperty(FrameworkConstants.DEFAULT_PRODUCT_GROUP, productGroupName);
+        setInstanceUrlsList();
     }
 
     /**
@@ -198,7 +206,6 @@ public class AutomationContext {
         HashMap<String, String> portMap = new HashMap<String, String>();
         HashMap<String, String> hostMap = new HashMap<String, String>();
         HashMap<String, String> propertyMap = new HashMap<String, String>();
-        kubernetesApiClient = new KubernetesApiClient();
         Node instanceNode = this.getConfigurationNode(String.format(ContextXpathConstants.PRODUCT_GROUP_INSTANCE_NAME,
                                                                     productGroupName, managerInstanceName));
         NodeList ports = this.getConfigurationNodeList(String.
@@ -212,8 +219,7 @@ public class AutomationContext {
         labelMap.put("name", managerInstanceName);
 
 //        ServiceSpec serviceSpec = kubernetesApiClient.getServiceSpec(labelMap);
-        PodStatus podStatus = kubernetesApiClient.getPodStatus("default", labelMap);
-
+//        PodStatus podStatus = kubernetesApiClient.getPodStatus("default", labelMap);
 
 
         for (int portNo = 0; portNo <= ports.getLength() - 1; portNo++) {
@@ -227,7 +233,14 @@ public class AutomationContext {
 //            hostMap.put(hostType, hostsNode.getFirstChild().getNodeValue());
 //        }
 
-        hostMap.put("default",podStatus.getHostIP());
+
+        Optional<InstanceUrls> instanceUrls =  instanceUrlsList.stream()
+                .filter(instanceUrl -> instanceUrl.getLable().equals(managerInstanceName))
+                .findFirst();
+
+
+
+        hostMap.put("default", instanceUrls.get().getHostIP());
 
         for (int propertyNo = 0; propertyNo <= properties.getLength() - 1; propertyNo++) {
             Node propertyNode = properties.item(propertyNo);
@@ -491,7 +504,7 @@ public class AutomationContext {
      * @return ContextUrls
      * @throws XPathExpressionException
      */
-    public ContextUrls getContextUrls() throws XPathExpressionException {
+    public ContextUrls getContextUrls() throws XPathExpressionException, IOException {
         ContextUrls contextUrls = new ContextUrls();
         try {
             contextUrls.setBackEndUrl(UrlGenerationUtil.getBackendURL(this.getInstance()));
@@ -691,5 +704,18 @@ public class AutomationContext {
             userList.add(userNodeList.item(i).getAttributes().getNamedItem("key").getNodeValue());
         }
         return userList;
+    }
+
+
+    public void setInstanceUrlsList()  {
+        ObjectMapper mapper = new ObjectMapper();
+        if(System.getProperty(FrameworkConstants.JSON_FILE_PATH) != null) {
+            File file = new File(System.getProperty(FrameworkConstants.JSON_FILE_PATH));
+            try {
+                this.instanceUrlsList = Arrays.asList(mapper.readValue(file, InstanceUrls[].class));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

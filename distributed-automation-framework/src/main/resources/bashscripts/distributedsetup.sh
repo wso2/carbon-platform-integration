@@ -4,7 +4,7 @@ echo Test Automation Script Initialization .... $@
 
 TEST_RESOURCE_LOCATION=$5
 DISTRIBUTION_NAME="wso2am-1.10.0.zip"
-PUPPET_MODULE_LOCATION=$5"/Docker-Puppet/puppet-module"
+PUPPET_MODULE_LOCATION=$5"/Docker-Puppet/puppet-modules"
 DOCKER_MODULE_LOCATION=$5"/Docker-Puppet/dockerfiles"
 PRIVATE_DOCKERHUB=$1
 CONNECTOR=mysql-connector-java-5.1.36-bin.jar
@@ -52,23 +52,23 @@ then echo "Executing default"
      # step 05
      echo "Setting hiera data yaml files for pattern default ....."
 
-     #cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-key-manager.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
-     #cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-publisher.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
-     #cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-store.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
-     #cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/gateway-manager.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
+     cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-key-manager.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
+     cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-publisher.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
+     cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/api-store.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
+     cp $TEST_RESOURCE_LOCATION"/artifacts/AM/patterns/default"/gateway-manager.yaml $PUPPET_MODULE_LOCATION/hieradata/dev/wso2/wso2am/1.10.0/kubernetes
 
      #step 06
      echo running bash.sh script
 
-     #$DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-publisher -r puppet -s kubernetes
-     #$DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-store -r puppet -s kubernetes
-     #$DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l gateway-manager -r puppet -s kubernetes
-     #$DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-key-manager -r puppet -s kubernetes
+     $DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-publisher -r puppet -s kubernetes
+     $DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-store -r puppet -s kubernetes
+     $DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l gateway-manager -r puppet -s kubernetes
+     $DOCKER_MODULE_LOCATION/wso2am/build.sh -v 1.10.0 -l api-key-manager -r puppet -s kubernetes
 
-     #docker tag wso2am-api-publisher:1.10.0 dockerhub.private.wso2.com/dimuthud-wso2-am-api-publisher:1.10.0
-     #docker tag wso2am-api-store:1.10.0 dockerhub.private.wso2.com/dimuthud-wso2-am-api-store:1.10.0
-     #docker tag wso2am-gateway-manager:1.10.0 dockerhub.private.wso2.com/dimuthud-wso2-am-api-gateway:1.10.0
-     #docker tag wso2am-api-key-manager:1.10.0 dockerhub.private.wso2.com/dimuthud-wso2-am-api-keymanager:1.10.0
+     docker tag wso2am-api-publisher-kubernetes:1.10.0 dockerhub.private.wso2.com/iqbal-wso2-am-api-publisher:1.10.0
+     docker tag wso2am-api-store-kubernetes:1.10.0 dockerhub.private.wso2.com/iqbal-wso2-am-api-store:1.10.0
+     docker tag wso2am-gateway-manager-kubernetes:1.10.0 dockerhub.private.wso2.com/iqbal-wso2-am-api-gateway:1.10.0
+     docker tag wso2am-api-key-manager-kubernetes:1.10.0 dockerhub.private.wso2.com/iqbal-wso2-am-api-keymanager:1.10.0
 
      echo logging to private wso2 docker repo
 
@@ -76,10 +76,10 @@ then echo "Executing default"
 
      echo pushing images private wso2 docker repo ...  $PRIVATE_DOCKERHUB
 
-     #docker push  $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-publisher:1.10.0
-     #docker push  $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-store:1.10.0
-     #docker push  $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-gateway:1.10.0
-     #docker push  $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-keymanager:1.10.0
+     docker push  $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-publisher:1.10.0
+     docker push  $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-store:1.10.0
+     docker push  $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-gateway:1.10.0
+     docker push  $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-keymanager:1.10.0
 
      echo writing to text file docker image details
 
@@ -87,10 +87,10 @@ then echo "Executing default"
      #mkdir $TEST_RESOURCE_LOCATION"/artifacts/AM/scripts/bashscripts" wso2am-api-key-manager
      touch FILE
      /bin/cat <<EOM >$FILE
-     wso2am-api-publisher: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-publisher tag:1.10.0
-     wso2am-api-store: image:$PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-store tag:1.10.0
-     wso2am-gateway-manager: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-gateway tag:1.10.0
-     wso2am-api-key-manager: image: $PRIVATE_DOCKERHUB/dimuthud-wso2-am-api-keymanager tag:1.10.0
+     wso2am-api-publisher: image: $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-publisher tag:1.10.0
+     wso2am-api-store: image:$PRIVATE_DOCKERHUB/iqbal-wso2-am-api-store tag:1.10.0
+     wso2am-gateway-manager: image: $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-gateway tag:1.10.0
+     wso2am-api-key-manager: image: $PRIVATE_DOCKERHUB/iqbal-wso2-am-api-keymanager tag:1.10.0
 
 
 EOM

@@ -20,8 +20,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-
+import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

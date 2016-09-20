@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
+import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.EnvironmentInfoBeans;
@@ -77,13 +78,13 @@ public class ScriptExecutorUtil {
                     FrameworkPathUtil.getSystemResourceLocation()};
         }
 
-        processOutputGenerator(command);
+        processOutputGenerator(command, null);
 
         scriptValueReader();
 
     }
 
-    private void processOutputGenerator(String[] command) throws IOException {
+    private static void processOutputGenerator(String[] command, String filePath) throws IOException {
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
@@ -94,7 +95,11 @@ public class ScriptExecutorUtil {
 
         while ((line = br.readLine()) != null) {
             log.info(line);
+        }
 
+        File f = new File(filePath);
+        if(f.exists() && !f.isDirectory()) {
+            System.setProperty(FrameworkConstants.JSON_FILE_PATH,filePath);
         }
     }
 
@@ -107,15 +112,39 @@ public class ScriptExecutorUtil {
     }
 
 
+    public static void deployScenario(String scenario) throws IOException {
+        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
+        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        Deployment deployment = deploymentHashMap.get(scenario);
+        String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
+        String [] cmdArray = deployment.getDeployScripts().split(",");
+        for(String cmd : cmdArray) {
+            String[] command = new String[]{"/bin/bash", scriptLocation + File.separator + cmd};
+            processOutputGenerator(command, deployment.getFilePath());
+        }
+    }
+
+    public static void unDeployScenario(String scenario) throws IOException {
+        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
+        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        Deployment deployment = deploymentHashMap.get(scenario);
+        String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
+        String [] cmdArray = deployment.getUnDeployScripts().split(",");
+        for(String cmd : cmdArray) {
+            String[] command = new String[]{"/bin/bash", scriptLocation + File.separator + cmd};
+            processOutputGenerator(command, deployment.getFilePath());
+        }
+    }
+
+
     private void scriptValueReader()
             throws IOException, InterruptedException, AutomationFrameworkException,
                    LoginAuthenticationExceptionException {
 
         Map<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
-        List<DockerImageInstance>  wso2InstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("wso2")
-                                                             .getInstancesMap().values());
-        List<DockerImageInstance>  dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
-                                                           .getInstancesMap().values());
+        List<DockerImageInstance>  wso2InstancesList = new ArrayList<DockerImageInstance>();
+//        List<DockerImageInstance>  dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
+//                                                           .getInstancesMap().values());
 
         HashMap<String, HashMap> hashMap =  DockerImageInfoBeans.getDockerImagesMap();
 
@@ -145,7 +174,7 @@ public class ScriptExecutorUtil {
             }
         }
 
-        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
+//        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
     }
 }
 
