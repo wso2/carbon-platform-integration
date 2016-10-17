@@ -21,7 +21,6 @@ package org.wso2.carbon.automation.distributed.utills;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInfoBeans;
@@ -29,8 +28,8 @@ import org.wso2.carbon.automation.distributed.beans.EnvironmentInfoBeans;
 import org.wso2.carbon.automation.distributed.beans.DockerImageInstance;
 import org.wso2.carbon.automation.distributed.beans.RepositoryInfoBeans;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
-import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -52,16 +51,15 @@ public class ScriptExecutorUtil {
     private static EnvironmentInfoBeans instanceBeans = new EnvironmentInfoBeans();
 
     public void scriptExecution()
-            throws IOException, InterruptedException, AutomationFrameworkException,
-                   LoginAuthenticationExceptionException {
+            throws IOException, InterruptedException {
 
         //TODO - Calling for assigning values only ....
         tempFunction();
 
         //TODO - selecting base image - This will not work for default deployment ....
         String distributedSetupScriptLocation = FrameworkPathUtil.getSystemResourceLocation()
-                + "artifacts" + File.separator + "AM" + File.separator + "scripts"
-                + File.separator + "bashscripts";
+                                                + "artifacts" + File.separator + "AM" + File.separator + "scripts"
+                                                + File.separator + "bashscripts";
 
         String[] command;
 
@@ -138,8 +136,7 @@ public class ScriptExecutorUtil {
 
 
     private void scriptValueReader()
-            throws IOException, InterruptedException, AutomationFrameworkException,
-                   LoginAuthenticationExceptionException {
+            throws IOException, InterruptedException {
 
         Map<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
         List<DockerImageInstance>  wso2InstancesList = new ArrayList<DockerImageInstance>();
@@ -173,8 +170,6 @@ public class ScriptExecutorUtil {
 
             }
         }
-
-//        KubernetesApiUtils.deployWSO2Images(wso2InstanceListForDeployment);
     }
 }
 

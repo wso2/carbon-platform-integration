@@ -21,11 +21,11 @@ package org.wso2.carbon.automation.distributed.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.wso2.carbon.authenticator.stub.LoginAuthenticationExceptionException;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
-import org.wso2.carbon.automation.distributed.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.distributed.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
+import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,13 +40,11 @@ public class BaseManager {
     protected Log log = LogFactory.getLog(BaseManager.class);
 
     public BaseManager()
-            throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException,
-                   LoginAuthenticationExceptionException {
+            throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException{
 
         String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
 
         HashMap<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
-
         List<Deployment> deploymentList = new ArrayList<>(deploymentHashMap.values());
 
         for (Deployment deployment : deploymentList) {
@@ -56,7 +54,8 @@ public class BaseManager {
                          + File.separator + deployment.getName());
                 GitRepositoryUtil.gitCloneRepository(deployment.getRepository(), resourceLocation
                                                                                  + File.separator + "Artifacts"
-                                                                                 + File.separator + deployment.getName());
+                                                                                 + File.separator
+                                                                                 + deployment.getName());
             } catch (GitAPIException e) {
                 throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
             }
