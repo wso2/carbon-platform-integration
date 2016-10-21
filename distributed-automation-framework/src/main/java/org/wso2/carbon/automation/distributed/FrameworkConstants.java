@@ -55,5 +55,6 @@ public class FrameworkConstants {
     public static final String JACOCO_AGENT_JAR_NAME = "jacocoagent.jar";
     public static final String CLASS_FILE_PATTERN = "**/*.class";
     public static final String JSON_FILE_PATH = "jsonFilePath";
+    public static final String TESTLINK_CLASSMAP_SPLITTER = "#";
 
 }

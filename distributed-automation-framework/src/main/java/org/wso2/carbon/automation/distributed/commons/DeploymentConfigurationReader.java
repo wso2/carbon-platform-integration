@@ -17,8 +17,10 @@ package org.wso2.carbon.automation.distributed.commons;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.distributed.TestLinkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.Port;
+import org.wso2.carbon.automation.distributed.beans.TestLink;
 import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.yaml.snakeyaml.Yaml;
 import java.io.FileInputStream;
@@ -39,6 +41,7 @@ public class DeploymentConfigurationReader {
     private static final Log log = LogFactory.getLog(DeploymentConfigurationReader.class);
     private DeploymentConfigurationReader deploymentConfigurationReader = null;
     private HashMap<String, Deployment> deploymentHashMap;
+    private TestLink testlinkConfig;
 
     //Get the only object available
     public DeploymentConfigurationReader() {
@@ -49,6 +52,7 @@ public class DeploymentConfigurationReader {
             if (deploymentConfigurationReader == null) {
                 deploymentConfigurationReader = new DeploymentConfigurationReader();
                 deploymentHashMap = readConfigurationYaml();
+                testlinkConfig = deploymentConfigurationReader.readTestLinkConfigs();
             }
         }
         return deploymentConfigurationReader;
@@ -59,6 +63,7 @@ public class DeploymentConfigurationReader {
         Map<String, Object> map = getDeploymentObjectMap();
         HashMap<String, Deployment> deploymentHashMap = new HashMap<>();
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
+        HashMap<String, String> instanceList;
         for (Object deploymentObj : deploymentList) {
 
             Deployment deployment = new Deployment();
@@ -87,6 +92,8 @@ public class DeploymentConfigurationReader {
             deployment.setFilePath(((LinkedHashMap) deploymentObj)
                                            .get(DeploymentYamlConstants
                                                         .YAML_DEPLOYMENT_URL_FILE_PATH).toString());
+            instanceList = (HashMap<String, String>)((ArrayList<Object>) ((LinkedHashMap)deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCE_MAP)).get(0);
+            deployment.setInstanceMap(instanceList);
 
             deploymentHashMap.put(deployment.getName(), deployment);
         }
@@ -94,6 +101,22 @@ public class DeploymentConfigurationReader {
         return deploymentHashMap;
     }
 
+    private static TestLink readTestLinkConfigs() throws IOException {
+        TestLink testLinkConf = new TestLink();
+        ArrayList<Object> testLinkConfigMap = (ArrayList<Object>) getTestLinkConfigurationObject().get(TestLinkConstants.TESTLINK_Server_INFO);
+        HashMap<String,String> map = (HashMap<String, String>) testLinkConfigMap.get(0);
+
+        testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST));
+        testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY));
+//        testLinkConf.setEnabled(Boolean.parseBoolean(map.get(TestLinkConstants.ENABLE_TESTLINK_FETCHING).toString()));
+        testLinkConf.setEnabled(Boolean.TRUE);
+        testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT));
+        testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN));
+        testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD));
+        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME));
+
+        return testLinkConf;
+    }
 
     private static Map<String, String> envVariableMap(Map<String, ArrayList<String>> instanceMap) {
         Map<String, String> envVariableMap = null;
@@ -146,6 +169,11 @@ public class DeploymentConfigurationReader {
         return portList;
     }
 
+    public HashMap getDeploymentInstanceMap(String pattern) throws IOException{
+
+        return getDeploymentHashMap().get(pattern).getInstanceMap();
+    }
+
     public HashMap<String, Deployment> getDeploymentHashMap() throws IOException {
         if (deploymentConfigurationReader == null) {
             readConfiguration();
@@ -153,11 +181,33 @@ public class DeploymentConfigurationReader {
         return deploymentHashMap;
     }
 
+    public TestLink getTestLinkConfigurations() throws IOException {
+        if (deploymentConfigurationReader == null) {
+            readConfiguration();
+        }
+        return testlinkConfig;
+    }
+
     private static Map<String, Object> getDeploymentObjectMap() throws IOException {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(FrameworkPathUtil.
                     getSystemResourceLocation() + DeploymentYamlConstants.DEPLYMENT_YAML_FILE_NAME);
+            Yaml yaml = new Yaml();
+            return (Map<String, Object>) yaml.load(fis);
+        } finally {
+
+            if (fis != null) {
+                fis.close();
+            }
+        }
+    }
+
+    private static Map<String, Object> getTestLinkConfigurationObject() throws IOException {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(FrameworkPathUtil.
+                    getSystemResourceLocation() + TestLinkConstants.TESTLINK_CONFIG_FILE_NAME);
             Yaml yaml = new Yaml();
             return (Map<String, Object>) yaml.load(fis);
         } finally {

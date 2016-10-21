@@ -55,6 +55,7 @@ public class DeploymentYamlConstants {
     protected static final String YAML_DEPLOYMENT_SUITE = "suite";
     protected static final String YAML_UNDEPLOYMENT_SCRIPT = "undeployscripts";
     protected static final String YAML_DEPLOYMENT_URL_FILE_PATH = "filePath";
+    protected static final String YAML_DEPLOYMENT_INSTANCE_MAP = "instancemap";
 
 
 }

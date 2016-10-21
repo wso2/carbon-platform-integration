@@ -43,9 +43,7 @@ import java.io.IOException;
                         log.error(e.getMessage());
                     }
                 }
-
-                Git.cloneRepository()
-                        .setURI(repositoryUrl)
+                Git.cloneRepository().setURI(repositoryUrl)
                         .setDirectory(new File(localDirectory))
                         .setCloneAllBranches(true)
                         .call();
