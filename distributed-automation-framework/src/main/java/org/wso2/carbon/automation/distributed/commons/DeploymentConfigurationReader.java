@@ -112,7 +112,6 @@ public class DeploymentConfigurationReader {
         testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT).toString());
         testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN).toString());
         testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD).toString());
-        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME).toString());
 
         return testLinkConf;
     }

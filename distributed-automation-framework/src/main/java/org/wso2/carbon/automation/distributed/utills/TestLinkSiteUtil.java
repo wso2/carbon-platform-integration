@@ -1,3 +1,21 @@
+/*
+*Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*WSO2 Inc. licenses this file to you under the Apache License,
+*Version 2.0 (the "License"); you may not use this file except
+*in compliance with the License.
+*You may obtain a copy of the License at
+*
+*http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing,
+*software distributed under the License is distributed on an
+*"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+*KIND, either express or implied.  See the License for the
+*specific language governing permissions and limitations
+*under the License.
+*/
+
 package org.wso2.carbon.automation.distributed.utills;
 
 import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
@@ -12,9 +30,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by yasassri on 10/5/16.
- */
 public class TestLinkSiteUtil {
 
 
@@ -22,22 +37,17 @@ public class TestLinkSiteUtil {
     protected final TestProject testProject;
     protected final TestPlan testPlan;
     protected final Platform platform;
-    protected final Build build;
-
       /**
      * @param api TestLink Java API object
      * @param testProject TestLink Test Project
      * @param testPlan TestLink Test Plan
      * @param platform TestLink platform
-     * @param build TestLink Build
      */
-    public TestLinkSiteUtil(TestLinkAPI api, TestProject testProject, TestPlan testPlan,
-                            Platform platform, Build build) {
+    public TestLinkSiteUtil(TestLinkAPI api, TestProject testProject, TestPlan testPlan,Platform platform) {
         this.api = api;
         this.testProject = testProject;
         this.testPlan = testPlan;
         this.platform = platform;
-        this.build = build;
     }
 
     /**
@@ -66,13 +76,6 @@ public class TestLinkSiteUtil {
      */
     public Platform getPlatform() {
         return platform;
-    }
-
-    /**
-     * @return the build
-     */
-    public Build getBuild() {
-        return build;
     }
 
     /**

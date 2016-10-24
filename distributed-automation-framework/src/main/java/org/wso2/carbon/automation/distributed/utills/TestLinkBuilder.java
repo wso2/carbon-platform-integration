@@ -13,8 +13,7 @@ import java.net.URL;
 public class TestLinkBuilder {
 
     public TestLinkSiteUtil getTestLinkSite(String testLinkUrl, String testLinkDevKey,
-                                            String testProjectName, String testPlanName, String platformName,
-                                            String buildName, String buildNotes) throws MalformedURLException {
+                                            String testProjectName, String testPlanName, String platformName) throws MalformedURLException {
         final TestLinkAPI api;
         final URL url = new URL(testLinkUrl);
         api = new TestLinkAPI(url, testLinkDevKey);
@@ -32,8 +31,6 @@ public class TestLinkBuilder {
                 }
             }
         }
-
-        final Build build = api.createBuild(testPlan.getId(), buildName, buildNotes);
-        return new TestLinkSiteUtil(api, testProject, testPlan, platform, build);
+        return new TestLinkSiteUtil(api, testProject, testPlan, platform);
     }
 }
