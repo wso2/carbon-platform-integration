@@ -29,7 +29,7 @@ public class Deployment {
     private String unDeployScripts;
     private boolean enable;
     private String filePath;
-    private HashMap<String,String> instanceMap;
+    private HashMap<String,Object> instanceMap;
 
     public String getDeployScripts() {
         return deployScripts;
@@ -87,7 +87,7 @@ public class Deployment {
         this.filePath = filePath;
     }
 
-    public void setInstanceMap(HashMap<String, String> instanceMap){
+    public void setInstanceMap(HashMap<String, Object> instanceMap){
         this.instanceMap = instanceMap;
     }
 

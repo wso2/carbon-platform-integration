@@ -27,6 +27,13 @@
     <groupId>org.wso2.carbon.automation</groupId>
     <artifactId>test-automation</artifactId>
     <version>5.0.0-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+    </dependencies>
     <packaging>pom</packaging>
 
     <name>WSO2 Carbon Automation - Parent core project</name>
@@ -136,6 +143,16 @@
                 <groupId>org.apache.wink</groupId>
                 <artifactId>wink-client</artifactId>
                 <version>${wink.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
@@ -199,6 +216,26 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>${codehaus.jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>br.eti.kinoshita</groupId>
+                <artifactId>testlink-java-api</artifactId>
+                <version>1.9.13-0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.xmlrpc</groupId>
+                        <artifactId>xmlrpc-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-migrator</artifactId>-->
+            <!--<version>1.7.21</version>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
     <properties>

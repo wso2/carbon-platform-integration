@@ -63,7 +63,7 @@ public class DeploymentConfigurationReader {
         Map<String, Object> map = getDeploymentObjectMap();
         HashMap<String, Deployment> deploymentHashMap = new HashMap<>();
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
-        HashMap<String, String> instanceList;
+        HashMap<String, Object> instanceList;
         for (Object deploymentObj : deploymentList) {
 
             Deployment deployment = new Deployment();
@@ -85,14 +85,14 @@ public class DeploymentConfigurationReader {
                                                   .get(DeploymentYamlConstants
                                                                .YAML_UNDEPLOYMENT_SCRIPT).toString());
 
-            deployment.setEnable(Boolean.parseBoolean(((LinkedHashMap) deploymentObj)
+            deployment.setEnable((Boolean) ((LinkedHashMap) deploymentObj)
                                          .get(DeploymentYamlConstants
-                                                      .YAML_UNDEPLOYMENT_SCRIPT).toString()));
+                                                      .YAML_DEPLOYMENT_ENABLE));
 
             deployment.setFilePath(((LinkedHashMap) deploymentObj)
                                            .get(DeploymentYamlConstants
                                                         .YAML_DEPLOYMENT_URL_FILE_PATH).toString());
-            instanceList = (HashMap<String, String>)((ArrayList<Object>) ((LinkedHashMap)deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCE_MAP)).get(0);
+            instanceList = (HashMap<String, Object>) ((ArrayList<Object>) ((LinkedHashMap)deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCE_MAP)).get(0);
             deployment.setInstanceMap(instanceList);
 
             deploymentHashMap.put(deployment.getName(), deployment);
@@ -104,16 +104,15 @@ public class DeploymentConfigurationReader {
     private static TestLink readTestLinkConfigs() throws IOException {
         TestLink testLinkConf = new TestLink();
         ArrayList<Object> testLinkConfigMap = (ArrayList<Object>) getTestLinkConfigurationObject().get(TestLinkConstants.TESTLINK_Server_INFO);
-        HashMap<String,String> map = (HashMap<String, String>) testLinkConfigMap.get(0);
+        HashMap<String,Object> map = (HashMap<String, Object>) testLinkConfigMap.get(0);
 
-        testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST));
-        testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY));
-//        testLinkConf.setEnabled(Boolean.parseBoolean(map.get(TestLinkConstants.ENABLE_TESTLINK_FETCHING).toString()));
-        testLinkConf.setEnabled(Boolean.TRUE);
-        testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT));
-        testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN));
-        testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD));
-        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME));
+        testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST).toString());
+        testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY).toString());
+        testLinkConf.setEnabled((Boolean) map.get(TestLinkConstants.TESTLINK_FETCHING_ENABLE));
+        testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT).toString());
+        testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN).toString());
+        testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD).toString());
+        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME).toString());
 
         return testLinkConf;
     }

@@ -22,7 +22,7 @@ package org.wso2.carbon.automation.distributed;
  * Testlink Constants
  */
 public class TestLinkConstants {
-    public static final String ENABLE_TESTLINK_FETCHING_ENABLE = "enable";
+    public static final String TESTLINK_FETCHING_ENABLE = "enable";
     public static final String TESTLINK_SERVER_HOST = "url";
     public static final String TESTLINK_DEV_KEY = "devkey";
     public static final String TESTLINK_PROJECT = "project";
