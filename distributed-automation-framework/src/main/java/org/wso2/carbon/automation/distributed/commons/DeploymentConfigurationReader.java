@@ -39,15 +39,15 @@ import java.util.Map.Entry;
 public class DeploymentConfigurationReader {
 
     private static final Log log = LogFactory.getLog(DeploymentConfigurationReader.class);
-    private DeploymentConfigurationReader deploymentConfigurationReader = null;
-    private HashMap<String, Deployment> deploymentHashMap;
-    private TestLink testlinkConfig;
+    private static DeploymentConfigurationReader deploymentConfigurationReader = null;
+    private static HashMap<String, Deployment> deploymentHashMap;
+    private static TestLink testlinkConfig;
 
     //Get the only object available
-    public DeploymentConfigurationReader() {
+    private DeploymentConfigurationReader() {
     }
 
-    public DeploymentConfigurationReader readConfiguration() throws IOException {
+    public static DeploymentConfigurationReader readConfiguration() throws IOException {
         synchronized (DeploymentConfigurationReader.class) {
             if (deploymentConfigurationReader == null) {
                 deploymentConfigurationReader = new DeploymentConfigurationReader();

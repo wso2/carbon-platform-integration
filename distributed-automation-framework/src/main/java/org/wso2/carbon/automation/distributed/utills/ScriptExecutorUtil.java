@@ -112,7 +112,7 @@ public class ScriptExecutorUtil {
 
     public static void deployScenario(String scenario) throws IOException {
         String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
-        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
         String [] cmdArray = deployment.getDeployScripts().split(",");
@@ -124,7 +124,7 @@ public class ScriptExecutorUtil {
 
     public static void unDeployScenario(String scenario) throws IOException {
         String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
-        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
         String [] cmdArray = deployment.getUnDeployScripts().split(",");
@@ -138,7 +138,7 @@ public class ScriptExecutorUtil {
     private void scriptValueReader()
             throws IOException, InterruptedException {
 
-        Map<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        Map<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         List<DockerImageInstance>  wso2InstancesList = new ArrayList<DockerImageInstance>();
 //        List<DockerImageInstance>  dbInstancesList = new ArrayList<DockerImageInstance>(deploymentHashMap.get("db")
 //                                                           .getInstancesMap().values());
