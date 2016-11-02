@@ -24,6 +24,8 @@ import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
 import br.eti.kinoshita.testlinkjavaapi.constants.ResponseDetails;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseDetails;
 import br.eti.kinoshita.testlinkjavaapi.model.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import java.util.Set;
 
 public class TestLinkSiteUtil {
 
+    protected Log log = LogFactory.getLog(TestLinkSiteUtil.class);
 
     protected final TestLinkAPI api;
     protected final TestProject testProject;
@@ -150,9 +153,11 @@ public class TestLinkSiteUtil {
                     // Get class#method value and split it and take the full qualified
                     String customFieldValue = customField.getValue();
                     if (customField.getName() != null && !customFieldValue.isEmpty()) {
-                        classList.add(customField.getValue().split(FrameworkConstants.TESTLINK_CLASSMAP_SPLITTER)[0]);
+                        if (this.platform.getName().equals(testCase.getPlatform().getName())) {
+                            classList.add(customField.getValue().split(FrameworkConstants.TESTLINK_CLASSMAP_SPLITTER)[0]);
+                        }
                     }else {
-                        // TODO : Nitify that there are testcases without class mappings. Can pring the TC ID if necessary
+                        log.error("Test case with the title : " +testCase.getName() + " doesn't have a Automation mapping, but marked as a Automated test!!!");
                     }
                 }
             }
