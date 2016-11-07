@@ -105,16 +105,15 @@ public class DeploymentConfigurationReader {
     private static TestLink readTestLinkConfigs() throws IOException {
         TestLink testLinkConf = new TestLink();
         ArrayList<Object> testLinkConfigMap = (ArrayList<Object>) getTestLinkConfigurationObject().get(TestLinkConstants.TESTLINK_Server_INFO);
-        HashMap<String,String> map = (HashMap<String, String>) testLinkConfigMap.get(0);
+        HashMap<String,Object> map = (HashMap<String,Object>) testLinkConfigMap.get(0);
 
-        testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST));
-        testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY));
-//        testLinkConf.setEnabled(Boolean.parseBoolean(map.get(TestLinkConstants.ENABLE_TESTLINK_FETCHING).toString()));
-        testLinkConf.setEnabled(Boolean.TRUE);
-        testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT));
-        testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN));
-        testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD));
-        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME));
+        testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST).toString());
+        testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY).toString());
+        testLinkConf.setEnabled((Boolean) map.get(TestLinkConstants.ENABLE_TESTLINK_FETCHING));
+        testLinkConf.setProjectName(map.get(TestLinkConstants.TESTLINK_PROJECT).toString());
+        testLinkConf.setTestPlan(map.get(TestLinkConstants.TESTLINK_TESTPLAN).toString());
+        testLinkConf.setTestLinkCustomField(map.get(TestLinkConstants.TESTLINK_CUSTOM_FIELD).toString());
+        testLinkConf.setBuild(map.get(TestLinkConstants.TESTLINK_BUILD_NAME).toString());
 
         return testLinkConf;
     }
