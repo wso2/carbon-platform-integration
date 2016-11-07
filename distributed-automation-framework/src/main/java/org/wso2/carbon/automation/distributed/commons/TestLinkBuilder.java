@@ -1,11 +1,11 @@
-package org.wso2.carbon.automation.distributed.utills;
+package org.wso2.carbon.automation.distributed.commons;
 
 import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
-import br.eti.kinoshita.testlinkjavaapi.model.Build;
 import br.eti.kinoshita.testlinkjavaapi.model.Platform;
 import br.eti.kinoshita.testlinkjavaapi.model.TestPlan;
 import br.eti.kinoshita.testlinkjavaapi.model.TestProject;
 import org.apache.commons.lang.StringUtils;
+import org.wso2.carbon.automation.distributed.utills.TestLinkSiteUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;

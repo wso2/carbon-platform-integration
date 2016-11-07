@@ -35,11 +35,10 @@ import java.io.IOException;
 /**
  * This extension class serves as container management extension.
  */
-public class DistributedPlatformExtension extends ExecutionListenerExtension {
+public class DistributedPlatformExtension {
 
     private static final Log log = LogFactory.getLog(DistributedPlatformExtension.class);
 
-    @Override
     public void initiate()
             throws AutomationFrameworkException {
 
@@ -52,16 +51,6 @@ public class DistributedPlatformExtension extends ExecutionListenerExtension {
         }
     }
 
-    @Override
-    public void onExecutionStart() throws AutomationFrameworkException {
-        log.info("Executing DistributedPlatformExtension Execution Started");
-    }
-
-    @Override
-    public void onExecutionFinish() throws AutomationFrameworkException {
-        log.info("Executing DistributedPlatformExtension Execution completed");
-
-    }
 }
 
 

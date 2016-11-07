@@ -21,6 +21,7 @@ package org.wso2.carbon.automation.distributed.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
@@ -42,9 +43,9 @@ public class BaseManager {
     public BaseManager()
             throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException{
 
-        String resourceLocation = FrameworkPathUtil.getSystemResourceLocation();
+        String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
 
-        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
+        HashMap<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
         List<Deployment> deploymentList = new ArrayList<>(deploymentHashMap.values());
 
         for (Deployment deployment : deploymentList) {
