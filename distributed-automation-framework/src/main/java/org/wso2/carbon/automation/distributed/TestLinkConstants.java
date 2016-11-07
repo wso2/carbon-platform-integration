@@ -27,9 +27,7 @@ public class TestLinkConstants {
     public static final String TESTLINK_DEV_KEY = "devkey";
     public static final String TESTLINK_PROJECT = "project";
     public static final String TESTLINK_TESTPLAN = "testplan";
-    public static final String TESTLINK_DEFAULT_PLATFORM = "pt01";
     public static final String TESTLINK_CUSTOM_FIELD = "testlinkcustomfield";
-    public static final String TESTLINK_BUILD_NAME = "buildname";
     public static final String TESTLINK_Server_INFO = "serverinfo";
     public static final String TESTLINK_CONFIG_FILE_NAME = "test-link.yaml";
 }
