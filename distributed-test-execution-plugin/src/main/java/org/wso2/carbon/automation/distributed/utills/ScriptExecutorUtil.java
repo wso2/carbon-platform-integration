@@ -60,7 +60,7 @@ public class ScriptExecutorUtil {
 
     public static void deployScenario(String scenario) throws IOException {
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
-        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
         String [] cmdArray = deployment.getDeployScripts().split(",");
@@ -72,7 +72,7 @@ public class ScriptExecutorUtil {
 
     public static void unDeployScenario(String scenario) throws IOException {
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
-        HashMap<String, Deployment>deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
         String [] cmdArray = deployment.getUnDeployScripts().split(",");

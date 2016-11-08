@@ -45,7 +45,7 @@ public class BaseManager {
 
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
 
-        HashMap<String, Deployment> deploymentHashMap = new DeploymentConfigurationReader().getDeploymentHashMap();
+        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
         List<Deployment> deploymentList = new ArrayList<>(deploymentHashMap.values());
 
         for (Deployment deployment : deploymentList) {

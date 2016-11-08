@@ -45,7 +45,7 @@ public class DeploymentConfigurationReader {
     private static TestLink testlinkConfig;
 
     //Get the only object available
-    public DeploymentConfigurationReader() {
+    private DeploymentConfigurationReader() {
     }
 
     public static DeploymentConfigurationReader readConfiguration() throws IOException {

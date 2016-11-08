@@ -219,7 +219,7 @@
             <dependency>
                 <groupId>br.eti.kinoshita</groupId>
                 <artifactId>testlink-java-api</artifactId>
-                <version>1.9.13-0</version>
+                <version>1.9.14-0</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.xmlrpc</groupId>
