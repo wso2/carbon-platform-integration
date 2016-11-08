@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * Reader for deployment.yaml forl for deployment information
+ * Reader for deployment.yaml for deployment information
  */
 public class DeploymentConfigurationReader {
 
@@ -208,5 +208,3 @@ public class DeploymentConfigurationReader {
     }
 
 }
-
-

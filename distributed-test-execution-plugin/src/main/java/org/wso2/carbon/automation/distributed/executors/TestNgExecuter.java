@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
+import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.TestLink;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Running the TestNG programmatically and Injecting the suites.
+ * Running TestNG programmatically and Injecting the suites.
  */
 public class TestNgExecuter {
     private static final Log log = LogFactory.getLog(TestNgExecuter.class);
@@ -86,17 +87,17 @@ public class TestNgExecuter {
             log.info("Running Test Suites.........");
             TestListenerAdapter tl = new TestListenerAdapter();
             tng.addListener(tl);
-            tng.setOutputDirectory("apim-intergration-tests"); //TODO remove hardcoding
+            tng.setOutputDirectory(FrameworkConstants.TESTNG_RESULT_OUT_DIRECTORY);
             tng.run();
         } else {
             log.info("Retrieve Tests from Test-Link is Disabled, Hence Retrieving Tests from default testng.xml");
             TestNG testng = new TestNG();
             List<String> suites = new ArrayList<>();
-            suites.add("../src/test/resources/testng.xml"); // TODO The path shouldn't be hardcoded.
+            suites.add(System.getProperty(System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION))
+                    + FrameworkConstants.DEFAULT_TESTNG_FILE);
             testng.setTestSuites(suites);
-            testng.setOutputDirectory("apim-intergration-tests"); //TODO remove hardcoding
+            testng.setOutputDirectory(FrameworkConstants.TESTNG_RESULT_OUT_DIRECTORY);
             testng.run();
         }
-
     }
 }
