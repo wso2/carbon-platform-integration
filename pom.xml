@@ -40,7 +40,7 @@
 
     <modules>
         <module>test-automation-framework</module>
-        <module>distributed-automation-framework</module>
+        <module>distributed-test-execution-plugin</module>
     </modules>
 
     <scm>

@@ -23,8 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

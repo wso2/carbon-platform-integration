@@ -26,9 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.automation.distributed.commons.BaseManager;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.extensions.ExecutionListenerExtension;
-
 import java.io.IOException;
 
 
@@ -39,8 +36,7 @@ public class DistributedPlatformExtension {
 
     private static final Log log = LogFactory.getLog(DistributedPlatformExtension.class);
 
-    public void initiate()
-            throws AutomationFrameworkException {
+    public void initiate() {
 
         log.info("Executing DistributedPlatformExtension pluggable module");
 

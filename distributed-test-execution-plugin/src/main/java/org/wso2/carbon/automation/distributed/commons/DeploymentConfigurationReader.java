@@ -22,7 +22,6 @@ import org.wso2.carbon.automation.distributed.TestLinkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.distributed.beans.TestLink;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.yaml.snakeyaml.Yaml;
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -24,9 +24,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class BaseManager {
     protected Log log = LogFactory.getLog(BaseManager.class);
 
     public BaseManager()
-            throws AutomationFrameworkException, IOException, GitAPIException, InterruptedException{
+            throws IOException, GitAPIException, InterruptedException{
 
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
 
@@ -58,7 +55,7 @@ public class BaseManager {
                                                                                  + File.separator
                                                                                  + deployment.getName());
             } catch (GitAPIException e) {
-                throw new AutomationFrameworkException("puppet-modules git clone failed.", e);
+                log.error("Git clone failed.", e);
             }
         }
 

@@ -15,8 +15,6 @@ import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationRea
 import org.wso2.carbon.automation.distributed.extentions.DistributedPlatformExtension;
 import org.wso2.carbon.automation.distributed.commons.TestLinkBuilder;
 import org.wso2.carbon.automation.distributed.utills.TestLinkSiteUtil;
-import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +32,7 @@ public class TestNgExecuter {
         try {
             DistributedPlatformExtension my = new DistributedPlatformExtension();
             my.initiate();
-        } catch (AutomationFrameworkException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         TestLink testLinkBean =  DeploymentConfigurationReader.readConfiguration().getTestLinkConfigurations();
