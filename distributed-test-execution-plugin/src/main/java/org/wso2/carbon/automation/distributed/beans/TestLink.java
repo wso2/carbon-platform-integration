@@ -26,6 +26,7 @@ public class TestLink {
     private String projectName;
     private String testPlan;
     private String testLinkCustomField;
+    private String build;
 
     public String getBuild() {
         return build;
@@ -34,8 +35,6 @@ public class TestLink {
     public void setBuild(String build) {
         this.build = build;
     }
-
-    private String build;
 
     public String getUrl() {
         return url;

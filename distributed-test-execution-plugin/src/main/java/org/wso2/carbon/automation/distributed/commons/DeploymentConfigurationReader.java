@@ -23,14 +23,10 @@ import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.Port;
 import org.wso2.carbon.automation.distributed.beans.TestLink;
 import org.yaml.snakeyaml.Yaml;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -58,8 +54,7 @@ public class DeploymentConfigurationReader {
         return deploymentConfigurationReader;
     }
 
-    private static HashMap<String, Deployment> readConfigurationYaml() throws
-                                                                       IOException {
+    private static HashMap<String, Deployment> readConfigurationYaml() throws IOException {
         Map<String, Object> map = getDeploymentObjectMap();
         HashMap<String, Deployment> deploymentHashMap = new HashMap<>();
         ArrayList<Object> deploymentList = (ArrayList<Object>) map.get(DeploymentYamlConstants.YAML_DEPLOYMENTS);
@@ -67,32 +62,27 @@ public class DeploymentConfigurationReader {
         for (Object deploymentObj : deploymentList) {
 
             Deployment deployment = new Deployment();
-            deployment.setName(((LinkedHashMap) deploymentObj)
-                                       .get(DeploymentYamlConstants
-                                                    .YAML_DEPLOYMENT_NAME).toString());
-            deployment.setDeployScripts(((LinkedHashMap) deploymentObj)
-                                                .get(DeploymentYamlConstants
-                                                             .YAML_DEPLOYMENT_SCRIPT).toString());
-            deployment.setRepository(((LinkedHashMap) deploymentObj)
-                                                .get(DeploymentYamlConstants
-                                                             .YAML_DEPLOYMENT_REPO).toString());
+            deployment.setName(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_NAME).toString());
+            deployment.setDeployScripts(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_SCRIPT).toString());
+            deployment.setRepository(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_REPO).toString());
 
-            deployment.setSuite(((LinkedHashMap) deploymentObj)
-                                        .get(DeploymentYamlConstants
-                                                     .YAML_DEPLOYMENT_SUITE).toString());
+            deployment.setSuite(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_SUITE).toString());
 
-            deployment.setUnDeployScripts(((LinkedHashMap) deploymentObj)
-                                                  .get(DeploymentYamlConstants
-                                                               .YAML_UNDEPLOYMENT_SCRIPT).toString());
+            deployment.setUnDeployScripts(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_UNDEPLOYMENT_SCRIPT).toString());
 
-            deployment.setEnable(Boolean.parseBoolean(((LinkedHashMap) deploymentObj)
-                                         .get(DeploymentYamlConstants
-                                                      .YAML_UNDEPLOYMENT_SCRIPT).toString()));
+            deployment.setEnable(Boolean.parseBoolean(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_UNDEPLOYMENT_SCRIPT).toString()));
 
-            deployment.setFilePath(((LinkedHashMap) deploymentObj)
-                                           .get(DeploymentYamlConstants
-                                                        .YAML_DEPLOYMENT_URL_FILE_PATH).toString());
-            instanceList = (HashMap<String, String>)((ArrayList<Object>) ((LinkedHashMap)deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCE_MAP)).get(0);
+            deployment.setFilePath(
+                    ((LinkedHashMap) deploymentObj).get(DeploymentYamlConstants.YAML_DEPLOYMENT_URL_FILE_PATH)
+                            .toString());
+            instanceList = (HashMap<String, String>) ((ArrayList<Object>) ((LinkedHashMap) deploymentObj)
+                    .get(DeploymentYamlConstants.YAML_DEPLOYMENT_INSTANCE_MAP)).get(0);
             deployment.setInstanceMap(instanceList);
 
             deploymentHashMap.put(deployment.getName(), deployment);
@@ -103,8 +93,9 @@ public class DeploymentConfigurationReader {
 
     private static TestLink readTestLinkConfigs() throws IOException {
         TestLink testLinkConf = new TestLink();
-        ArrayList<Object> testLinkConfigMap = (ArrayList<Object>) getTestLinkConfigurationObject().get(TestLinkConstants.TESTLINK_Server_INFO);
-        HashMap<String,Object> map = (HashMap<String,Object>) testLinkConfigMap.get(0);
+        ArrayList<Object> testLinkConfigMap = (ArrayList<Object>) getTestLinkConfigurationObject()
+                .get(TestLinkConstants.TESTLINK_Server_INFO);
+        HashMap<String, Object> map = (HashMap<String, Object>) testLinkConfigMap.get(0);
 
         testLinkConf.setUrl(map.get(TestLinkConstants.TESTLINK_SERVER_HOST).toString());
         testLinkConf.setDevkey(map.get(TestLinkConstants.TESTLINK_DEV_KEY).toString());
@@ -167,7 +158,37 @@ public class DeploymentConfigurationReader {
         return portList;
     }
 
-    public HashMap getDeploymentInstanceMap(String pattern) throws IOException{
+    private static Map<String, Object> getDeploymentObjectMap() throws IOException {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION)
+                    + DeploymentYamlConstants.DEPLYMENT_YAML_FILE_NAME);
+            Yaml yaml = new Yaml();
+            return (Map<String, Object>) yaml.load(fis);
+        } finally {
+
+            if (fis != null) {
+                fis.close();
+            }
+        }
+    }
+
+    private static Map<String, Object> getTestLinkConfigurationObject() throws IOException {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION)
+                    + TestLinkConstants.TESTLINK_CONFIG_FILE_NAME);
+            Yaml yaml = new Yaml();
+            return (Map<String, Object>) yaml.load(fis);
+        } finally {
+
+            if (fis != null) {
+                fis.close();
+            }
+        }
+    }
+
+    public HashMap getDeploymentInstanceMap(String pattern) throws IOException {
 
         return getDeploymentHashMap().get(pattern).getInstanceMap();
     }
@@ -184,34 +205,6 @@ public class DeploymentConfigurationReader {
             readConfiguration();
         }
         return testlinkConfig;
-    }
-
-    private static Map<String, Object> getDeploymentObjectMap() throws IOException {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION) + DeploymentYamlConstants.DEPLYMENT_YAML_FILE_NAME);
-            Yaml yaml = new Yaml();
-            return (Map<String, Object>) yaml.load(fis);
-        } finally {
-
-            if (fis != null) {
-                fis.close();
-            }
-        }
-    }
-
-    private static Map<String, Object> getTestLinkConfigurationObject() throws IOException {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION)+ TestLinkConstants.TESTLINK_CONFIG_FILE_NAME);
-            Yaml yaml = new Yaml();
-            return (Map<String, Object>) yaml.load(fis);
-        } finally {
-
-            if (fis != null) {
-                fis.close();
-            }
-        }
     }
 
 }

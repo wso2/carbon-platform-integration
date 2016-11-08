@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -51,31 +52,33 @@ public class ScriptExecutorUtil {
         }
 
         File f = new File(filePath);
-        if(f.exists() && !f.isDirectory()) {
-            System.setProperty(FrameworkConstants.JSON_FILE_PATH,filePath);
+        if (f.exists() && !f.isDirectory()) {
+            System.setProperty(FrameworkConstants.JSON_FILE_PATH, filePath);
         }
     }
 
     public static void deployScenario(String scenario) throws IOException {
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
-        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
+        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration()
+                .getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
-        String [] cmdArray = deployment.getDeployScripts().split(",");
-        for(String cmd : cmdArray) {
-            String[] command = new String[]{"/bin/bash", scriptLocation + File.separator + cmd};
+        String[] cmdArray = deployment.getDeployScripts().split(",");
+        for (String cmd : cmdArray) {
+            String[] command = new String[] { "/bin/bash", scriptLocation + File.separator + cmd };
             processOutputGenerator(command, deployment.getFilePath());
         }
     }
 
     public static void unDeployScenario(String scenario) throws IOException {
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
-        HashMap<String, Deployment>deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
+        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration()
+                .getDeploymentHashMap();
         Deployment deployment = deploymentHashMap.get(scenario);
         String scriptLocation = resourceLocation + "Artifacts" + File.separator + deployment.getName();
-        String [] cmdArray = deployment.getUnDeployScripts().split(",");
-        for(String cmd : cmdArray) {
-            String[] command = new String[]{"/bin/bash", scriptLocation + File.separator + cmd};
+        String[] cmdArray = deployment.getUnDeployScripts().split(",");
+        for (String cmd : cmdArray) {
+            String[] command = new String[] { "/bin/bash", scriptLocation + File.separator + cmd };
             processOutputGenerator(command, deployment.getFilePath());
         }
     }

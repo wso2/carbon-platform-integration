@@ -25,13 +25,12 @@ import org.apache.wink.client.RestClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * GenericRestClient for Wink.
@@ -65,15 +64,14 @@ public class GenericRestClient {
         genericRestClient.setKeysForRestClient();
         JSONObject obj = new JSONObject(genericRestClient.
                 geneticRestRequestPost("https://localhost:9443/publisher/apis/authenticate/",
-                                       MediaType.APPLICATION_FORM_URLENCODED,
-                                       MediaType.APPLICATION_JSON, "username=admin&password=admin",
-                                       queryParamMap, headerMap, null).getEntity(String.class));
+                        MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON,
+                        "username=admin&password=admin", queryParamMap, headerMap, null).getEntity(String.class));
         obj.getJSONObject("data").getString("sessionId");
     }
 
     private void setKeysForRestClient() {
         String trustStore = System.getProperty("carbon.home") + File.separator + "repository" + File.separator +
-                            "resources" + File.separator + "security" + File.separator + "wso2carbon.jks";
+                "resources" + File.separator + "security" + File.separator + "wso2carbon.jks";
         System.setProperty("javax.net.ssl.trustStore", trustStore);
         System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
@@ -91,14 +89,10 @@ public class GenericRestClient {
      * @param cookie          jSessionID in form of JSESSIONID=<ID>
      * @return
      */
-    public ClientResponse geneticRestRequestPost(String resourceUrl, String contentType,
-                                                 String acceptMediaType, Object postBody,
-                                                 Map<String, String> queryParamMap,
-                                                 Map<String, String> headerMap,
-                                                 String cookie) {
+    public ClientResponse geneticRestRequestPost(String resourceUrl, String contentType, String acceptMediaType,
+            Object postBody, Map<String, String> queryParamMap, Map<String, String> headerMap, String cookie) {
 
         Resource resource = client.resource(resourceUrl);
-
 
         if (!(queryParamMap.size() <= 0)) {
             for (Map.Entry<String, String> queryParamEntry : queryParamMap.entrySet()) {
@@ -118,11 +112,8 @@ public class GenericRestClient {
         return response;
     }
 
-    public ClientResponse geneticRestRequestDelete(String resourceUrl, String contentType,
-                                                   String acceptMediaType,
-                                                   Map<String, String> queryParamMap,
-                                                   Map<String, String> headerMap,
-                                                   String cookie) {
+    public ClientResponse geneticRestRequestDelete(String resourceUrl, String contentType, String acceptMediaType,
+            Map<String, String> queryParamMap, Map<String, String> headerMap, String cookie) {
         Resource resource = client.resource(resourceUrl);
         if (!(queryParamMap.size() <= 0)) {
             for (Map.Entry<String, String> queryParamEntry : queryParamMap.entrySet()) {
@@ -143,11 +134,8 @@ public class GenericRestClient {
         return response;
     }
 
-    public ClientResponse geneticRestRequestDelete(String resourceUrl, String contentType,
-                                                   String acceptMediaType, String data,
-                                                   Map<String, String> queryParamMap,
-                                                   Map<String, String> headerMap,
-                                                   String cookie) {
+    public ClientResponse geneticRestRequestDelete(String resourceUrl, String contentType, String acceptMediaType,
+            String data, Map<String, String> queryParamMap, Map<String, String> headerMap, String cookie) {
         Resource resource = client.resource(resourceUrl);
         if (!(queryParamMap.size() <= 0)) {
             for (Map.Entry<String, String> queryParamEntry : queryParamMap.entrySet()) {
@@ -168,11 +156,8 @@ public class GenericRestClient {
         return response;
     }
 
-
-    public ClientResponse geneticRestRequestGet(String resourceUrl,
-                                                Map<String, String> queryParamMap,
-                                                Map<String, String> headerMap,
-                                                String cookie) {
+    public ClientResponse geneticRestRequestGet(String resourceUrl, Map<String, String> queryParamMap,
+            Map<String, String> headerMap, String cookie) {
         Resource resource = client.resource(resourceUrl);
         MultivaluedMap<String, String> queryParamInMap = new MultivaluedHashMap<>();
         if (!(queryParamMap.size() <= 0)) {
@@ -193,13 +178,8 @@ public class GenericRestClient {
         return response;
     }
 
-
-
-    public ClientResponse geneticRestRequestGet(String resourceUrl,
-                                                Map<String, String> queryParamMap,
-                                                String acceptMediaType,
-                                                Map<String, String> headerMap,
-                                                String cookie) {
+    public ClientResponse geneticRestRequestGet(String resourceUrl, Map<String, String> queryParamMap,
+            String acceptMediaType, Map<String, String> headerMap, String cookie) {
         Resource resource = client.resource(resourceUrl);
         MultivaluedMap<String, String> queryParamInMap = new MultivaluedHashMap<>();
         if (!(queryParamMap.size() <= 0)) {
@@ -230,11 +210,10 @@ public class GenericRestClient {
      * @param queryParamMap   Map of Query parameters
      * @param headerMap       Map of headers
      * @param cookie          jSessionID in form of JSESSIONID=<ID>
-     * @return                Returns the response from the REST client
+     * @return Returns the response from the REST client
      */
     public ClientResponse genericRestRequestPut(String resourceUrl, String contentType, String acceptMediaType,
-                                                Object postBody, Map<String, String> queryParamMap,
-                                                Map<String, String> headerMap, String cookie) {
+            Object postBody, Map<String, String> queryParamMap, Map<String, String> headerMap, String cookie) {
 
         Resource resource = client.resource(resourceUrl);
 

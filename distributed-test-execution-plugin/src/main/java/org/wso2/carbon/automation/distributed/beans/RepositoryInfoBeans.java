@@ -39,15 +39,15 @@ public class RepositoryInfoBeans {
         return puppetRepoLocation;
     }
 
-    public static synchronized  void setPuppetRepoLocation(String puppetRepoLocation) {
+    public static synchronized void setPuppetRepoLocation(String puppetRepoLocation) {
         RepositoryInfoBeans.puppetRepoLocation = puppetRepoLocation;
     }
 
-    public static synchronized  String getDockerRegistryLocation() {
+    public static synchronized String getDockerRegistryLocation() {
         return dockerRegistryLocation;
     }
 
-    public static synchronized  void setDockerRegistryLocation(String dockerRegistryLocation) {
+    public static synchronized void setDockerRegistryLocation(String dockerRegistryLocation) {
         RepositoryInfoBeans.dockerRegistryLocation = dockerRegistryLocation;
     }
 

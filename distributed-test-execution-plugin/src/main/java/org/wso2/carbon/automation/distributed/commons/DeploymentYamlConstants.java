@@ -21,10 +21,10 @@ package org.wso2.carbon.automation.distributed.commons;
 public class DeploymentYamlConstants {
     public static final String DEPLYMENT_YAML_FILE_NAME = "deployment.yaml";
     public static final String YAML_DEPLOYMENTS = "deployments";
+    public static final String YAML_DEPLOYMENT_INSTANCES_LABEL_NAME = "name";
     protected static final String YAML_DEPLOYMENT = "deployment";
     protected static final String YAML_DEPLOYMENT_ID = "id";
     protected static final String YAML_DEPLOYMENT_INSTANCES_LABEL = "label";
-    public static final String YAML_DEPLOYMENT_INSTANCES_LABEL_NAME = "name";
     protected static final String YAML_DEPLOYMENT_INSTANCES = "instances";
     protected static final String YAML_DEPLOYMENT_INSTANCES_NAMESPACE = "namespace";
     protected static final String YAML_DEPLOYMENT_PORTS = "ports";
@@ -41,8 +41,7 @@ public class DeploymentYamlConstants {
     protected static final String YAML_DEPLOYMENT_INSTANCES_CARBON_INSTANCE = "isCarbonInstance";
     protected static final String YAML_DEPLOYMENT_INSTANCES_DOCKER_IMAGE_NAME = "targetDockerImageName";
     protected static final String YAML_DEPLOYMENT_INSTANCES_ENV_MAP = "envVariableMap";
-    protected static final String YAML_DEPLOYMENT_INSTANCES_ENV_MAP_SKIP_SSL_VERIFICATION
-            = "KUBERNETES_MASTER_SKIP_SSL_VERIFICATION";
+    protected static final String YAML_DEPLOYMENT_INSTANCES_ENV_MAP_SKIP_SSL_VERIFICATION = "KUBERNETES_MASTER_SKIP_SSL_VERIFICATION";
     protected static final String YAML_DEPLOYMENT_INSTANCES_ENV_MAP_API_SERVER = "KUBERNETES_API_SERVER";
     protected static final String YAML_DEPLOYMENT_INSTANCES_ENV_MAP_SERVICES = "KUBERNETES_SERVICES";
     protected static final String YAML_DEPLOYMENT_INSTANCES_DOCKER_TAG_NAME = "targetDockerTagName";
@@ -56,6 +55,5 @@ public class DeploymentYamlConstants {
     protected static final String YAML_UNDEPLOYMENT_SCRIPT = "undeployscripts";
     protected static final String YAML_DEPLOYMENT_URL_FILE_PATH = "filePath";
     protected static final String YAML_DEPLOYMENT_INSTANCE_MAP = "instancemap";
-
 
 }

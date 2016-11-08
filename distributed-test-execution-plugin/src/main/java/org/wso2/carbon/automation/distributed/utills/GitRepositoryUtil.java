@@ -24,30 +24,27 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import java.io.File;
 import java.io.IOException;
 
-
 /**
  * GitRepositoryUtil - Handles basic ops relates to git related operations
  */
-        public class GitRepositoryUtil {
+public class GitRepositoryUtil {
 
-            private static final Log log = LogFactory.getLog(GitRepositoryUtil.class);
+    private static final Log log = LogFactory.getLog(GitRepositoryUtil.class);
 
-            public static boolean gitCloneRepository(String repositoryUrl, String localDirectory) throws GitAPIException {
+    public static boolean gitCloneRepository(String repositoryUrl, String localDirectory) throws GitAPIException {
 
-                File dirLocation = new File(localDirectory);
+        File dirLocation = new File(localDirectory);
 
-                if (dirLocation.exists()) {
-                    try {
-                        FileUtils.forceDelete(dirLocation);
-                    } catch (IOException e) {
-                        log.error(e.getMessage());
-                    }
-                }
-                Git.cloneRepository().setURI(repositoryUrl)
-                        .setDirectory(new File(localDirectory))
-                        .setCloneAllBranches(true)
-                        .call();
-                return true;
+        if (dirLocation.exists()) {
+            try {
+                FileUtils.forceDelete(dirLocation);
+            } catch (IOException e) {
+                log.error(e.getMessage());
             }
         }
+        Git.cloneRepository().setURI(repositoryUrl).setDirectory(new File(localDirectory)).setCloneAllBranches(true)
+                .call();
+        return true;
+    }
+}
 

@@ -24,6 +24,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.automation.distributed.FrameworkConstants;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.utills.GitRepositoryUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,30 +38,27 @@ public class BaseManager {
 
     protected Log log = LogFactory.getLog(BaseManager.class);
 
-    public BaseManager()
-            throws IOException, GitAPIException, InterruptedException{
+    public BaseManager() throws IOException, GitAPIException, InterruptedException {
 
         String resourceLocation = System.getProperty(FrameworkConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION);
 
-        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
+        HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration()
+                .getDeploymentHashMap();
         List<Deployment> deploymentList = new ArrayList<>(deploymentHashMap.values());
 
         for (Deployment deployment : deploymentList) {
             try {
-                log.info("clone git repo =>" + deployment.getRepository() + "  to =>" + resourceLocation
-                         + File.separator + "Artifacts"
-                         + File.separator + deployment.getName());
-                GitRepositoryUtil.gitCloneRepository(deployment.getRepository(), resourceLocation
-                                                                                 + File.separator + "Artifacts"
-                                                                                 + File.separator
-                                                                                 + deployment.getName());
+                log.info(
+                        "clone git repo =>" + deployment.getRepository() + "  to =>" + resourceLocation + File.separator
+                                + "Artifacts" + File.separator + deployment.getName());
+                GitRepositoryUtil.gitCloneRepository(deployment.getRepository(),
+                        resourceLocation + File.separator + "Artifacts" + File.separator + deployment.getName());
             } catch (GitAPIException e) {
                 log.error("Git clone failed.", e);
             }
         }
 
     }
-
 
 }
 

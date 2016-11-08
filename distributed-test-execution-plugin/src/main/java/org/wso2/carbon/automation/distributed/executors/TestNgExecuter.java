@@ -12,9 +12,10 @@ import org.testng.xml.XmlTest;
 import org.wso2.carbon.automation.distributed.beans.Deployment;
 import org.wso2.carbon.automation.distributed.beans.TestLink;
 import org.wso2.carbon.automation.distributed.commons.DeploymentConfigurationReader;
-import org.wso2.carbon.automation.distributed.extentions.DistributedPlatformExtension;
 import org.wso2.carbon.automation.distributed.commons.TestLinkBuilder;
+import org.wso2.carbon.automation.distributed.extentions.DistributedPlatformExtension;
 import org.wso2.carbon.automation.distributed.utills.TestLinkSiteUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,25 +27,24 @@ import java.util.List;
 public class TestNgExecuter {
     private static final Log log = LogFactory.getLog(TestNgExecuter.class);
 
-    @BeforeSuite
-    public void executeEnvironment() throws IOException
-    {
+    @BeforeSuite public void executeEnvironment() throws IOException {
         try {
             DistributedPlatformExtension my = new DistributedPlatformExtension();
             my.initiate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        TestLink testLinkBean =  DeploymentConfigurationReader.readConfiguration().getTestLinkConfigurations();
+        TestLink testLinkBean = DeploymentConfigurationReader.readConfiguration().getTestLinkConfigurations();
         List<Deployment> deploymentList;
 
-        if (testLinkBean.isEnabled()){
+        if (testLinkBean.isEnabled()) {
 
             TestLinkBuilder tlbuilder = new TestLinkBuilder();
-            log.info("Connecting to TestLink : " +testLinkBean.getUrl());
+            log.info("Connecting to TestLink : " + testLinkBean.getUrl());
             TestLinkSiteUtil tlsite;
 
-            HashMap<String, Deployment> deploymentHashMap =  DeploymentConfigurationReader.readConfiguration().getDeploymentHashMap();
+            HashMap<String, Deployment> deploymentHashMap = DeploymentConfigurationReader.readConfiguration()
+                    .getDeploymentHashMap();
             deploymentList = new ArrayList<>(deploymentHashMap.values());
             ArrayList tcList;
 
@@ -53,9 +53,12 @@ public class TestNgExecuter {
 
             for (Deployment deployment : deploymentList) {
                 // The Test Link platform should be same as the deployment pattern name
-                tlsite = tlbuilder.getTestLinkSite(testLinkBean.getUrl(),testLinkBean.getDevkey(),testLinkBean.getProjectName(),testLinkBean.getTestPlan(),deployment.getName());
-                log.info("Retrieving Automation Test from TestLink. Project : " + testLinkBean.getProjectName() + " Test Plan : " +testLinkBean.getTestPlan() + " Platform : " +deployment.getName());
-                tcList = tlsite.getTestCaseClassList(new String[]{testLinkBean.getTestLinkCustomField()});
+                tlsite = tlbuilder
+                        .getTestLinkSite(testLinkBean.getUrl(), testLinkBean.getDevkey(), testLinkBean.getProjectName(),
+                                testLinkBean.getTestPlan(), deployment.getName());
+                log.info("Retrieving Automation Test from TestLink. Project : " + testLinkBean.getProjectName()
+                        + " Test Plan : " + testLinkBean.getTestPlan() + " Platform : " + deployment.getName());
+                tcList = tlsite.getTestCaseClassList(new String[] { testLinkBean.getTestLinkCustomField() });
 
                 XmlSuite suite = new XmlSuite();
                 suite.setName(deployment.getName());
@@ -63,19 +66,19 @@ public class TestNgExecuter {
                 test.setName("AutomationTests");
                 List<XmlClass> classes = new ArrayList<>();
 
-                if (tcList.size()<=0){
-                    log.info("No Test cases found for pattern : " +deployment.getName() + ". Hence skipping!!");
+                if (tcList.size() <= 0) {
+                    log.info("No Test cases found for pattern : " + deployment.getName() + ". Hence skipping!!");
                     continue;
                 }
 
-                for (Object className : tcList){
+                for (Object className : tcList) {
                     try {
                         classes.add(new XmlClass((String) className));
-                    } catch (TestNGException e){
-                        log.error("Error occurred while adding the class : " +e.toString());
+                    } catch (TestNGException e) {
+                        log.error("Error occurred while adding the class : " + e.toString());
                     }
                 }
-                test.setXmlClasses(classes) ;
+                test.setXmlClasses(classes);
                 suites.add(suite);
             }
             tng.setXmlSuites(suites);

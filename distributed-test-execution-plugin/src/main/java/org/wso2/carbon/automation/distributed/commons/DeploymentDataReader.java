@@ -9,18 +9,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class DeploymentDataReader {
 
     private List<InstanceUrls> instanceUrlsList;
 
-    public DeploymentDataReader(){
+    public DeploymentDataReader() {
         setInstanceUrlsList();
     }
 
-    private void setInstanceUrlsList()  {
+    private void setInstanceUrlsList() {
         ObjectMapper mapper = new ObjectMapper();
-        if(System.getProperty(FrameworkConstants.JSON_FILE_PATH) != null) {
+        if (System.getProperty(FrameworkConstants.JSON_FILE_PATH) != null) {
             File file = new File(System.getProperty(FrameworkConstants.JSON_FILE_PATH));
             try {
                 this.instanceUrlsList = Arrays.asList(mapper.readValue(file, InstanceUrls[].class));
@@ -30,7 +29,7 @@ public class DeploymentDataReader {
         }
     }
 
-    public List<InstanceUrls> getInstanceUrlsList(){
+    public List<InstanceUrls> getInstanceUrlsList() {
         return instanceUrlsList;
     }
 }

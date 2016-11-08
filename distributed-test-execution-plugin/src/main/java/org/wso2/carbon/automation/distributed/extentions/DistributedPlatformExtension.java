@@ -26,8 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.wso2.carbon.automation.distributed.commons.BaseManager;
-import java.io.IOException;
 
+import java.io.IOException;
 
 /**
  * This extension class serves as container management extension.
