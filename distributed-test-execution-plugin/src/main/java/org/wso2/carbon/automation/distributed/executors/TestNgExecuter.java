@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * Running TestNG programmatically and Injecting the suites.
+ * This class Either Fetches tests from TestLink or from TestNg.xml
  */
 public class TestNgExecuter {
     private static final Log log = LogFactory.getLog(TestNgExecuter.class);
