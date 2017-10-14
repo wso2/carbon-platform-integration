@@ -62,7 +62,7 @@ public class FrameworkPathUtil {
     public static String getReportLocation() {
         String reportLocation;
         reportLocation = (System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_BASEDIR_LOCATION, ".")) +
-                         File.separator + "target";
+                File.separator + "target";
         return reportLocation;
     }
 
@@ -78,26 +78,40 @@ public class FrameworkPathUtil {
 
     public static String getCarbonServerAxisServiceDirectory() {
         return getCarbonHome() + File.separator + "repository" + File.separator
-               + "deployment" + File.separator + "server" + File.separator + "axis2services";
+                + "deployment" + File.separator + "server" + File.separator + "axis2services";
+    }
+
+    public static String getCarbonServerWithPortOffSetValueAxisServiceDirectory(int portOffSetValue) {
+        return getCarbonHomeWithPortOffSetValue(portOffSetValue) + File.separator + "repository" + File.separator
+                + "deployment" + File.separator + "server" + File.separator + "axis2services";
     }
 
     public static String getCarbonServerLibLocation() {
         return getCarbonHome() + File.separator + "repository" + File.separator + "components" +
-               File.separator + "lib";
+                File.separator + "lib";
+    }
+
+    public static String getCarbonServerWithPortOffSetValueLibLocation(int portOffSetValue) {
+        return getCarbonHomeWithPortOffSetValue(portOffSetValue) + File.separator + "repository" +
+                File.separator + "components" + File.separator + "lib";
     }
 
     public static String getCarbonServerConfLocation() {
         return getCarbonHome() + File.separator + "repository" + File.separator + "conf";
     }
 
+    public static String getCarbonServerWithPortOffSetValueConfLocation(int portOffSetValue) {
+        return getCarbonHomeWithPortOffSetValue(portOffSetValue) + File.separator + "repository" + File.separator + "conf";
+    }
+
     public static String getCoverageDirPath() {
         return System.getProperty("basedir") + File.separator + "target" + File.separator +
-               "jacoco" + File.separator + "coverage";
+                "jacoco" + File.separator + "coverage";
     }
 
     public static String getJacocoCoverageHome() {
         return System.getProperty("basedir") + File.separator + "target" + File.separator +
-               "jacoco";
+                "jacoco";
     }
 
     public static String getTargetDirectory() {
@@ -121,6 +135,15 @@ public class FrameworkPathUtil {
             return System.getProperty(FrameworkConstants.CARBON_HOME);
         } else {
             log.error("Cannot read carbon.home property ");
+            return null;
+        }
+    }
+
+    public static String getCarbonHomeWithPortOffSetValue(int portOffSetValue) {
+        if (System.getProperty("carbon." + portOffSetValue + ".home") != null) {
+            return System.getProperty("carbon." + portOffSetValue + ".home");
+        } else {
+            log.error("Cannot read carbon." + portOffSetValue + ".home property ");
             return null;
         }
     }
