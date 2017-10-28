@@ -18,8 +18,10 @@
 
 package org.wso2.carbon.automation.extensions;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.engine.frameworkutils.enums.OperatingSystems;
 
 import java.io.File;
@@ -28,29 +30,26 @@ public class FrameworkExtensionUtils {
 
     private static final Log log = LogFactory.getLog(FrameworkExtensionUtils.class);
 
-    public static String getSystemResourceLocation() {
-        String resourceLocation;
-        if (System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_OS_NAME).
-                toLowerCase().contains(OperatingSystems.WINDOWS.name())) {
-            resourceLocation = System.getProperty(ExtensionConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION).replace("/", "\\");
-        } else {
-            resourceLocation = System.getProperty(ExtensionConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION).replace("/", "/");
-        }
-        return resourceLocation;
+    public static String getSystemResourceLocation() throws AutomationFrameworkException {
+        return getOSSensitivePath(System.getProperty(ExtensionConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION));
     }
 
+    /**
+     * Gives the absolute resource location.
+     *
+     * @param relativePath Relative path from system resource location. Relative path should not start with /.
+     * @return OS sensitive absolute resource location.
+     * @throws AutomationFrameworkException possible from getSystemResourceLocation() and getOSSensitivePath().
+     */
+    public static String getResourceLocation(String relativePath) throws
+            AutomationFrameworkException {
+        return getSystemResourceLocation() + getOSSensitivePath(relativePath);
+    }
 
-    public static String getSystemSettingsLocation() {
+    public static String getSystemSettingsLocation() throws AutomationFrameworkException {
         String settingsLocation;
         if (System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_SETTINGS_LOCATION) != null) {
-            if (System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_OS_NAME).toLowerCase().
-                    contains(OperatingSystems.WINDOWS.name())) {
-                settingsLocation =
-                        System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_SETTINGS_LOCATION).replace("/", "\\");
-            } else {
-                settingsLocation =
-                        System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_SETTINGS_LOCATION).replace("/", "/");
-            }
+            return getOSSensitivePath(System.getProperty(ExtensionConstants.SYSTEM_ARTIFACT_RESOURCE_LOCATION));
         } else {
             settingsLocation = getSystemResourceLocation();
         }
@@ -96,5 +95,28 @@ public class FrameworkExtensionUtils {
             carbonHome = null;
         }
         return carbonHome;
+    }
+
+    /**
+     * Gives the OS sensitive path.
+     *
+     * @param path File Path in linux standard. Should not be null.
+     * @return OS sensitive file path.
+     * @throws AutomationFrameworkException Throws when path is null.
+     */
+    public static String getOSSensitivePath(String path) throws AutomationFrameworkException {
+
+        String oSName = System.getProperty(ExtensionConstants.SYSTEM_PROPERTY_OS_NAME);
+        if (path == null) {
+            throw new AutomationFrameworkException("Path cannot be null");
+        } else if (StringUtils.isEmpty(oSName)) {
+            throw new AutomationFrameworkException("System property: " + ExtensionConstants.SYSTEM_PROPERTY_OS_NAME
+                    + " is empty.");
+        }
+
+        if (oSName.toLowerCase().contains(OperatingSystems.WINDOWS.name())) {
+            return path.replace("/", "\\");
+        }
+        return path;
     }
 }

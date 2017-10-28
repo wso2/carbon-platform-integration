@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.automation.extensions;
 
+/**
+ * Constants that are required for Extensions and Listeners.
+ */
 public class ExtensionConstants {
     public static final String SYSTEM_PROPERTY_SETTINGS_LOCATION = "automation.settings.location";
     public static final String SYSTEM_ARTIFACT_RESOURCE_LOCATION = "framework.resource.location";
@@ -28,6 +31,7 @@ public class ExtensionConstants {
     public static final String SERVICE_FILE_SEC_VERIFIER = "SecVerifier.aar";
     public static final String SEVER_STARTUP_SCRIPT_NAME = "wso2server";
     public static final String SERVER_STARTUP_PORT_OFFSET_COMMAND = "-DportOffset";
+    public static final String SERVER_STARTUP_SETUP_COMMAND = "-Dsetup";
     public static final String COVERAGE_SERVER_STARTUP_PORT = "coverageServerPort";
     public static final String DEFAULT_COVERAGE_SERVER_STARTUP_PORT = "6300";
     public static final String COVERAGE_DUMP_FILE_PATH = "coverageDumpFilePath";

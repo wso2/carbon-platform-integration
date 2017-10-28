@@ -17,9 +17,21 @@
 */
 package org.wso2.carbon.automation.engine.context;
 
+/**
+ * Test User Mode Enum.
+ */
 public enum TestUserMode {
-    SUPER_TENANT_ADMIN,
-    SUPER_TENANT_USER,
-    TENANT_ADMIN,
-    TENANT_USER
+    SUPER_TENANT_ADMIN("super.tenant.admin"),
+    SUPER_TENANT_USER("super.tenant.user"),
+    TENANT_ADMIN("tenant.admin"),
+    TENANT_USER("tenant.user");
+
+    private String value;
+    TestUserMode(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
