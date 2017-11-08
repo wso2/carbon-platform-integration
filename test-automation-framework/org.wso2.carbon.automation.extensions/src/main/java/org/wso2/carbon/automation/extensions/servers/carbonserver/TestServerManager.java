@@ -100,7 +100,7 @@ public class TestServerManager {
                         "changes from " + confChangesLocation);
             }
             File sourceDir = new File(FrameworkExtensionUtils.getOSSensitivePath(confChangesLocation));
-            File destinationDir = new File(carbonHome + File.separator + "repository" + File.separator + "conf");
+            File destinationDir = new File(carbonHome + File.separator + "repository");
             try {
                 FileUtils.copyDirectory(sourceDir, destinationDir);
             } catch (IOException e) {
