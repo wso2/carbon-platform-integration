@@ -20,8 +20,6 @@ package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 
-import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,11 +49,7 @@ public class MultipleServersManager {
             String carbonHome = null;
             try {
                 carbonHome = zip.startServer();
-            } catch (IOException e) {
-                throw new AutomationFrameworkException("Server start failed", e);
             } catch (AutomationFrameworkException e) {
-                throw new AutomationFrameworkException("Server start failed", e);
-            } catch (XPathExpressionException e) {
                 throw new AutomationFrameworkException("Server start failed", e);
             }
             servers.put(carbonHome, zip);

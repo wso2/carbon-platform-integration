@@ -17,18 +17,24 @@
 */
 package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
+import org.wso2.carbon.automation.extensions.FrameworkExtensionUtils;
 
-import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is used mange a carbon server for integration tests.
+ */
 public class TestServerManager {
     protected CarbonServerManager carbonServer;
     protected String carbonZip;
@@ -80,6 +86,30 @@ public class TestServerManager {
 
     }
 
+    /**
+     * Apply the configuration changes from the given confChangesLocation.
+     * If the confChangesLocation is empty will not do anything.
+     *
+     * @param confChangesLocation location where the desired config changes are.
+     * @throws AutomationFrameworkException throw if carbonHome is not defined or copy config fails.
+     */
+    public void configureServer(String confChangesLocation) throws AutomationFrameworkException {
+        if (StringUtils.isNotEmpty(confChangesLocation)) {
+            if (StringUtils.isEmpty(carbonHome)) {
+                throw new AutomationFrameworkException("Carbon Home is not set. Therefore cannot copy configuration " +
+                        "changes from " + confChangesLocation);
+            }
+            File sourceDir = new File(FrameworkExtensionUtils.getOSSensitivePath(confChangesLocation));
+            File destinationDir = new File(carbonHome + File.separator + "repository");
+            try {
+                FileUtils.copyDirectory(sourceDir, destinationDir);
+            } catch (IOException e) {
+                throw new AutomationFrameworkException("Error while copying config files form" + sourceDir.getPath()
+                        + " to " + destinationDir.getPath());
+            }
+        }
+    }
+
 
     public Map<String, String> getCommands() {
         return commandMap;
@@ -95,23 +125,41 @@ public class TestServerManager {
      * @throws java.io.IOException If an error occurs while copying the deployment artifacts into the
      *                             Carbon server
      */
-    public String startServer()
-            throws AutomationFrameworkException, IOException, XPathExpressionException {
-        if(carbonHome == null) {
+    public String startServer() throws AutomationFrameworkException {
+        return startServer(StringUtils.EMPTY);
+    }
+
+    /**
+     * This method starts a carbon server in preparation for execution of a test suite.
+     * Before starting the server copies the configuration files from the given conf location
+     * to the carbon server conf directory.
+     *
+     * @param confChangesLocation  Directory location of the desired configuration files.
+     * @return The carbon home.
+     * @throws AutomationFrameworkException Possible when carbonZip cannot be found and when setting up carbon home.
+     */
+    public String startServer(String confChangesLocation) throws AutomationFrameworkException {
+        if (carbonHome == null) {
             if (carbonZip == null) {
                 carbonZip = System.getProperty(FrameworkConstants.SYSTEM_PROPERTY_CARBON_ZIP_LOCATION);
             }
             if (carbonZip == null) {
-                throw new IllegalArgumentException("carbon zip file cannot find in the given location");
+                throw new AutomationFrameworkException("Carbon zip file cannot be found in the given " +
+                        FrameworkConstants.SYSTEM_PROPERTY_CARBON_ZIP_LOCATION + " location.");
             }
-            carbonHome = carbonServer.setUpCarbonHome(carbonZip);
-            configureServer();
+
+            try {
+                carbonHome = carbonServer.setUpCarbonHome(carbonZip);
+            } catch (IOException e) {
+                throw new AutomationFrameworkException("Error while setting up carbon home.", e);
+            }
+            configureServer(confChangesLocation);
         }
         log.info("Carbon Home - " + carbonHome);
         if (commandMap.get(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND) != null) {
             this.portOffset = Integer.parseInt(commandMap.get(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND));
         } else {
-            this.portOffset = 0;
+            this.portOffset = ExtensionConstants.DEFAULT_CARBON_PORT_OFFSET;
         }
         carbonServer.startServerUsingCarbonHome(carbonHome, commandMap);
         return carbonHome;
@@ -139,8 +187,4 @@ public class TestServerManager {
     public void stopServer() throws AutomationFrameworkException {
         carbonServer.serverShutdown(portOffset);
     }
-
-
-
-
 }

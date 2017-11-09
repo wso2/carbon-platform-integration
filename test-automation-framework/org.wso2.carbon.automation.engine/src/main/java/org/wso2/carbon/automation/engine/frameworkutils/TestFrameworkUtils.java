@@ -21,11 +21,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
+import org.wso2.carbon.automation.engine.context.TestUserMode;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class contain util methods which can be used inside test framework and test cases
@@ -78,5 +81,18 @@ public class TestFrameworkUtils {
             throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
         }
         return FilenameUtils.removeExtension(scriptName);
+    }
+
+    /**
+     * Returns a mapping of String to TestUserMode Enums.
+     *
+     * @return Map<String, TestUserMode> testUserModeMap
+     */
+    public static Map<String, TestUserMode> getTestUserModeMap(){
+        Map<String, TestUserMode> testUserModeMap = new HashMap<>();
+        for (TestUserMode testUserMode : TestUserMode.values()) {
+            testUserModeMap.put(testUserMode.getValue(), testUserMode);
+        }
+        return testUserModeMap;
     }
 }
