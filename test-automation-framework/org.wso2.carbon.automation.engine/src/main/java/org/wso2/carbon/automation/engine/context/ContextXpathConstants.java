@@ -24,11 +24,11 @@ public class ContextXpathConstants {
     public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE="//platform/productGroup/instance[@type='standalone']";
     
     public static final String PRODUCT_GROUP_STANDALONE_INSTANCE =
-            "//productGroup[@default='true']/instance[@type='standalone']";
-    public static final String PRODUCT_GROUP_CLUSTERING_ENABLED = "//productGroup[@name='%s']/@clusteringEnabled";
-    public static final String PRODUCT_GROUP_DEFAULT_NAME = "//productGroup[@default='true']/@name";
-    public static final String PRODUCT_GROUP_INSTANCE_NAME = "//productGroup[@name='%s']/instance[@name='%s']";
-    public static final String PRODUCT_GROUP_INSTANCE_TYPE = "//productGroup[@name='%s']/instance[@type='%s']";
+            "//ns:productGroup[@default='true']/ns:instance[@type='standalone']";
+    public static final String PRODUCT_GROUP_CLUSTERING_ENABLED = "//ns:productGroup[@name='%s']/@clusteringEnabled";
+    public static final String PRODUCT_GROUP_DEFAULT_NAME = "//ns:productGroup[@default='true']/@name";
+    public static final String PRODUCT_GROUP_INSTANCE_NAME = "//ns:productGroup[@name='%s']/ns:instance[@name='%s']";
+    public static final String PRODUCT_GROUP_INSTANCE_TYPE = "//ns:productGroup[@name='%s']/ns:instance[@type='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_PORT =
             "//productGroup[@name='%s']/instance[@name='%s']/ports/port";
     public static final String PRODUCT_GROUP_INSTANCE_HOST =
