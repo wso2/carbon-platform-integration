@@ -19,9 +19,9 @@ package org.wso2.carbon.automation.engine.context;
 
 public class ContextXpathConstants {
     //constants for product group element
-    public static final String PRODUCT_GROUP_NAME = "//productGroup[@name='%s']";
-    public static final String PRODUCT_GROUP_PARENT="//platform/productGroup";
-    public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE="//platform/productGroup/instance[@type='standalone']";
+    public static final String PRODUCT_GROUP_NAME = "//ns:productGroup[@name='%s']";
+    public static final String PRODUCT_GROUP_PARENT="//ns:platform/ns:productGroup";
+    public static final String PRODUCT_GROUP_ALL_STANDALONE_INSTANCE="//ns:platform/ns:productGroup/ns:instance[@type='standalone']";
     
     public static final String PRODUCT_GROUP_STANDALONE_INSTANCE =
             "//ns:productGroup[@default='true']/ns:instance[@type='standalone']";
@@ -30,42 +30,42 @@ public class ContextXpathConstants {
     public static final String PRODUCT_GROUP_INSTANCE_NAME = "//ns:productGroup[@name='%s']/ns:instance[@name='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_TYPE = "//ns:productGroup[@name='%s']/ns:instance[@type='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_PORT =
-            "//productGroup[@name='%s']/instance[@name='%s']/ports/port";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ports/port";
     public static final String PRODUCT_GROUP_INSTANCE_HOST =
-            "//productGroup[@name='%s']/instance[@name='%s']/hosts/host";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/hosts/host";
     public static final String PRODUCT_GROUP_INSTANCE_PROPERTY =
-            "//productGroup[@name='%s']/instance[@name='%s']/properties/property";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:properties/property";
     public static final String PRODUCT_GROUP_DEFAULT_STANDALONE_INSTANCE = "" +
-            "//productGroup[@default='true']/instance[@type='standalone']";
-    public static final String PRODUCT_GROUP_INSTANCE = "//productGroup[@name='%s']/instance[ @name='%s']";
+            "//ns:productGroup[@default='true']/ns:instance[@type='standalone']";
+    public static final String PRODUCT_GROUP_INSTANCE = "//ns:productGroup[@name='%s']/ns:instance[ @name='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_PORTS =
-            "//productGroup[@name='%s']/instance[@name='%s']/ports/port";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:ports/ns:port";
     public static final String PRODUCT_GROUP_INSTANCE_HOSTS =
-            "//productGroup[@name='%s']/instance[@name='%s']/hosts/host";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:hosts/ns:host";
     public static final String PRODUCT_GROUP_INSTANCE_PROPERTIES =
-            "//productGroup[@name='%s']/instance[@name='%s']/properties/property";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:properties/ns:property";
     //constants for user management element
-    public static final String USER_MANAGEMENT_SUPER_TENANT_KEY ="//userManagement/superTenant/tenant/@key";
-    public static final String SUPER_TENANT_ADMIN_USERNAME ="//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/userName";
-    public static final String SUPER_TENANT_ADMIN_PASSWORD ="//userManagement/superTenant/tenant[@key='%s']/admin/user[@key='%s']/password";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN = "//superTenant/tenant/admin";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_USER_KEY = "//superTenant/tenant/%s/user/@key";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_DOMAIN = "//superTenant/tenant/@domain";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/userName";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD = "//%s/tenant[@domain='%s']/admin/user[@key='%s']/password";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN_USER = "//superTenant/tenant/admin/user";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_USERS = "//superTenant/tenant/users";
-    public static final String USER_MANAGEMENT_TENANT_DOMAIN = "//%s/tenant[@key='%s']/@domain";
-    public static final String TENANT_DOMAIN = "//tenants/tenant/@domain";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN = "//tenants/tenant[@domain='%s']/admin";
-    public static final String USER_MANAGEMENT_TENANT_USERS = "//tenants/tenant[@domain='%s']/users";
-    public static final String USER_MANAGEMENT_TENANT_USER = "//%s/tenant[@domain='%s']/users/user[@key='%s']";
-    public static final String USER_MANAGEMENT_TENANT_USER_KEY = "//tenants/tenant[@domain='%s']/%s/user/@key";
-    public static final String SUPER_TENANT_DOMAIN = "//superTenant/tenant[@key='superTenant']/@domain";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_KEY ="//ns:userManagement/ns:superTenant/ns:tenant/@key";
+    public static final String SUPER_TENANT_ADMIN_USERNAME ="//ns:userManagement/ns:superTenant/ns:tenant[@key='%s']/ns:admin/ns:user[@key='%s']/ns:userName";
+    public static final String SUPER_TENANT_ADMIN_PASSWORD ="//ns:userManagement/ns:superTenant/ns:tenant[@key='%s']/ns:admin/ns:user[@key='%s']/ns:password";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN = "//ns:superTenant/ns:tenant/ns:admin";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_USER_KEY = "//ns:superTenant/ns:tenant/%s/ns:user/@key";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_DOMAIN = "//ns:superTenant/ns:tenant/@domain";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME = "//%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:userName";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD = "//%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:password";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN_USER = "//ns:superTenant/ns:tenant/ns:admin/ns:user";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_USERS = "//ns:superTenant/ns:tenant/ns:users";
+    public static final String USER_MANAGEMENT_TENANT_DOMAIN = "//ns:%s/ns:tenant[@key='%s']/@domain";
+    public static final String TENANT_DOMAIN = "//ns:tenants/ns:tenant/@domain";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN = "//ns:tenants/ns:tenant[@domain='%s']/ns:admin";
+    public static final String USER_MANAGEMENT_TENANT_USERS = "//ns:tenants/ns:tenant[@domain='%s']/ns:users";
+    public static final String USER_MANAGEMENT_TENANT_USER = "//ns:%s/ns:tenant[@domain='%s']/ns:users/ns:user[@key='%s']";
+    public static final String USER_MANAGEMENT_TENANT_USER_KEY = "//ns:tenants/ns:tenant[@domain='%s']/ns:%s/ns:user/@key";
+    public static final String SUPER_TENANT_DOMAIN = "//ns:superTenant/ns:tenant[@key='superTenant']/@domain";
     public static final String USER_MANAGEMENT_TENANT_USER_NAME =
-            "//%s/tenant[@domain='%s']/users/user[@key='%s']/userName";
+            "//ns:%s/ns:tenant[@domain='%s']/ns:users/ns:user[@key='%s']/ns:userName";
     public static final String USER_MANAGEMENT_TENANT_USER_PASSWORD =
-            "//%s/tenant[@domain='%s']/users/user[@key='%s']/password";
+            "//ns:%s/ns:tenant[@domain='%s']/ns:users/ns:user[@key='%s']/ns:password";
     public static final String PRODUCT_GROUP_WEBCONTEXT = "webContext";
     public static final String PRODUCT_GROUP_PORT_HTTPS = "https";
     public static final String PRODUCT_GROUP_PORT_HTTP = "http";
@@ -92,14 +92,14 @@ public class ContextXpathConstants {
     public static final String SUPER_TENANT_USER = "SUPER_TENANT_USER";
     public static final String TENANT_ADMIN = "TENANT_ADMIN";
     public static final String TENANT_USER = "TENANT_USER";
-    public static final String EXECUTION_ENVIRONMENT = "//executionEnvironment/text()";
+    public static final String EXECUTION_ENVIRONMENT = "//ns:executionEnvironment/text()";
 
 
 	public static final String ROLES = "roles";
 	public static final String USER_MANAGEMENT_TENANT_USERS_ROLES =
-			"//%s/tenant[@domain='%s']/users/user[@key='%s']/roles/role";
+			"//ns:%s/ns:tenant[@domain='%s']/ns:users/ns:user[@key='%s']/ns:roles/ns:role";
 
-    public static final String USER_NODE = "//%s/tenant[@domain='%s']/users/user";
-    public static final String TENANTS_NODE = "//tenants";
+    public static final String USER_NODE = "//ns:%s/ns:tenant[@domain='%s']/ns:users/ns:user";
+    public static final String TENANTS_NODE = "//ns:tenants";
     public static final String DOMAIN = "domain";
 }

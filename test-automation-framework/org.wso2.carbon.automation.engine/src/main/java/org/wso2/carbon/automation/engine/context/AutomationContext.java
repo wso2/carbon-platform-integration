@@ -20,6 +20,7 @@ package org.wso2.carbon.automation.engine.context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.StringUtils;
+import org.jacoco.report.internal.xml.XMLDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -167,11 +168,7 @@ public class AutomationContext {
         this.productGroupName = this.getConfigurationValue(ContextXpathConstants.PRODUCT_GROUP_DEFAULT_NAME);
         log.warn("BBBB productGroupName : " + this.productGroupName);
 
-//        tryLoadXML();
-//
-//        if (StringUtils.isBlank(productGroupName)) {
-//            productGroupName = "DSS";
-//        }
+
 
         log.warn("CCCC productGroupName : " + this.productGroupName);
         this.isClustered = Boolean.parseBoolean(getConfigurationValue(
@@ -182,59 +179,57 @@ public class AutomationContext {
         this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);
         System.setProperty(FrameworkConstants.DEFAULT_PRODUCT_GROUP, productGroupName);
     }
-
-    private void tryLoadXML() {
-        try {
-            File fXmlFile = new File(FrameworkPathUtil.
-                    getSystemResourceLocation() + FrameworkConstants.CONFIGURATION_FILE_NAME);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-
-            //remove all comments from the content of the automation.xml
-            dbFactory.setIgnoringComments(true);
-            dbFactory.setNamespaceAware(true);
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document xmlDocument = dBuilder.parse(fXmlFile);
-
-            //remove all text(empty) elements
-            removeText(xmlDocument);
-            xmlDocument.normalizeDocument();
-
-            //check for semantics errors in configuration file
-            ConfigurationErrorChecker.checkPlatformErrors(xmlDocument);
-
-            String expression = "//productGroup[@default='true']/@name";
-
-            System.out.println("FFFF expression : " + expression);
-
-            DOMSource domSource = new DOMSource(xmlDocument);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            StringWriter sw = new StringWriter();
-            StreamResult sr = new StreamResult(sw);
-            transformer.transform(domSource, sr);
-
-            log.warn("JJJJ xmlDocument : " + sw.toString());
-
-            XPath xPath = XPathFactory.newInstance().newXPath();
-//        xPath.setNamespaceContext(new MyNamespaceContext());
-            String value = xPath.compile(expression).evaluate(xmlDocument);
-
-            log.warn("JJJJ Match : " + value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerConfigurationException e) {
-            log.error("JJJJ",e);
-        } catch (ParserConfigurationException e) {
-            log.error("JJJJ",e);
-        } catch (ConfigurationMismatchException e) {
-            log.error("JJJJ",e);
-        } catch (SAXException e) {
-            log.error("JJJJ",e);
-        } catch (TransformerException e) {
-            log.error("JJJJ",e);
-        } catch (XPathExpressionException e) {
-            log.error("JJJJ",e);
-        }
-    }
+//
+//    private void tryLoadXML() {
+//        try {
+//            File fXmlFile = new File(FrameworkPathUtil.
+//                    getSystemResourceLocation() + FrameworkConstants.CONFIGURATION_FILE_NAME);
+//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//
+//            //remove all comments from the content of the automation.xml
+//            dbFactory.setIgnoringComments(true);
+//            dbFactory.setNamespaceAware(true);
+//            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//            Document xmlDocument = dBuilder.parse(fXmlFile);
+//
+//            //remove all text(empty) elements
+//            removeText(xmlDocument);
+//            xmlDocument.normalizeDocument();
+//
+//            //check for semantics errors in configuration file
+//            ConfigurationErrorChecker.checkPlatformErrors(xmlDocument);
+//
+//            String expression = "//productGroup[@default='true']/@name";
+//
+//            System.out.println("FFFF expression : " + expression);
+//
+//            DOMSource domSource = new DOMSource(xmlDocument);
+//            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+//            StringWriter sw = new StringWriter();
+//            StreamResult sr = new StreamResult(sw);
+//            transformer.transform(domSource, sr);
+//
+//            log.warn("JJJJ xmlDocument : " + sw.toString());
+//
+//            String value = createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument);
+//
+//            log.warn("JJJJ Match : " + value);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (TransformerConfigurationException e) {
+//            log.error("JJJJ",e);
+//        } catch (ParserConfigurationException e) {
+//            log.error("JJJJ",e);
+//        } catch (ConfigurationMismatchException e) {
+//            log.error("JJJJ",e);
+//        } catch (SAXException e) {
+//            log.error("JJJJ",e);
+//        } catch (TransformerException e) {
+//            log.error("JJJJ",e);
+//        } catch (XPathExpressionException e) {
+//            log.error("JJJJ",e);
+//        }
+//    }
 
     private static void removeText(Node doc) throws XPathExpressionException {
         XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -673,30 +668,6 @@ public class AutomationContext {
     public String getConfigurationValue(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
 
-
-        final String rootNamespace = AutomationConfiguration.getConfigurationDocument().getDocumentElement()
-                .getNamespaceURI();
-
-        NamespaceContext ctx = new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-                String uri = null;
-                if (prefix.equals("ns")) {
-                    uri = rootNamespace;
-                }
-                return uri;
-            }
-
-            @Override
-            public Iterator getPrefixes(String val) {
-                throw new IllegalAccessError("Not implemented!");
-            }
-
-            @Override
-            public String getPrefix(String uri) {
-                throw new IllegalAccessError("Not implemented!");
-            }
-        };
-
         log.warn("AAAAA expression : " + expression);
 
         try {
@@ -713,9 +684,7 @@ public class AutomationContext {
             log.error("TransformerException" , e);
         }
 
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        xPath.setNamespaceContext(ctx);
-        return xPath.compile(expression).evaluate(xmlDocument);
+        return createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument);
     }
 
     /**
@@ -727,8 +696,7 @@ public class AutomationContext {
      */
     public Node getConfigurationNode(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+        return (Node) createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
     }
 
     /**
@@ -740,8 +708,7 @@ public class AutomationContext {
      */
     public NodeList getConfigurationNodeList(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+        return (NodeList) createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
     }
 
     /**
@@ -754,8 +721,7 @@ public class AutomationContext {
     public void replaceDocumentValue(String expression, String replaceBy)
             throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        Node node = (Node) xpath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+        Node node = (Node) createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
         node.setTextContent(replaceBy);
     }
 
@@ -811,5 +777,35 @@ public class AutomationContext {
             userList.add(userNodeList.item(i).getAttributes().getNamedItem("key").getNodeValue());
         }
         return userList;
+    }
+
+    public static XPath createNamespaceAwareXPath(Document xmlDocument) {
+        final String rootNamespace = xmlDocument.getDocumentElement()
+                .getNamespaceURI();
+
+        NamespaceContext ctx = new NamespaceContext() {
+            public String getNamespaceURI(String prefix) {
+                String uri = null;
+                if (prefix.equals("ns")) {
+                    uri = rootNamespace;
+                }
+                return uri;
+            }
+
+            @Override
+            public Iterator getPrefixes(String val) {
+                throw new IllegalAccessError("Not implemented!");
+            }
+
+            @Override
+            public String getPrefix(String uri) {
+                throw new IllegalAccessError("Not implemented!");
+            }
+        };
+
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        xPath.setNamespaceContext(ctx);
+
+        return xPath;
     }
 }

@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.wso2.carbon.automation.engine.context.AutomationContext;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.Transformer;
@@ -46,44 +47,18 @@ public class AutomationConfiguration {
 
     public static String getConfigurationValue(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return xPath.compile(expression).evaluate(xmlDocument);
+
+        return AutomationContext.createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument);
     }
 
     public static Node getConfigurationNode(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+        return (Node) AutomationContext.createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
     }
 
     public static NodeList getConfigurationNodeList(String expression) throws XPathExpressionException {
         Document xmlDocument = AutomationConfiguration.getConfigurationDocument();
 
-        final String rootNamespace = AutomationConfiguration.getConfigurationDocument().getDocumentElement()
-                .getNamespaceURI();
-
-        NamespaceContext ctx = new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-                String uri = null;
-                if (prefix.equals("ns")) {
-                    uri = rootNamespace;
-                }
-                return uri;
-            }
-
-            @Override
-            public Iterator getPrefixes(String val) {
-                throw new IllegalAccessError("Not implemented!");
-            }
-
-            @Override
-            public String getPrefix(String uri) {
-                throw new IllegalAccessError("Not implemented!");
-            }
-        };
-
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        xPath.setNamespaceContext(ctx);
         log.warn("FFFF expression : " + expression);
 
         try {
@@ -102,7 +77,9 @@ public class AutomationConfiguration {
 
 
 //        return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
-        return (NodeList) xPath.evaluate(expression, xmlDocument, XPathConstants.NODESET);
+        return (NodeList) AutomationContext.createNamespaceAwareXPath(xmlDocument).evaluate(expression, xmlDocument,
+                XPathConstants
+                .NODESET);
     }
 
 }
