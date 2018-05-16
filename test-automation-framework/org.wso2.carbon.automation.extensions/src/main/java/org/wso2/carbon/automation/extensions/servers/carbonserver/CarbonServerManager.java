@@ -201,7 +201,7 @@ public class CarbonServerManager {
 
         try {
             //read coverage status from automation.xml
-            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+            isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//ns:coverage"));
         } catch (XPathExpressionException e) {
             throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
         }

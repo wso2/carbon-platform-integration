@@ -24,7 +24,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 public abstract class ReportListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformReportManager/extentionClasses/class/name";
+    private final static String XPATH_TO_CLASS =
+            "//ns:listenerExtensions/ns:PlatformReportManager/ns:extentionClasses/ns:class/ns:name";
 
 
     public ReportListenerExtension() {

@@ -25,7 +25,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 public abstract class SuiteListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/PlatformSuiteManager/extentionClasses/class/name";
+    private final static String XPATH_TO_CLASS =
+            "//ns:listenerExtensions/ns:PlatformSuiteManager/ns:extentionClasses/ns:class/ns:name";
 
     public SuiteListenerExtension() {
         super();

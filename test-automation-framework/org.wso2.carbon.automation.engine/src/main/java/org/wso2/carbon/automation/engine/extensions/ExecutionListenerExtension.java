@@ -23,7 +23,8 @@ import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException
 
 public abstract class ExecutionListenerExtension extends ListenerExtension {
     private final Log log = LogFactory.getLog(getClass());
-    private final static String XPATH_TO_CLASS = "//listenerExtensions/platformExecutionManager/extentionClasses/class/name";
+    private final static String XPATH_TO_CLASS =
+            "//ns:listenerExtensions/ns:platformExecutionManager/ns:extentionClasses/ns:class/ns:name";
 
     public ExecutionListenerExtension() {
         super();

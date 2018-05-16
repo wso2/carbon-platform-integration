@@ -49,10 +49,12 @@ public class ContextXpathConstants {
     public static final String SUPER_TENANT_ADMIN_USERNAME ="//ns:userManagement/ns:superTenant/ns:tenant[@key='%s']/ns:admin/ns:user[@key='%s']/ns:userName";
     public static final String SUPER_TENANT_ADMIN_PASSWORD ="//ns:userManagement/ns:superTenant/ns:tenant[@key='%s']/ns:admin/ns:user[@key='%s']/ns:password";
     public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN = "//ns:superTenant/ns:tenant/ns:admin";
-    public static final String USER_MANAGEMENT_SUPER_TENANT_USER_KEY = "//ns:superTenant/ns:tenant/%s/ns:user/@key";
+    public static final String USER_MANAGEMENT_SUPER_TENANT_USER_KEY = "//ns:superTenant/ns:tenant/ns:%s/ns:user/@key";
     public static final String USER_MANAGEMENT_SUPER_TENANT_DOMAIN = "//ns:superTenant/ns:tenant/@domain";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME = "//%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:userName";
-    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD = "//%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:password";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_USERNAME =
+            "//ns:%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:userName";
+    public static final String USER_MANAGEMENT_TENANT_ADMIN_PASSWORD =
+            "//ns:%s/ns:tenant[@domain='%s']/ns:admin/ns:user[@key='%s']/ns:password";
     public static final String USER_MANAGEMENT_SUPER_TENANT_ADMIN_USER = "//ns:superTenant/ns:tenant/ns:admin/ns:user";
     public static final String USER_MANAGEMENT_SUPER_TENANT_USERS = "//ns:superTenant/ns:tenant/ns:users";
     public static final String USER_MANAGEMENT_TENANT_DOMAIN = "//ns:%s/ns:tenant[@key='%s']/@domain";
