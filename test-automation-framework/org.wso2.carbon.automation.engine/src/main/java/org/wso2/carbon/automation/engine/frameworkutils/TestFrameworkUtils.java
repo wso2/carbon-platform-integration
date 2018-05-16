@@ -44,10 +44,11 @@ public class TestFrameworkUtils {
             throws XPathExpressionException {
 
         System.setProperty("javax.net.ssl.trustStore", FrameworkPathUtil.getSystemResourceLocation()
-                                                       + context.getConfigurationValue("//keystore/fileName/text()"));
+                                                       + context.getConfigurationValue
+                ("//ns:keystore/ns:fileName/text()"));
 
         System.setProperty("javax.net.ssl.trustStorePassword",
-                           context.getConfigurationValue("//keystore/keyPassword/text()"));
+                           context.getConfigurationValue("//ns:keystore/ns:keyPassword/text()"));
 
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 

@@ -47,27 +47,33 @@ public class TestConfigurationProvider {
     }
 
     public static String getKeyStoreLocation() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//keystore/fileName/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:keystore/ns:fileName/text()");
     }
 
     public static String getKeyStorePassword() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//keystore/password/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:keystore/ns:password/text()");
     }
 
     public static String getKeyStoreType() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//keystore/type/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:keystore/ns:type/text()");
     }
 
     public static String getTrustStoreLocation() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//truststore/fileName/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:truststore/ns:fileName/text()");
     }
 
     public static String getTrustStorePassword() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//truststore/password/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:truststore/ns:password/text()");
     }
 
     public static String getTrustStoreType() throws XPathExpressionException {
-        return getResourceLocation() + File.separator + instance.context.getConfigurationValue("//truststore/type/text()");
+        return getResourceLocation() + File.separator + instance.context.getConfigurationValue
+                ("//ns:truststore/ns:type/text()");
     }
 
     public static String getResourceLocation() {
@@ -75,12 +81,12 @@ public class TestConfigurationProvider {
     }
 
     public static String getExecutionEnvironment() throws XPathExpressionException {
-        return instance.context.getConfigurationValue("//executionEnvironment");
+        return instance.context.getConfigurationValue("//ns:executionEnvironment");
     }
 
     public static int getServiceDeploymentDelay() {
         try {
-            return Integer.parseInt(instance.context.getConfigurationValue("//deploymentDelay"));
+            return Integer.parseInt(instance.context.getConfigurationValue("//ns:deploymentDelay"));
         } catch (XPathExpressionException e) {
             log.error("Error reading deploymentDelay from automation.xml", e);
             log.warn("Service deployment Delay configuration not found. Running with default value " + "30000" + " mils");

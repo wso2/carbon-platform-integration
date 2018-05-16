@@ -23,9 +23,9 @@ package org.wso2.carbon.automation.test.utils;
 public class AutomationContextXPathConstants {
 
     public static final String WEB_CONTEXT_ENABLED = "webContextEnabled";
-    public static final String WEB_CONTEXT_ROOT = "//test/root";
-    public static final String DATA_SOURCE_URL = "//datasources/datasource/url";
-    public static final String DATA_SOURCE_DRIVER_CLASS_NAME = "//datasources/datasource/driverClassName";
-    public static final String DATA_SOURCE_DB_USER_NAME = "//datasources/datasource/username";
-    public static final String DATA_SOURCE_DB_PASSWORD = "//datasources/datasource/password";
+    public static final String WEB_CONTEXT_ROOT = "//ns:test/ns:root";
+    public static final String DATA_SOURCE_URL = "//ns:datasources/ns:datasource/ns:url";
+    public static final String DATA_SOURCE_DRIVER_CLASS_NAME = "//ns:datasources/ns:datasource/ns:driverClassName";
+    public static final String DATA_SOURCE_DB_USER_NAME = "//ns:datasources/ns:datasource/ns:username";
+    public static final String DATA_SOURCE_DB_PASSWORD = "//ns:datasources/ns:datasource/ns:password";
 }

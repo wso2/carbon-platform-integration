@@ -69,15 +69,17 @@ public class AutomationContextTestCase {
 
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetConfigValue() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationValue("//datasources/datasource[@name='dataService']/password/text()").contains("wso2carbon"));
+        Assert.assertTrue(context.getConfigurationValue
+                ("//ns:datasources/ns:datasource[@name='dataService']/password/text()").contains("wso2carbon"));
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetConfigNode() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNode("//datasources/datasource[@name='dataService']").getChildNodes().item(2).getNodeName().equals("password"));
+        Assert.assertTrue(context.getConfigurationNode("//ns:datasources/ns:datasource[@name='dataService']")
+                .getChildNodes().item(2).getNodeName().equals("password"));
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetCofigNodeList() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNodeList("//datasources/datasource").getLength()==2);
+        Assert.assertTrue(context.getConfigurationNodeList("//ns:datasources/ns:datasource").getLength()==2);
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetDefaultInstance() throws XPathExpressionException {

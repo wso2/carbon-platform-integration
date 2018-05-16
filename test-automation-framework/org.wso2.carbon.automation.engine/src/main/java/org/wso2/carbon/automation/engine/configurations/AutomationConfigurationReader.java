@@ -81,6 +81,7 @@ public class AutomationConfigurationReader {
 
         //remove all comments from the content of the automation.xml
         dbFactory.setIgnoringComments(true);
+        dbFactory.setNamespaceAware(true);
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document xmlDocument = dBuilder.parse(fXmlFile);
 

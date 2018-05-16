@@ -101,6 +101,12 @@ public class DefaultInstance extends AutomationConfiguration {
                             getNamedItem(ContextXpathConstants.NAME).getTextContent();
                 }
             } else {
+
+                if (null == standAloneNodeList) {
+                    log.warn("FFFF standAloneNodeList is null");
+                } else if (standAloneNodeList.getLength() < 1 || null == standAloneNodeList.item(0)) {
+                    log.warn("FFFF No items in standAloneNodeList");
+                }
                 managerNode = standAloneNodeList.item(0).getAttributes().
                         getNamedItem(ContextXpathConstants.NAME).getTextContent();
             }

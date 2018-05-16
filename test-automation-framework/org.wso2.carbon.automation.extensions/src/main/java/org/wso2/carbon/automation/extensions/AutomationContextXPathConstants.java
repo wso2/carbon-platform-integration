@@ -21,7 +21,7 @@ package org.wso2.carbon.automation.extensions;
  * This class contain xpath expression to retrieve configurations in automation.xml
  */
 public class AutomationContextXPathConstants {
-    public static final String SELENIUM_BROWSER_TYPE = "//tools/selenium/browser/browserType";
-    public static final String SELENIUM_REMOTE_WEB_DRIVER_URL = "//tools/selenium/remoteDriverUrl";
-    public static final String CHROME_WEB_DRIVER_URL = "//tools/selenium/browser/webdriverPath";
+    public static final String SELENIUM_BROWSER_TYPE = "//ns:tools/ns:selenium/ns:browser/ns:browserType";
+    public static final String SELENIUM_REMOTE_WEB_DRIVER_URL = "//ns:tools/ns:selenium/ns:remoteDriverUrl";
+    public static final String CHROME_WEB_DRIVER_URL = "//ns:tools/ns:selenium/ns:browser/ns:webdriverPath";
 }
