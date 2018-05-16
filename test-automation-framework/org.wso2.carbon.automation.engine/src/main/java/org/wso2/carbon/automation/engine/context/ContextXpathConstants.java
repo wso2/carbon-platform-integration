@@ -30,11 +30,11 @@ public class ContextXpathConstants {
     public static final String PRODUCT_GROUP_INSTANCE_NAME = "//ns:productGroup[@name='%s']/ns:instance[@name='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_TYPE = "//ns:productGroup[@name='%s']/ns:instance[@type='%s']";
     public static final String PRODUCT_GROUP_INSTANCE_PORT =
-            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ports/port";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:ports/ns:port";
     public static final String PRODUCT_GROUP_INSTANCE_HOST =
-            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/hosts/host";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:hosts/ns:host";
     public static final String PRODUCT_GROUP_INSTANCE_PROPERTY =
-            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:properties/property";
+            "//ns:productGroup[@name='%s']/ns:instance[@name='%s']/ns:properties/ns:property";
     public static final String PRODUCT_GROUP_DEFAULT_STANDALONE_INSTANCE = "" +
             "//ns:productGroup[@default='true']/ns:instance[@type='standalone']";
     public static final String PRODUCT_GROUP_INSTANCE = "//ns:productGroup[@name='%s']/ns:instance[ @name='%s']";
