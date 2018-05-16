@@ -23,13 +23,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
+import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.ContextXpathConstants;
 import org.wso2.carbon.automation.engine.exceptions.ConfigurationMismatchException;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 
 /**
@@ -103,8 +102,7 @@ public class ConfigurationErrorChecker {
      */
     private static String getConfigurationValue(Document xmlDocument, String expression)
             throws XPathExpressionException {
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return xPath.compile(expression).evaluate(xmlDocument);
+        return AutomationContext.createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument);
     }
 
     /**
@@ -117,8 +115,7 @@ public class ConfigurationErrorChecker {
      */
     private static Node getConfigurationNode(Document xmlDocument, String expression)
             throws XPathExpressionException {
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+        return (Node) AutomationContext.createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
     }
 
     /**
@@ -131,7 +128,6 @@ public class ConfigurationErrorChecker {
      */
     private static NodeList getConfigurationNodeList(Document xmlDocument, String expression)
             throws XPathExpressionException {
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+        return (NodeList) AutomationContext.createNamespaceAwareXPath(xmlDocument).compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
     }
 }
