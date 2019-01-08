@@ -78,8 +78,8 @@
                 <version>2.3.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -159,7 +159,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-all</artifactId>
+                <artifactId>activemq-osgi</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
             <dependency>
@@ -379,7 +379,7 @@
         <selenium.version>2.43.0</selenium.version>
         <jmeter.version>2.6</jmeter.version>
         <ftpserver.core.version>1.0.6</ftpserver.core.version>
-        <activemq.version>5.9.1</activemq.version>
+        <activemq.version>5.15.8</activemq.version>
         <org.apache.tomcat>7.0.34</org.apache.tomcat>
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <derby.version>10.8.2.2</derby.version>
