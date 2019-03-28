@@ -390,7 +390,7 @@
         <jmeter.version>2.6</jmeter.version>
         <ftpserver.core.version>1.0.6</ftpserver.core.version>
         <activemq.version>5.15.8</activemq.version>
-        <org.apache.tomcat>7.0.34</org.apache.tomcat>
+        <org.apache.tomcat>7.0.93</org.apache.tomcat>
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <derby.version>10.8.2.2</derby.version>
         <saucelabs.version>2.6</saucelabs.version>
