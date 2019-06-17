@@ -21,16 +21,22 @@ package org.wso2.carbon.automation.extensions.servers.sftpserver;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.sshd.SshServer;
+import org.apache.sshd.common.config.keys.KeyUtils;
+import org.apache.sshd.common.keyprovider.KeyPairProvider;
+import org.apache.sshd.common.util.ValidateUtils;
+import org.apache.sshd.server.SshServer;
 import org.apache.sshd.common.NamedFactory;
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.PasswordAuthenticator;
-import org.apache.sshd.server.command.ScpCommandFactory;
+import org.apache.sshd.server.command.Command;
+import org.apache.sshd.server.auth.password.PasswordAuthenticator;
+import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.server.sftp.SftpSubsystem;
+import org.apache.sshd.server.subsystem.sftp.SftpSubsystem;
+import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +58,8 @@ public class SFTPServer extends Thread {
 
     private static boolean isKeepAlive = false;
 
+    public static final String DEFAULT_TEST_HOST_KEY_PROVIDER_ALGORITHM = KeyUtils.RSA_ALGORITHM;
+
     public boolean isKeepAlive() {
         return isKeepAlive;
     }
@@ -68,9 +76,10 @@ public class SFTPServer extends Thread {
     public void run() {
 
         sshServer.setPort(port);
-        sshServer.setSubsystemFactories(Arrays.<NamedFactory<Command>>asList(new SftpSubsystem.Factory()));
+        sshServer.setSubsystemFactories(
+                Arrays.<NamedFactory<Command>>asList(new SftpSubsystemFactory()));
         sshServer.setCommandFactory(new ScpCommandFactory());
-        sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
+        sshServer.setKeyPairProvider(createTestHostKeyProvider(Paths.get("hostkey.ser")));
         sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {
             @Override
             public boolean authenticate(final String username, final String password,
@@ -80,9 +89,8 @@ public class SFTPServer extends Thread {
             }
         });
 
-        List<NamedFactory<Command>> namedFactoryList = new ArrayList<NamedFactory<Command>>();
-        namedFactoryList.add(new SftpSubsystem.Factory());
-        sshServer.setSubsystemFactories(namedFactoryList);
+        sshServer.setSubsystemFactories(
+                Arrays.<NamedFactory<Command>>asList(new SftpSubsystemFactory()));
 
         try {
             sshServer.start();
@@ -100,8 +108,19 @@ public class SFTPServer extends Thread {
         }
     }
 
+    public static KeyPairProvider createTestHostKeyProvider(Path path) {
+        SimpleGeneratorHostKeyProvider keyProvider = new SimpleGeneratorHostKeyProvider();
+        keyProvider.setPath(ValidateUtils.checkNotNull(path, "No path"));
+        keyProvider.setAlgorithm(DEFAULT_TEST_HOST_KEY_PROVIDER_ALGORITHM);
+        return keyProvider;
+    }
+
     public void stopServer() throws InterruptedException {
-        sshServer.stop();
-        log.info("SFTP Server Run On Port " + port + " Stopped successfully ..... ");
+        try {
+            sshServer.stop();
+            log.info("SFTP Server Run On Port " + port + " Stopped successfully ..... ");
+        } catch (IOException e) {
+            log.error("Unable to stop the SFTP server", e);;
+        }
     }
 }

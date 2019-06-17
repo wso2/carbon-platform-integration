@@ -30,15 +30,15 @@
     <packaging>jar</packaging>
     <name>WSO2 Carbon Automation - Test Framework Engine</name>
     <properties>
-        <maven.compiler.source>1.5</maven.compiler.source>
-        <maven.compiler.target>1.5</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.1.201405082137</version>
+                <version>${jacoco.core.version}</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
