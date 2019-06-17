@@ -78,8 +78,8 @@
                 <version>2.3.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -159,7 +159,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-osgi</artifactId>
+                <artifactId>activemq-all</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
             <dependency>
@@ -336,16 +336,6 @@
                 <version>${sshd.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.sshd</groupId>
-                <artifactId>sshd-scp</artifactId>
-                <version>${sshd.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.sshd</groupId>
-                <artifactId>sshd-sftp</artifactId>
-                <version>${sshd.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jacoco</groupId>
                 <artifactId>org.jacoco.core</artifactId>
                 <version>${jacoco.core.version}</version>
@@ -377,11 +367,11 @@
         <axiom.version>1.2.11.wso2v10</axiom.version>
         <spring.framework.version>3.2.9.wso2v1</spring.framework.version>
         <httpcomponents.wso2.version>4.3.1.wso2v1</httpcomponents.wso2.version>
-        <axis2.wso2.version>1.6.1-wso2v30-SNAPSHOT</axis2.wso2.version>
+        <axis2.wso2.version>1.6.1.wso2v16</axis2.wso2.version>
 
         <!-- Other dependencies -->
         <testng.version>6.1.1</testng.version>
-        <jacoco.core.version>0.8.2</jacoco.core.version>
+        <jacoco.core.version>0.7.5.201505241946</jacoco.core.version>
         <org.codehaus.plexus.version>3.0.22</org.codehaus.plexus.version>
         <commons.collections.version>3.2.1</commons.collections.version>
         <lingala.zip4j.version>1.2.3</lingala.zip4j.version>
@@ -389,17 +379,18 @@
         <selenium.version>2.43.0</selenium.version>
         <jmeter.version>2.6</jmeter.version>
         <ftpserver.core.version>1.0.6</ftpserver.core.version>
-        <activemq.version>5.15.8</activemq.version>
-        <org.apache.tomcat>7.0.93</org.apache.tomcat>
+        <activemq.version>5.9.1</activemq.version>
+        <org.apache.tomcat>7.0.34</org.apache.tomcat>
         <cfx.fronted.jaxrs.version>2.6.1</cfx.fronted.jaxrs.version>
         <derby.version>10.8.2.2</derby.version>
         <saucelabs.version>2.6</saucelabs.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <commons.io.version>2.2</commons.io.version>
+        <commens.hhtpclient.version>3.1</commens.hhtpclient.version>
         <zip4j.version>1.2.3</zip4j.version>
         <greenmail.version>1.3.1b</greenmail.version>
         <project.scm.id>scm-server</project.scm.id>
-        <sshd.version>2.2.0</sshd.version>
+        <sshd.version>0.13.0</sshd.version>
     </properties>
 </project>
 
