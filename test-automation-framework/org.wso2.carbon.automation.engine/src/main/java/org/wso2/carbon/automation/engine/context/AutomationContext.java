@@ -99,6 +99,8 @@ public class AutomationContext {
         } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER)) {
             //user of the super tenant
             assignParameters(productGroupName, instanceName, true, false);
+        } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_EMAIL_USER)) {
+            assignParameters(productGroupName, instanceName, true, false, true);
         }
         //admin user of tenant other than super tenant
         else if (userMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
@@ -107,6 +109,8 @@ public class AutomationContext {
         //user of a tenant other than super tenant
         else if (userMode.name().equals(ContextXpathConstants.TENANT_USER)) {
             assignParameters(productGroupName, instanceName, false, false);
+        } else if (userMode.name().equals(ContextXpathConstants.TENANT_EMAIL_USER)) {
+            assignParameters(productGroupName, instanceName, false, false, true);
         }
     }
 
@@ -127,12 +131,16 @@ public class AutomationContext {
         } else if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER)) {
             assignParameters(productGroupName, null, true, false);
             //admin user of tenant other than super tenant
+        } else if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_EMAIL_USER)) {
+            assignParameters(productGroupName, null, true, false, true);
         } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
             assignParameters(productGroupName, null, false, true);
         }
         //user of a tenant other than super tenant
         else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER)) {
             assignParameters(productGroupName, null, false, false);
+        } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_EMAIL_USER)) {
+            assignParameters(productGroupName, null, false, false, true);
         }
     }
 
@@ -170,6 +178,41 @@ public class AutomationContext {
                 String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
         this.tenantDomain = defaultInstance.getTenantDomain(isSuperTenant, isClustered);
         this.userKey = defaultInstance.getUserKey(tenantDomain, isAdminUser);
+        if (instanceName == null) {
+            this.managerInstanceName = defaultInstance.getDefaultManager(productGroupName);
+            this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);
+        } else {
+            this.workerInstanceName = instanceName;
+            this.managerInstanceName = instanceName;
+        }
+    }
+
+    /**
+     * This method redirect the call to the constructor
+     *
+     * @param productGroupName Product Group name
+     * @param instanceName     Instance name
+     * @param isSuperTenant    Whether the provided tenant is super tenant or not
+     * @param isAdminUser      whether the provided user is admin user is not
+     * @param isEmailUser      Whether ths provided user is an email user or not
+     */
+    private void assignParameters(String productGroupName, String instanceName,
+            boolean isSuperTenant,
+            boolean isAdminUser,
+            boolean isEmailUser)
+            throws XPathExpressionException {
+        DefaultInstance defaultInstance = new DefaultInstance();
+        this.isSuperTenant = isSuperTenant;
+        this.isAdminUser = isAdminUser;
+        this.productGroupName = productGroupName;
+        this.isClustered = Boolean.parseBoolean(getConfigurationValue(
+                String.format(ContextXpathConstants.PRODUCT_GROUP_CLUSTERING_ENABLED, productGroupName)));
+        this.tenantDomain = defaultInstance.getTenantDomain(isSuperTenant, isClustered);
+        if (isEmailUser) {
+            this.userKey = ContextXpathConstants.EMAIL_USER;
+        } else {
+            this.userKey = defaultInstance.getUserKey(tenantDomain, isAdminUser);
+        }
         if (instanceName == null) {
             this.managerInstanceName = defaultInstance.getDefaultManager(productGroupName);
             this.workerInstanceName = defaultInstance.getDefaultWorker(productGroupName);

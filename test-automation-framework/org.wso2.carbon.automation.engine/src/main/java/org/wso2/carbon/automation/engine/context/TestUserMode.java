@@ -20,6 +20,8 @@ package org.wso2.carbon.automation.engine.context;
 public enum TestUserMode {
     SUPER_TENANT_ADMIN,
     SUPER_TENANT_USER,
+    SUPER_TENANT_EMAIL_USER,
     TENANT_ADMIN,
-    TENANT_USER
+    TENANT_USER,
+    TENANT_EMAIL_USER
 }
