@@ -75,6 +75,7 @@ public class ContextXpathConstants {
     public static final String SUPER_TENANT = "superTenant";
     public static final String SUPER_ADMIN = "superAdmin";
     public static final String ADMIN = "admin";
+    public static final String EMAIL_USER = "emailUser";
     public static final String NAME = "name";
     public static final String TYPE = "type";
     public static final String INSTANCE = "instance";
@@ -90,8 +91,10 @@ public class ContextXpathConstants {
     public static final String CLUSTERING_ENABLED = "clusteringEnabled";
     public static final String SUPER_TENANT_ADMIN = "SUPER_TENANT_ADMIN";
     public static final String SUPER_TENANT_USER = "SUPER_TENANT_USER";
+    public static final String SUPER_TENANT_EMAIL_USER = "SUPER_TENANT_EMAIL_USER";
     public static final String TENANT_ADMIN = "TENANT_ADMIN";
     public static final String TENANT_USER = "TENANT_USER";
+    public static final String TENANT_EMAIL_USER = "TENANT_EMAIL_USER";
     public static final String EXECUTION_ENVIRONMENT = "//executionEnvironment/text()";
 
 

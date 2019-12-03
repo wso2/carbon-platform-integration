@@ -53,8 +53,11 @@ public class User {
     }
 
     public String getUserNameWithoutDomain() {
-        String[] result = userName.split("@");
-        return result[0];
+        if (userName.contains("@")) {
+            return userName.substring(0, userName.lastIndexOf("@"));
+        } else {
+            return userName;
+        }
     }
 
     public String getUserDomain() {
