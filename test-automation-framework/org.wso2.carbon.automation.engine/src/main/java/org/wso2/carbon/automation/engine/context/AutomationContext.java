@@ -100,7 +100,9 @@ public class AutomationContext {
             //user of the super tenant
             assignParameters(productGroupName, instanceName, true, false);
         } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_EMAIL_USER)) {
-            assignParameters(productGroupName, instanceName, true, false, true);
+            assignParameters(productGroupName, instanceName, true, false, true, false);
+        } else if (userMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER_STORE_USER)) {
+            assignParameters(productGroupName, instanceName, true, false, false, true);
         }
         //admin user of tenant other than super tenant
         else if (userMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
@@ -110,7 +112,9 @@ public class AutomationContext {
         else if (userMode.name().equals(ContextXpathConstants.TENANT_USER)) {
             assignParameters(productGroupName, instanceName, false, false);
         } else if (userMode.name().equals(ContextXpathConstants.TENANT_EMAIL_USER)) {
-            assignParameters(productGroupName, instanceName, false, false, true);
+            assignParameters(productGroupName, instanceName, false, false, true, false);
+        } else if (userMode.name().equals(ContextXpathConstants.TENANT_USER_STORE_USER)) {
+            assignParameters(productGroupName, instanceName, false, false, false, true);
         }
     }
 
@@ -132,7 +136,9 @@ public class AutomationContext {
             assignParameters(productGroupName, null, true, false);
             //admin user of tenant other than super tenant
         } else if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_EMAIL_USER)) {
-            assignParameters(productGroupName, null, true, false, true);
+            assignParameters(productGroupName, null, true, false, true, false);
+        } else if (testUserMode.name().equals(ContextXpathConstants.SUPER_TENANT_USER_STORE_USER)) {
+            assignParameters(productGroupName, null, true, false, false, true);
         } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_ADMIN)) {
             assignParameters(productGroupName, null, false, true);
         }
@@ -140,7 +146,9 @@ public class AutomationContext {
         else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER)) {
             assignParameters(productGroupName, null, false, false);
         } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_EMAIL_USER)) {
-            assignParameters(productGroupName, null, false, false, true);
+            assignParameters(productGroupName, null, false, false, true, false);
+        } else if (testUserMode.name().equals(ContextXpathConstants.TENANT_USER_STORE_USER)) {
+            assignParameters(productGroupName, null, false, false, false, true);
         }
     }
 
@@ -199,7 +207,8 @@ public class AutomationContext {
     private void assignParameters(String productGroupName, String instanceName,
             boolean isSuperTenant,
             boolean isAdminUser,
-            boolean isEmailUser)
+            boolean isEmailUser,
+            boolean isUserStoreUser)
             throws XPathExpressionException {
         DefaultInstance defaultInstance = new DefaultInstance();
         this.isSuperTenant = isSuperTenant;
@@ -210,6 +219,8 @@ public class AutomationContext {
         this.tenantDomain = defaultInstance.getTenantDomain(isSuperTenant, isClustered);
         if (isEmailUser) {
             this.userKey = ContextXpathConstants.EMAIL_USER;
+        } else if (isUserStoreUser) {
+            this.userKey = ContextXpathConstants.USER_STORE_USER;
         } else {
             this.userKey = defaultInstance.getUserKey(tenantDomain, isAdminUser);
         }
