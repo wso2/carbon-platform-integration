@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * This class contain util methods which can be used inside test framework and test cases
@@ -62,6 +62,11 @@ public class TestFrameworkUtils {
      * Filter start up script name from extracted distribution.
      */
     public static String getStartupScriptFileName(String carbonHome) throws FileNotFoundException {
+
+        String statupScriptName = System.getProperty(ExtensionConstants.STARTUP_SCRIPT);
+        if (statupScriptName != null && !statupScriptName.isEmpty()) {
+            return statupScriptName;
+        }
         File[] allScripts = new File(carbonHome + File.separator + "bin").listFiles();
         String scriptName = null;
         if (allScripts != null) {
@@ -75,7 +80,8 @@ public class TestFrameworkUtils {
                 }
             }
         } else {
-            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator + "bin");
+            throw new FileNotFoundException("Server startup script not found at " + carbonHome + File.separator +
+                    "bin");
         }
         return FilenameUtils.removeExtension(scriptName);
     }
