@@ -17,6 +17,7 @@ package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
@@ -50,6 +51,7 @@ public class CarbonServerManager {
     private ServerLogReader inputStreamHandler;
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
+    private String coverageClassesDir;
     private String coverageDumpFilePath;
     private int portOffset = 0;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
@@ -202,6 +204,8 @@ public class CarbonServerManager {
         try {
             //read coverage status from automation.xml
             isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
+            // read optional coverage classes relative directory from automation.xml
+            coverageClassesDir = automationContext.getConfigurationValue("//coverageClassesRelativeDirectory");
         } catch (XPathExpressionException e) {
             throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
         }
@@ -257,9 +261,11 @@ public class CarbonServerManager {
             if (isCoverageEnable) {
                 try {
                     log.info("Generating Jacoco code coverage...");
+                    coverageClassesDir = StringUtils.isEmpty(coverageClassesDir) ? "repository" +
+                            File.separator + "components" + File.separator + "plugins" + File.separator :
+                            coverageClassesDir;
                     generateCoverageReport(
-                            new File(carbonHome + File.separator + "repository" +
-                                     File.separator + "components" + File.separator + "plugins" + File.separator));
+                            new File(carbonHome + File.separator + coverageClassesDir));
                 } catch (IOException e) {
                     log.error("Failed to generate code coverage ", e);
                     throw new AutomationFrameworkException("Failed to generate code coverage ", e);
