@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.FileUtils;
@@ -47,16 +49,16 @@ public class ReportGenerator {
     private static final Log log = LogFactory.getLog(ReportGenerator.class);
     public static final String OUTPUT_ENCODING = "UTF-8";
     private final File executionDataFile;
-    private final File classesDirectory;
+    private final Set classDirectories;
     private final File sourceDirectory;
     private final File reportDirectory;
 
     private ExecFileLoader execFileLoader;
 
-    public ReportGenerator(File executionDataFile, File classesDirectory, File reportDirectory,
+    public ReportGenerator(File executionDataFile, Set classDirectories, File reportDirectory,
                            File sourceDirectory) {
         this.executionDataFile = executionDataFile;
-        this.classesDirectory = classesDirectory;
+        this.classDirectories = classDirectories;
         this.reportDirectory = reportDirectory;
         this.sourceDirectory = sourceDirectory;
     }
@@ -147,10 +149,7 @@ public class ReportGenerator {
         String exclusionList = CodeCoverageUtils.getExclusionJarsPattern(",");
         String[] excludes = exclusionList.split(",");
 
-        final List<File> filesToAnalyze =
-                FileUtils.getFiles(classesDirectory,
-                                   CodeCoverageUtils.getInclusionJarsPattern(","),
-                                   exclusionList);
+        final List<File> filesToAnalyze = retrieveFilesToAnalyze(classDirectories,exclusionList);
 
         for (final File file : filesToAnalyze) {
 
@@ -165,5 +164,17 @@ public class ReportGenerator {
         }
         return coverageBuilder.getBundle("Overall Coverage Summary");
     }
+
+    private List<File> retrieveFilesToAnalyze(Set<String> classDirectories,  String exclusionList) throws IOException {
+        List<File> fileList = new ArrayList<>();
+        String carbonHome = System.getProperty(FrameworkConstants.CARBON_HOME);
+        for (String classDirectory : classDirectories) {
+            File file = new File(carbonHome + File.separator + classDirectory);
+            List<File> files = FileUtils.getFiles(file, CodeCoverageUtils.getInclusionJarsPattern(","), exclusionList);
+            fileList.addAll(files);
+        }
+        return fileList;
+    }
+
 }
 

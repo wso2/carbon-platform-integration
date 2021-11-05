@@ -38,6 +38,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.zip.ZipFile;
 
 import org.wso2.carbon.automation.engine.extensions.ExtensionConstants;
 
@@ -474,11 +475,9 @@ public final class CodeCoverageUtils {
     public synchronized static String extractJarFile(String jarFilePath)
             throws IOException {
 
-        if (!jarFilePath.endsWith(".jar")) {
-            throw new IllegalArgumentException("Jar file should have the extension .jar. " +
-                                               jarFilePath + " is invalid");
+        if (!jarFilePath.endsWith(".war") && !jarFilePath.endsWith(".jar")) {
+            throw new IllegalArgumentException("Invalid extension" + jarFilePath + " is invalid");
         }
-        JarFile jarFile = new JarFile(jarFilePath);
 
         String fileSeparator = (File.separatorChar == '\\') ? "\\" : File.separator;
         String jarFileName = jarFilePath;
@@ -495,8 +494,6 @@ public final class CodeCoverageUtils {
             ArchiveExtractorUtil.extractFile(jarFilePath, tempExtractedDir);
         } catch (IOException e) {
             log.warn("Could not extract the file " + jarFileName);
-        } finally {
-            jarFile.close();
         }
         return tempExtractedDir;
     }

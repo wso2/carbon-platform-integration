@@ -49,4 +49,8 @@ public class XPathConstants {
     public static final String DATA_SOURCE_DRIVER_CLASS_NAME = "//datasources/datasource/driverClassName";
     public static final String DATA_SOURCE_DB_USER_NAME = "//datasources/datasource/username";
     public static final String DATA_SOURCE_DB_PASSWORD = "//datasources/datasource/password";
+    public static final String COVERAGE_CLASSES_RELATIVE_DIRECTORY = "//coverageClassesRelativeDirectory";
+    public static final String COVERAGE_CLASSES_RELATIVE_DIRECTORIES = "//coverageClassesRelativeDirectories";
+    public static final String COVERAGE_CLASSES_RELATIVE_DIRECTORY_NODE_NAME = "coverageClassesRelativeDirectory";
+
 }

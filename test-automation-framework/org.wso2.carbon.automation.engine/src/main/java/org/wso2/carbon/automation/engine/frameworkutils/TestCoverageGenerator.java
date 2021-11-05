@@ -24,6 +24,8 @@ import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Coverage generator class for multi module test project.
@@ -53,11 +55,12 @@ public class TestCoverageGenerator {
         File carbonPluginDir =
                 new File(carbonHome + File.separator + "repository" +
                          File.separator + "components" + File.separator + "plugins" + File.separator);
-
-
+        Set<String> classesDirectories = new HashSet<>();
+        classesDirectories.add("repository" +
+                File.separator + "components" + File.separator + "plugins" + File.separator);
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
-                                    carbonPluginDir,
+                                    classesDirectories,
                                     new File(CodeCoverageUtils.getJacocoReportDirectory()),
                                     null);
         reportGenerator.create();

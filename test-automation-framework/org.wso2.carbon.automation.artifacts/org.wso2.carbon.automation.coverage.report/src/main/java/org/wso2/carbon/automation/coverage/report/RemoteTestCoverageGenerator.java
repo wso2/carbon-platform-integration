@@ -29,6 +29,8 @@ import org.wso2.carbon.automation.engine.frameworkutils.ReportGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Coverage generator for multiple coverage dump files.
@@ -68,6 +70,9 @@ public class RemoteTestCoverageGenerator {
         File carbonPluginDir =
                 new File(carbonHome + File.separator + "repository" +
                          File.separator + "components" + File.separator + "plugins" + File.separator);
+        Set<String> classesDirectories = new HashSet<>();
+        classesDirectories.add("repository" +
+                File.separator + "components" + File.separator + "plugins" + File.separator);
 
         for (String dumpFile : dumpFileDirectories) {
             CodeCoverageUtils.executeMerge(new File(dumpFile).getAbsolutePath(), remoteCoverageMergeFile);
@@ -75,9 +80,8 @@ public class RemoteTestCoverageGenerator {
 
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(remoteCoverageMergeFile),
-                                    carbonPluginDir,
-                                    new File(CodeCoverageUtils.getJacocoReportDirectory()),
-                                    null);
+                        classesDirectories, new File(CodeCoverageUtils.getJacocoReportDirectory()),
+                        null);
 
         reportGenerator.create();
         cleanUpFiles(carbonHome); //clean carbon server instance

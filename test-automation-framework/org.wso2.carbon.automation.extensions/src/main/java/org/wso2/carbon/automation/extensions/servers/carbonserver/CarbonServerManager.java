@@ -20,6 +20,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.beans.User;
@@ -29,6 +31,7 @@ import org.wso2.carbon.automation.engine.frameworkutils.FrameworkPathUtil;
 import org.wso2.carbon.automation.engine.frameworkutils.ReportGenerator;
 import org.wso2.carbon.automation.engine.frameworkutils.TestFrameworkUtils;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
+import org.wso2.carbon.automation.extensions.XPathConstants;
 import org.wso2.carbon.automation.extensions.servers.utils.ArchiveExtractor;
 import org.wso2.carbon.automation.extensions.servers.utils.ClientConnectionUtil;
 import org.wso2.carbon.automation.extensions.servers.utils.FileManipulator;
@@ -37,6 +40,7 @@ import org.wso2.carbon.automation.extensions.servers.utils.ServerLogReader;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,7 +55,7 @@ public class CarbonServerManager {
     private ServerLogReader inputStreamHandler;
     private ServerLogReader errorStreamHandler;
     private boolean isCoverageEnable = false;
-    private String coverageClassesDir;
+    private Set<String> coverageClassesDirectories = new HashSet<>();
     private String coverageDumpFilePath;
     private int portOffset = 0;
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
@@ -205,7 +209,7 @@ public class CarbonServerManager {
             //read coverage status from automation.xml
             isCoverageEnable = Boolean.parseBoolean(automationContext.getConfigurationValue("//coverage"));
             // read optional coverage classes relative directory from automation.xml
-            coverageClassesDir = automationContext.getConfigurationValue("//coverageClassesRelativeDirectory");
+            coverageClassesDirectories = getCoverageClassesDirectories(automationContext);
         } catch (XPathExpressionException e) {
             throw new AutomationFrameworkException("Coverage configuration not found in automation.xml", e);
         }
@@ -261,11 +265,7 @@ public class CarbonServerManager {
             if (isCoverageEnable) {
                 try {
                     log.info("Generating Jacoco code coverage...");
-                    coverageClassesDir = StringUtils.isEmpty(coverageClassesDir) ? "repository" +
-                            File.separator + "components" + File.separator + "plugins" + File.separator :
-                            coverageClassesDir;
-                    generateCoverageReport(
-                            new File(carbonHome + File.separator + coverageClassesDir));
+                    generateCoverageReport(coverageClassesDirectories);
                 } catch (IOException e) {
                     log.error("Failed to generate code coverage ", e);
                     throw new AutomationFrameworkException("Failed to generate code coverage ", e);
@@ -278,20 +278,21 @@ public class CarbonServerManager {
 
     }
 
-    private void generateCoverageReport(File classesDir)
+    private void generateCoverageReport(Set<String> classesDir)
             throws IOException, AutomationFrameworkException {
 
         CodeCoverageUtils.executeMerge(FrameworkPathUtil.getJacocoCoverageHome(),
                                        FrameworkPathUtil.getCoverageMergeFilePath());
         ReportGenerator reportGenerator =
                 new ReportGenerator(new File(FrameworkPathUtil.getCoverageMergeFilePath()),
-                                    classesDir,
-                                    new File(CodeCoverageUtils.getJacocoReportDirectory()),
-                                    null);
+                        classesDir, new File(CodeCoverageUtils.getJacocoReportDirectory()), null);
         reportGenerator.create();
 
         log.info("Jacoco coverage dump file path : " + FrameworkPathUtil.getCoverageDumpFilePath());
-        log.info("Jacoco class file path : " + classesDir);
+        log.info("Jacoco class file paths analyzed");
+        for (String classDirectory : classesDir) {
+            log.info("-- " + classDirectory);
+        }
         log.info("Jacoco coverage HTML report path : " + CodeCoverageUtils.getJacocoReportDirectory() + File.separator + "index.html");
     }
 
@@ -442,5 +443,29 @@ public class CarbonServerManager {
             insertJacocoAgentToShellScript(scriptName);
         }
 
+    }
+
+    private Set<String> getCoverageClassesDirectories(AutomationContext automationContext) throws XPathExpressionException {
+
+        Set<String> coverageDirectories = new HashSet<>();
+        Node configurationNode =
+                automationContext.getConfigurationNode(XPathConstants.COVERAGE_CLASSES_RELATIVE_DIRECTORIES);
+        if (configurationNode != null) {
+            NodeList childNodes = configurationNode.getChildNodes();
+            if (childNodes != null) {
+                for (int i = 0; i <= childNodes.getLength() - 1; i++) {
+                    Node node = childNodes.item(i);
+                    if (node != null && XPathConstants.COVERAGE_CLASSES_RELATIVE_DIRECTORY_NODE_NAME.equals(node.getNodeName())) {
+                        coverageDirectories.add(node.getTextContent());
+                    }
+                }
+            }
+        } else if (StringUtils.isNotEmpty(automationContext.getConfigurationValue(XPathConstants.COVERAGE_CLASSES_RELATIVE_DIRECTORY
+        ))) {
+            coverageDirectories.add(automationContext.getConfigurationValue(XPathConstants.COVERAGE_CLASSES_RELATIVE_DIRECTORY));
+        } else {
+            coverageDirectories.add("repository" + File.separator + "components" + File.separator + "plugins" + File.separator);
+        }
+        return coverageDirectories;
     }
 }
