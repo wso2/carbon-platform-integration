@@ -18,11 +18,11 @@
 
 package org.wso2.carbon.automation.engine.test.context;
 
-import junit.framework.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
 
@@ -54,7 +54,8 @@ public class AutomationContextTestCase {
 
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetSuperTenant() throws XPathExpressionException {
-        Assert.assertTrue(context.getSuperTenant().getTenantAdmin().getUserName().equals("admin"));
+
+        Assert.assertEquals(context.getSuperTenant().getTenantAdmin().getUserName(), "admin");
     }
 
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
@@ -73,11 +74,15 @@ public class AutomationContextTestCase {
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetConfigNode() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNode("//datasources/datasource[@name='dataService']").getChildNodes().item(2).getNodeName().equals("password"));
+
+        Assert.assertEquals(
+                context.getConfigurationNode("//datasources/datasource[@name='dataService']").getChildNodes().item(2)
+                        .getNodeName(), "password");
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetCofigNodeList() throws XPathExpressionException {
-        Assert.assertTrue(context.getConfigurationNodeList("//datasources/datasource").getLength()==2);
+
+        Assert.assertEquals(context.getConfigurationNodeList("//datasources/datasource").getLength(), 2);
     }
     @Test(groups = "context.unit.test", description = "Upload aar service and verify deployment")
     public void testGetDefaultInstance() throws XPathExpressionException {

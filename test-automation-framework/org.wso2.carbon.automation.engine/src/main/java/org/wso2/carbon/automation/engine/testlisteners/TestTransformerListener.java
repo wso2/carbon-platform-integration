@@ -21,7 +21,6 @@ package org.wso2.carbon.automation.engine.testlisteners;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.IAnnotationTransformer;
-import org.testng.IAnnotationTransformer2;
 import org.testng.annotations.IConfigurationAnnotation;
 import org.testng.annotations.IDataProviderAnnotation;
 import org.testng.annotations.IFactoryAnnotation;
@@ -39,7 +38,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-public class TestTransformerListener implements IAnnotationTransformer, IAnnotationTransformer2 {
+public class TestTransformerListener implements IAnnotationTransformer {
 
     private static final Log log = LogFactory.getLog(TestTransformerListener.class);
     private AutomationContext context;
