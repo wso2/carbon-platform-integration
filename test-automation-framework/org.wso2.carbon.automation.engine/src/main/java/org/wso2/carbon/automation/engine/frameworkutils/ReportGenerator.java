@@ -145,11 +145,11 @@ public class ReportGenerator {
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(execFileLoader.getExecutionDataStore(), coverageBuilder);
 
-        String[] includes = {FrameworkConstants.CLASS_FILE_PATTERN}; //class file patten to be include
+        String[] includes = {FrameworkConstants.CLASS_FILE_PATTERN}; //class file patten to be included
         String exclusionList = CodeCoverageUtils.getExclusionJarsPattern(",");
         String[] excludes = exclusionList.split(",");
 
-        final List<File> filesToAnalyze = retrieveFilesToAnalyze(classDirectories,exclusionList);
+        final List<File> filesToAnalyze = retrieveJarFilesToAnalyze(classDirectories, exclusionList);
 
         for (final File file : filesToAnalyze) {
 
@@ -162,15 +162,32 @@ public class ReportGenerator {
             }
             FileUtils.forceDelete(new File(extractedDir));
         }
+
+        // If there are exploded web apps, they need to be analyzed.
+        final List<File> classFilesToAnalyze = retrieveClassFilesToAnalyze(classDirectories, exclusionList);
+        for (final File file : classFilesToAnalyze) {
+            analyzer.analyzeAll(file);
+        }
         return coverageBuilder.getBundle("Overall Coverage Summary");
     }
 
-    private List<File> retrieveFilesToAnalyze(Set<String> classDirectories,  String exclusionList) throws IOException {
+    private List<File> retrieveJarFilesToAnalyze(Set<String> classDirectories, String exclusionList) throws IOException {
         List<File> fileList = new ArrayList<>();
         String carbonHome = System.getProperty(FrameworkConstants.CARBON_HOME);
         for (String classDirectory : classDirectories) {
             File file = new File(carbonHome + File.separator + classDirectory);
             List<File> files = FileUtils.getFiles(file, CodeCoverageUtils.getInclusionJarsPattern(","), exclusionList);
+            fileList.addAll(files);
+        }
+        return fileList;
+    }
+
+    private List<File> retrieveClassFilesToAnalyze(Set<String> classDirectories,  String exclusionList) throws IOException {
+        List<File> fileList = new ArrayList<>();
+        String carbonHome = System.getProperty(FrameworkConstants.CARBON_HOME);
+        for (String classDirectory : classDirectories) {
+            File file = new File(carbonHome + File.separator + classDirectory);
+            List<File> files = FileUtils.getFiles(file, "**\\*.class", exclusionList);
             fileList.addAll(files);
         }
         return fileList;
