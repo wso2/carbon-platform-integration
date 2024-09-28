@@ -19,18 +19,27 @@ package org.wso2.carbon.automation.extensions.servers.carbonserver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.automation.engine.FrameworkConstants;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.exceptions.AutomationFrameworkException;
 import org.wso2.carbon.automation.extensions.ExtensionConstants;
+import org.wso2.carbon.automation.extensions.XPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TestServerManager {
+    public static final String HEADER_OUTPUT_ADAPTER_EMAIL = "[output_adapter.email]";
     protected CarbonServerManager carbonServer;
+    protected AutomationContext context;
     protected String carbonZip;
     protected int portOffset;
     protected Map<String, String> commandMap = new HashMap<String, String>();
@@ -43,12 +52,14 @@ public class TestServerManager {
 
     public TestServerManager(AutomationContext context, String carbonZip) {
         carbonServer = new CarbonServerManager(context);
+        this.context = context;
         this.carbonZip = carbonZip;
     }
 
     public TestServerManager(AutomationContext context, int portOffset) {
         carbonServer = new CarbonServerManager(context);
         this.portOffset = portOffset;
+        this.context = context;
         commandMap.put(ExtensionConstants.SERVER_STARTUP_PORT_OFFSET_COMMAND, String.valueOf(portOffset));
     }
 
@@ -61,6 +72,7 @@ public class TestServerManager {
         } else {
             throw new IllegalArgumentException("portOffset value must be set in command list");
         }
+        this.context = context;
         this.commandMap = commandMap;
     }
 
@@ -78,6 +90,28 @@ public class TestServerManager {
 
     public void configureServer() throws AutomationFrameworkException {
 
+        try {
+            Node emailSenderConfigs = context.getConfigurationNode(XPathConstants.EMAIL_SENDER_CONFIGS);
+            if (emailSenderConfigs != null) {
+
+                StringBuilder configString = new StringBuilder();
+                configString.append("\n").append(HEADER_OUTPUT_ADAPTER_EMAIL).append("\n");
+                NodeList childNodes = emailSenderConfigs.getChildNodes();
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node node = childNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        String nodeName = node.getNodeName();
+                        String nodeValue = node.getTextContent();
+                        configString.append(nodeName).append("= \"").append(nodeValue).append("\"\n");
+                    }
+                }
+
+                Path deploymentTomlPath = Paths.get(carbonHome, "repository", "conf", "deployment.toml");
+                Files.write(deploymentTomlPath, configString.toString().getBytes(), StandardOpenOption.APPEND);
+            }
+        } catch (XPathExpressionException | IOException e) {
+            throw new AutomationFrameworkException(e);
+        }
     }
 
 
