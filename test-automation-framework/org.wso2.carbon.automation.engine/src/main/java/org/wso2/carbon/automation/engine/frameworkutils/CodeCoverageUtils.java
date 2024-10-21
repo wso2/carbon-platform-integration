@@ -520,8 +520,26 @@ public final class CodeCoverageUtils {
 
         while (waitTime > System.currentTimeMillis()) {
             if (file.length() > 0) {
+                long length1 = file.length();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    log.warn("Sleep interrupted ", e);
+                }
+                long length2 = file.length();
+                if (length1 != length2) {
+                    log.info("Execution data file non empty file " + file.getAbsolutePath() +
+                            " is still being written.");
+                    try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                        log.warn("Sleep interrupted ", e);
+                    }
+                    continue;
+                }
                 status = true;
-                log.info("Execution data file non empty file size in KB : " + file.length() / 1024);
+                log.info("Execution data file non empty file " + file.getAbsolutePath() + " size in KB : " +
+                        file.length() / 1024);
                 break;
             } else {
 
