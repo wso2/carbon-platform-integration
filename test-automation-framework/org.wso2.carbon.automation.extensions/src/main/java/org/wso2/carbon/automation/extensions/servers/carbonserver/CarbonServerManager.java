@@ -128,7 +128,7 @@ public class CarbonServerManager {
                                              automationContext.getInstance().getHosts().get("default"));
 
             //wait until Mgt console url printed.
-            long time = System.currentTimeMillis() + 60 * 1000;
+            long time = System.currentTimeMillis() + 2 * 1000;
             while (!inputStreamHandler.getOutput().contains(SERVER_STARTUP_MESSAGE) &&
                    System.currentTimeMillis() < time) {
                 // wait until server startup is completed
