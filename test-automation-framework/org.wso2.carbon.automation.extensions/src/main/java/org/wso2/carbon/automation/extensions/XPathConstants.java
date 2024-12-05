@@ -53,4 +53,5 @@ public class XPathConstants {
     public static final String COVERAGE_CLASSES_RELATIVE_DIRECTORIES = "//coverageClassesRelativeDirectories";
     public static final String COVERAGE_CLASSES_RELATIVE_DIRECTORY_NODE_NAME = "coverageClassesRelativeDirectory";
     public static final String EMAIL_SENDER_CONFIGS = "//emailSenderConfigs";
+    public static final String LOGGING_CONFIGS = "//loggingConfigs";
 }
