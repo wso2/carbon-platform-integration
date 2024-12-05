@@ -124,7 +124,6 @@ public class TestServerManager {
                     Node node = childNodes.item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         if (node.getNodeName().equals(CONFIG_ENABLE_V2_AUDIT_LOGS)) {
-                            v2auditLogConfigString.append("\n").append(HEADER_SYSTEM_PARAMETER).append("\n");
                             v2auditLogConfigString.append(node.getNodeName()).append(" = \"").append(node.getTextContent()).append("\"");
                         }
                         if (node.getNodeName().equals(CONFIG_DIAGNOSTIC_LOG_MODE)) {
@@ -134,29 +133,38 @@ public class TestServerManager {
                 }
 
                 // Append the v2 audit log config to the deployment.toml
-                Files.write(deploymentTomlPath, v2auditLogConfigString.toString().getBytes(), StandardOpenOption.APPEND);
-
+                appendConfigs(deploymentTomlPath, HEADER_SYSTEM_PARAMETER, v2auditLogConfigString);
                 // Append the diagnostic log config to the deployment.toml
-                List<String> lines = Files.readAllLines(deploymentTomlPath);
-                int insertAfterLine = -1;
-                for (int i = 0; i < lines.size(); i++) {
-                    if (lines.get(i).contains(HEADER_SERVER)) {
-                        // Find the line has the [server] header
-                        insertAfterLine = i + 1;
-                        break;
-                    }
-                }
-                if (insertAfterLine != -1) {
-                    lines.add(insertAfterLine, diagnosticLogConfigString.toString());
-                    Files.write(deploymentTomlPath, lines, StandardOpenOption.WRITE);
-                }
+                appendConfigs(deploymentTomlPath, HEADER_SERVER, diagnosticLogConfigString);
             }
-
         } catch (XPathExpressionException | IOException e) {
             throw new AutomationFrameworkException(e);
         }
     }
 
+    private static void appendConfigs(Path deploymentTomlPath, String tomlHeader,
+                                      StringBuilder configsToAppend) throws IOException {
+
+        List<String> lines = Files.readAllLines(deploymentTomlPath);
+        int insertAfterLine = -1;
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).contains(tomlHeader)) {
+                // Find the line has the header
+                insertAfterLine = i + 1;
+                break;
+            }
+        }
+        if (insertAfterLine != -1) {
+            // If the header is found, append the config after the header
+            lines.add(insertAfterLine, configsToAppend.toString());
+            Files.write(deploymentTomlPath, lines, StandardOpenOption.WRITE);
+        } else {
+            // If the header is not found, append the header and the config to the end of the file
+            Files.write(deploymentTomlPath, ("\n" + tomlHeader + "\n").getBytes(),
+                    StandardOpenOption.APPEND);
+            Files.write(deploymentTomlPath, configsToAppend.toString().getBytes(), StandardOpenOption.APPEND);
+        }
+    }
 
     public Map<String, String> getCommands() {
         return commandMap;
