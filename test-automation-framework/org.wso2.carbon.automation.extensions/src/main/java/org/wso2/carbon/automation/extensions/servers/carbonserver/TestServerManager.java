@@ -29,10 +29,12 @@ import org.wso2.carbon.automation.extensions.XPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,9 @@ public class TestServerManager {
 
                 Files.write(deploymentTomlPath, configString.toString().getBytes(), StandardOpenOption.APPEND);
             }
+
+            // Enable admin/soap services.
+            enableAdminServices(deploymentTomlPath);
 
             Node loggingConfigs = context.getConfigurationNode(XPathConstants.LOGGING_CONFIGS);
             if (loggingConfigs != null) {
@@ -225,7 +230,108 @@ public class TestServerManager {
         carbonServer.serverShutdown(portOffset);
     }
 
+    /**
+     * Read <enableAdminServices> node from the automation.xml.
+     *
+     * @return  Parent Key, key and expected value.
+     * @throws XPathExpressionException
+     */
+    private Map<String, String> readEnableAdminServicesConfig() throws XPathExpressionException {
 
+        Map<String, String> configMap = new HashMap<>();
 
+        Node enableAdminServicesNode = context.getConfigurationNode(XPathConstants.ENABLE_ADMIN_SERVICES);
+
+        if (enableAdminServicesNode != null) {
+            NodeList childNodes = enableAdminServicesNode.getChildNodes();
+            if (childNodes != null) {
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node node = childNodes.item(i);
+                    if (node != null) {
+                        switch (node.getNodeName()) {
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY,
+                                        node.getTextContent().trim());
+                                break;
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_KEY:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_KEY, node.getTextContent().trim());
+                                break;
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_VALUE:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_VALUE, node.getTextContent().trim());
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return configMap;
+    }
+
+    /**
+     * Add admin service config to deployment.toml.
+     *
+     * @param tomlPath Toml path
+     * @param sectionHeader Parent key
+     * @param key adminService config key
+     * @param value adminService config value
+     * @throws IOException
+     */
+    private  void addAdminsServiceConfigToToml(Path tomlPath, String sectionHeader, String key, String value)
+            throws IOException {
+
+        List<String> lines = Files.readAllLines(tomlPath, StandardCharsets.UTF_8);
+        List<String> updatedLines = new ArrayList<>();
+        boolean inSection = false;
+        boolean keyExists = false;
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+
+            if (inSection) {
+                if (trimmed.startsWith(key)) {
+                    updatedLines.set(updatedLines.size() - 1, key + " = " + value);
+                    keyExists = true;
+                } else if (trimmed.isEmpty() || (trimmed.startsWith("[") && !trimmed.equals(sectionHeader))) {
+                    if (!keyExists) {
+                        updatedLines.add(key + " = " + value);
+                        keyExists = true;
+                    }
+                    inSection = false;
+                }
+            }
+
+            updatedLines.add(line);
+
+            if (trimmed.equals(sectionHeader)) {
+                inSection = true;
+                keyExists = false;
+            }
+        }
+
+        if (inSection && !keyExists) {
+            updatedLines.add(key + " = " + value);
+        }
+
+        Files.write(tomlPath, updatedLines, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    /**
+     * Enable Admin services.
+     *
+     * @param tomlPath Toml paths
+     * @throws XPathExpressionException
+     * @throws IOException
+     */
+    private void enableAdminServices(Path tomlPath) throws XPathExpressionException, IOException {
+
+        Map<String, String> config = readEnableAdminServicesConfig();
+        if (!config.isEmpty()) {
+            String sectionHeader = "[" + config.get(XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY) + "]";
+            String key = config.get(XPathConstants.ENABLE_ADMIN_SERVICES_KEY);
+            String value = config.get(XPathConstants.ENABLE_ADMIN_SERVICES_VALUE);
+            addAdminsServiceConfigToToml(tomlPath, sectionHeader, key, value);
+        }
+    }
 
 }
