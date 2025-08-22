@@ -29,10 +29,12 @@ import org.wso2.carbon.automation.extensions.XPathConstants;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,9 @@ public class TestServerManager {
 
                 Files.write(deploymentTomlPath, configString.toString().getBytes(), StandardOpenOption.APPEND);
             }
+
+            // Enable admin/soap services.
+            enableAdminServices(deploymentTomlPath);
 
             Node loggingConfigs = context.getConfigurationNode(XPathConstants.LOGGING_CONFIGS);
             if (loggingConfigs != null) {
@@ -225,7 +230,113 @@ public class TestServerManager {
         carbonServer.serverShutdown(portOffset);
     }
 
+    /**
+     * Adds or updates a single configuration entry in the deployment.toml file under a given parent section.
+     *
+     * @param tomlPath Path to the deployment.toml file.
+     * @param sectionHeader Header of the parent section (e.g., "[server]").
+     * @param key  Configuration key to add or update.
+     * @param value Value for the configuration key.
+     * @throws IOException If an error occurs while reading or writing the file.
+     */
+    public void addOrUpdateConfigInToml(Path tomlPath, String sectionHeader, String key, String value)
+            throws IOException {
 
+        List<String> fileLines = Files.readAllLines(tomlPath, StandardCharsets.UTF_8);
+        List<String> updatedLines = new ArrayList<>();
 
+        // Indicates whether the current position is inside the target section.
+        boolean insideTargetSection = false;
+        // Indicates if the key already exists in the section.
+        boolean keyAlreadyExists = false;
+
+        // Iterate over all lines in the file
+        for (String line : fileLines) {
+            String trimmedLine = line.trim();
+
+            if (insideTargetSection) {
+                // Replace the value if the key already exists.
+                if (trimmedLine.startsWith(key)) {
+                    updatedLines.set(updatedLines.size() - 1, key + " = " + value);
+                    keyAlreadyExists = true;
+                    // Insert the key if it does not exist when reaching an empty line or new section header.
+                } else if (trimmedLine.isEmpty() || (trimmedLine.startsWith("[")
+                        && !trimmedLine.equals(sectionHeader))) {
+                    if (!keyAlreadyExists) {
+                        updatedLines.add(key + " = " + value);
+                        keyAlreadyExists = true;
+                    }
+                    // Exiting the target section.
+                    insideTargetSection = false;
+                }
+            }
+
+            updatedLines.add(line);
+            // Identify the start of the target section.
+            if (trimmedLine.equals(sectionHeader)) {
+                insideTargetSection = true;
+                keyAlreadyExists = false;
+            }
+        }
+        // Append the key if the section ends at EOF and the key was not added.
+        if (insideTargetSection && !keyAlreadyExists) {
+            updatedLines.add(key + " = " + value);
+        }
+        // Write the updated content back to the toml file.
+        Files.write(tomlPath, updatedLines, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    /**
+     * Read <enableAdminServices> node from the automation.xml.
+     *
+     * @return  Parent Key, key and expected value.
+     * @throws XPathExpressionException
+     */
+    private Map<String, String> readEnableAdminServicesConfig() throws XPathExpressionException {
+
+        Map<String, String> configMap = new HashMap<>();
+        Node enableAdminServicesNode = context.getConfigurationNode(XPathConstants.ENABLE_ADMIN_SERVICES);
+        if (enableAdminServicesNode != null) {
+            NodeList childNodes = enableAdminServicesNode.getChildNodes();
+            if (childNodes != null) {
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node node = childNodes.item(i);
+                    if (node != null) {
+                        switch (node.getNodeName()) {
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY,
+                                        node.getTextContent().trim());
+                                break;
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_KEY:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_KEY, node.getTextContent().trim());
+                                break;
+                            case XPathConstants.ENABLE_ADMIN_SERVICES_VALUE:
+                                configMap.put(XPathConstants.ENABLE_ADMIN_SERVICES_VALUE, node.getTextContent().trim());
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        return configMap;
+    }
+
+    /**
+     * Enable Admin services.
+     *
+     * @param tomlPath Toml paths
+     * @throws XPathExpressionException
+     * @throws IOException
+     */
+    private void enableAdminServices(Path tomlPath) throws XPathExpressionException, IOException {
+
+        Map<String, String> config = readEnableAdminServicesConfig();
+        if (!config.isEmpty()) {
+            String sectionHeader = "[" + config.get(XPathConstants.ENABLE_ADMIN_SERVICES_PARENT_KEY) + "]";
+            String key = config.get(XPathConstants.ENABLE_ADMIN_SERVICES_KEY);
+            String value = config.get(XPathConstants.ENABLE_ADMIN_SERVICES_VALUE);
+            addOrUpdateConfigInToml(tomlPath, sectionHeader, key, value);
+        }
+    }
 
 }
