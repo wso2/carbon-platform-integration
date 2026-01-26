@@ -100,9 +100,6 @@ public class TestServerManager {
 
         Path deploymentTomlPath = Paths.get(carbonHome, "repository", "conf", "deployment.toml");
         try {
-            if (context == null) {
-                context = new AutomationContext();
-            }
             Node emailSenderConfigs = context.getConfigurationNode(XPathConstants.EMAIL_SENDER_CONFIGS);
             if (emailSenderConfigs != null) {
 
