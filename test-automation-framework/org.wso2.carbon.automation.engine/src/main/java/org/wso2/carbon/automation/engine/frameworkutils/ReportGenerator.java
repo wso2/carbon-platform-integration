@@ -18,9 +18,12 @@
 package org.wso2.carbon.automation.engine.frameworkutils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -145,6 +148,9 @@ public class ReportGenerator {
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(execFileLoader.getExecutionDataStore(), coverageBuilder);
 
+        // Track analyzed classes to avoid duplicates
+        Set<String> analyzedClasses = new HashSet<>();
+
         String[] includes = {FrameworkConstants.CLASS_FILE_PATTERN}; //class file patten to be included
         String exclusionList = CodeCoverageUtils.getExclusionJarsPattern(",");
         String[] excludes = exclusionList.split(",");
@@ -157,8 +163,17 @@ public class ReportGenerator {
             log.info("Jar file analyzed for coverage : " + file.getName());
             String[] classFiles = CodeCoverageUtils.scanDirectory(extractedDir, includes, excludes);
 
-            for (String classFile : classFiles) {
-                analyzer.analyzeAll(new File(extractedDir + File.separator + classFile));
+            for (String classFilePath : classFiles) {
+                File classFile = new File(extractedDir + File.separator + classFilePath);
+                String className = getClassNameFromFile(classFile);
+                if (!analyzedClasses.contains(className)) {
+                    try (InputStream input = new FileInputStream(classFile)) {
+                        analyzer.analyzeClass(input, className);
+                        analyzedClasses.add(className);
+                    } catch (Exception e) {
+                        System.err.println("Skipping duplicate or invalid class: " + className);
+                    }
+                }
             }
             FileUtils.forceDelete(new File(extractedDir));
         }
@@ -166,12 +181,44 @@ public class ReportGenerator {
         // If there are exploded web apps, they need to be analyzed.
         final List<File> classFilesToAnalyze = retrieveClassFilesToAnalyze(classDirectories, exclusionList);
         for (final File file : classFilesToAnalyze) {
-            analyzer.analyzeAll(file);
+            String className = getClassNameFromFile(file);
+            if (!analyzedClasses.contains(className)) {
+                try (InputStream input = new FileInputStream(file)) {
+                    analyzer.analyzeClass(input, className);
+                    analyzedClasses.add(className);
+                } catch (Exception e) {
+                    System.err.println("Skipping duplicate or invalid class: " + className);
+                }
+            }
         }
         return coverageBuilder.getBundle("Overall Coverage Summary");
     }
 
-    private List<File> retrieveJarFilesToAnalyze(Set<String> classDirectories, String exclusionList) throws IOException {
+    /**
+     * Get the class name from a class file. Converts file path to fully qualified class name.
+     *
+     * @param classFile - The class file
+     * @return - The fully qualified class name
+     */
+    private String getClassNameFromFile(File classFile) {
+        String path = classFile.getAbsolutePath();
+        // Extract the class name by finding the package structure
+        // This works by removing .class extension and converting path separators to dots
+        int classIndex = path.indexOf("/org/wso2/");
+        if (classIndex == -1) {
+            classIndex = path.indexOf("\\org\\wso2\\");
+        }
+        if (classIndex != -1) {
+            String className = path.substring(classIndex + 1);
+            className = className.replace(".class", "");
+            className = className.replace(File.separator, "/");
+            return className;
+        }
+        // Fallback: use the absolute path
+        return path;
+    }
+
+    private List<File> retrieveJarFilesToAnalyze(Set<String> classDirectories,  String exclusionList) throws IOException {
         List<File> fileList = new ArrayList<>();
         String carbonHome = System.getProperty(FrameworkConstants.CARBON_HOME);
         for (String classDirectory : classDirectories) {
