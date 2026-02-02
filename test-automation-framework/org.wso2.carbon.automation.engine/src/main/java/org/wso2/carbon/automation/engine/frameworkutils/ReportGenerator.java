@@ -164,7 +164,6 @@ public class ReportGenerator {
             String[] classFiles = CodeCoverageUtils.scanDirectory(extractedDir, includes, excludes);
 
             for (String classFilePath : classFiles) {
-//                analyzer.analyzeAll(new File(extractedDir + File.separator + classFile));
                 File classFile = new File(extractedDir + File.separator + classFilePath);
                 String className = getClassNameFromFile(classFile);
                 if (!analyzedClasses.contains(className)) {
