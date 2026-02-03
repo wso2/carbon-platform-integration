@@ -55,6 +55,7 @@ public class TestServerManager {
 
     public TestServerManager(AutomationContext context) {
         carbonServer = new CarbonServerManager(context);
+        this.context = context;
     }
 
     public TestServerManager(AutomationContext context, String carbonZip) {
