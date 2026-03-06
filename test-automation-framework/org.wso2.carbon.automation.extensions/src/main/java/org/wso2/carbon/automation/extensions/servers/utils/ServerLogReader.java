@@ -61,16 +61,17 @@ public class ServerLogReader implements Runnable {
             while (running) {
                 if (bufferedReader.ready()) {
                     String s = bufferedReader.readLine();
-                    stringBuilder.setLength(0);
                     if (s == null) {
                         break;
                     }
-                    if (STREAM_TYPE_IN.equals(streamType)) {
-                        stringBuilder.append(s).append("\n");
-                        log.info(s);
-                    } else if (STREAM_TYPE_ERROR.equals(streamType)) {
-                        stringBuilder.append(s).append("\n");
-                        log.error(s);
+                    synchronized (lock) {
+                        if (STREAM_TYPE_IN.equals(streamType)) {
+                            stringBuilder.append(s).append("\n");
+                            log.info(s);
+                        } else if (STREAM_TYPE_ERROR.equals(streamType)) {
+                            stringBuilder.append(s).append("\n");
+                            log.error(s);
+                        }
                     }
                 }
             }
@@ -99,6 +100,12 @@ public class ServerLogReader implements Runnable {
     public String getOutput() {
         synchronized (lock) {
             return stringBuilder.toString();
+        }
+    }
+
+    public void clearOutput() {
+        synchronized (lock) {
+            stringBuilder.setLength(0);
         }
     }
 }

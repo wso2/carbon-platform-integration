@@ -131,7 +131,12 @@ public class CarbonServerManager {
             long time = System.currentTimeMillis() + 2 * 1000;
             while (!inputStreamHandler.getOutput().contains(SERVER_STARTUP_MESSAGE) &&
                    System.currentTimeMillis() < time) {
-                // wait until server startup is completed
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
 
             int httpsPort = defaultHttpsPort + portOffset;
@@ -253,7 +258,12 @@ public class CarbonServerManager {
                 long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
                 while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                        System.currentTimeMillis() < time) {
-                    // wait until server shutdown is completed
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ignored) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
                 log.info("Server stopped successfully...");
             }
@@ -298,6 +308,8 @@ public class CarbonServerManager {
 
     public synchronized void restartGracefully() throws AutomationFrameworkException {
 
+        inputStreamHandler.clearOutput();
+
         try {
             int httpsPort = defaultHttpsPort + portOffset;
             //considering the port offset
@@ -312,13 +324,23 @@ public class CarbonServerManager {
         long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
         while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
                System.currentTimeMillis() < time) {
-            // wait until server shutdown is completed
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
 
-        time = System.currentTimeMillis();
-
-        while (System.currentTimeMillis() < time + 5000) {
-            //wait for port to close
+        long portCloseWaitTime = System.currentTimeMillis() + 5000;
+        while (System.currentTimeMillis() < portCloseWaitTime) {
+            try {
+                //wait for port to close
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
 
         try {
