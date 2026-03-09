@@ -58,20 +58,19 @@ public class ServerLogReader implements Runnable {
         try {
             inputStreamReader = new InputStreamReader(inputStream, Charset.defaultCharset());
             bufferedReader = new BufferedReader(inputStreamReader);
+            String s;
             while (running) {
-                if (bufferedReader.ready()) {
-                    String s = bufferedReader.readLine();
-                    if (s == null) {
-                        break;
-                    }
-                    synchronized (lock) {
-                        if (STREAM_TYPE_IN.equals(streamType)) {
-                            stringBuilder.append(s).append("\n");
-                            log.info(s);
-                        } else if (STREAM_TYPE_ERROR.equals(streamType)) {
-                            stringBuilder.append(s).append("\n");
-                            log.error(s);
-                        }
+                s = bufferedReader.readLine();
+                if (s == null) {
+                    break;
+                }
+                synchronized (lock) {
+                    if (STREAM_TYPE_IN.equals(streamType)) {
+                        stringBuilder.append(s).append("\n");
+                        log.info(s);
+                    } else if (STREAM_TYPE_ERROR.equals(streamType)) {
+                        stringBuilder.append(s).append("\n");
+                        log.error(s);
                     }
                 }
             }
