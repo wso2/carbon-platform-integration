@@ -71,9 +71,7 @@
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
-                    <argLine>
-                        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.core.version}/org.jacoco.agent-${jacoco.core.version}-runtime.jar=destfile=${project.build.directory}/jacoco.exec
-                    </argLine>
+                    <argLine>${argLine}</argLine>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
